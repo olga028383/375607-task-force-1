@@ -8,8 +8,8 @@ class TaskForce
     const STATUS_FAILED = 'failed';
     const STATUS_CANCELED = 'canceled';
 
-    const RIGHTS_R = 'R';
-    const RIGHTS_W = 'W';
+    const RIGHTS_CUSTOMER = 'customer';
+    const RIGHTS_EXECUTOR = 'executor';
 
     const ACTION_ADD = 'add';
     const ACTION_RESPOND = 'respond';
@@ -160,6 +160,43 @@ class TaskForce
         }
 
         return $status;
+    }
+
+    /**
+     * Возвращает список действий в зависимости от статуса задачи и роли пользователя
+     * @param $userRole
+     * @return array
+     */
+    public function getAvailableActions($userRole) {
+        $actions = array();
+
+        if($userRole === self::RIGHTS_CUSTOMER){
+
+            switch($this->status){
+                case self::STATUS_NEW:
+                    $actions = array(self::ACTION_CANCEL, self::ACTION_CLOSE);
+                    break;
+                case self::STATUS_FAILED:
+                    $actions = array(self::ACTION_CANCEL, self::ACTION_CLOSE);
+                    break;
+                case self::STATUS_CANCELED:
+                    $actions = array(self::ACTION_CLOSE);
+                    break;
+            }
+        }else if($userRole === self::RIGHTS_EXECUTOR){
+
+            switch($this->status){
+                case self::STATUS_NEW:
+                    $actions = array(self::ACTION_RESPOND, self::ACTION_BEGIN);
+                    break;
+                case self::STATUS_START:
+                    $actions = array(self::ACTION_CLOSE, self::ACTION_FAIL);
+                    break;
+
+            }
+        }
+
+        return $actions;
     }
 
     /**
