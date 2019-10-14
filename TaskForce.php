@@ -49,7 +49,7 @@ class TaskForce
      * @param $status
      * @param $taskId
      */
-    private function __construct($customerId, $name, $description, $categoryId, $files, $cityId, $coordinates, $sum, $dateClosed, $status, $taskId)
+    private function __construct($customerId, $name, $description, $categoryId, $files, $cityId, $coordinates, $sum, $dateClosed, $status, $taskId, $executorId)
     {
         $this->customerId = $customerId;
         $this->name = $name;
@@ -61,6 +61,7 @@ class TaskForce
         $this->sum = $sum;
         $this->dateClosed = $dateClosed;
         $this->taskId = $taskId;
+        $this->executorId = $taskId;
 
         if (!$status) {
             $this->status = self::STATUS_NEW;
@@ -84,7 +85,7 @@ class TaskForce
      * @param $status
      * @return TaskForce
      */
-    public static function createTask($customerId, $name, $description, $categoryId, $files = array(), $cityId, $coordinates, $sum, $dateClosed, $status)
+    public static function createTask($customerId, $name, $description, $categoryId, $files = array(), $cityId, $coordinates, $sum, $dateClosed, $status, $executorId)
     {
         //Добавляю задачу в базу, получаю данные и создаю объект
         //вот тут не поняла как положить статус базу, если константа не доступна, пока оставляю статус пустым
@@ -99,7 +100,7 @@ class TaskForce
         $dateClosed = 18.10;
         $taskId = 1;
 
-        $object = new TaskForce($customerId, $name, $description, $categoryId, $files, $cityId, $coordinates, $sum, $dateClosed, $status = '', $taskId);
+        $object = new TaskForce($customerId, $name, $description, $categoryId, $files, $cityId, $coordinates, $sum, $dateClosed, $status = '', $taskId, $executorId = '');
         return $object;
     }
 
@@ -122,7 +123,7 @@ class TaskForce
         $taskId = 1;
         $status = 'new';
 
-        $object = new TaskForce($customerId, $name, $description, $categoryId, $files, $cityId, $coordinates, $sum, $dateClosed, $taskId);
+        $object = new TaskForce($customerId, $name, $description, $categoryId, $files, $cityId, $coordinates, $sum, $dateClosed, $taskId, $executorId = '');
         return $object;
     }
 
@@ -131,10 +132,11 @@ class TaskForce
      * @param $action
      * @return string
      */
-    public function getNextStatus($action){
+    public function getNextStatus($action)
+    {
         $status = '';
 
-        switch($action){
+        switch ($action) {
             case self::ACTION_ADD:
                 $status = self::STATUS_NEW;
                 break;
@@ -167,12 +169,13 @@ class TaskForce
      * @param $userRole
      * @return array
      */
-    public function getAvailableActions($userRole) {
+    public function getAvailableActions($userRole)
+    {
         $actions = array();
 
-        if($userRole === self::RIGHTS_CUSTOMER){
+        if ($userRole === self::RIGHTS_CUSTOMER) {
 
-            switch($this->status){
+            switch ($this->status) {
                 case self::STATUS_NEW:
                     $actions = array(self::ACTION_CANCEL, self::ACTION_CLOSE);
                     break;
@@ -183,9 +186,9 @@ class TaskForce
                     $actions = array(self::ACTION_CLOSE);
                     break;
             }
-        }else if($userRole === self::RIGHTS_EXECUTOR){
+        } else if ($userRole === self::RIGHTS_EXECUTOR) {
 
-            switch($this->status){
+            switch ($this->status) {
                 case self::STATUS_NEW:
                     $actions = array(self::ACTION_RESPOND, self::ACTION_BEGIN);
                     break;
@@ -203,8 +206,9 @@ class TaskForce
      * Метод возвращает все действия
      * @return array
      */
-    public function getActions(){
-        return array (
+    public function getActions()
+    {
+        return array(
             self::ACTION_ADD,
             self::ACTION_RESPOND,
             self::ACTION_BEGIN,
@@ -219,8 +223,9 @@ class TaskForce
      * Метод возвращает все статусы
      * @return array
      */
-    public function getStatuses(){
-        return array (
+    public function getStatuses()
+    {
+        return array(
             self::STATUS_NEW,
             self::STATUS_START,
             self::STATUS_CANCELED,
