@@ -199,7 +199,6 @@ class TaskForce
     public function getNextStatus($action)
     {
         $status = '';
-
         switch ($action) {
             case self::ACTION_ADD:
                 $status = self::STATUS_NEW;
@@ -223,6 +222,9 @@ class TaskForce
                 //ут не поняла какой статус возвращать
                 $status = self::STATUS_NEW;
                 break;
+            default:
+                throw new Exception('Неизвестное действие.');
+
         }
 
         return $status;
@@ -313,8 +315,7 @@ class TaskForce
     {
 
         if ($this->status !== self::STATUS_START || $this->status !== self::STATUS_CLOSED) {
-            $this->errors[] = 'Задачу в статусе "' . $this->status . '" отменить невозможно';
-            return $this->errors;
+            throw new Exception('Задачу в статусе "' . $this->status . '" отменить невозможно');
         }
         //Изменяю у задачи статус а базе
         $this->status = self::STATUS_CANCELED;
