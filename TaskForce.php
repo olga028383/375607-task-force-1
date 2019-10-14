@@ -85,7 +85,7 @@ class TaskForce
      * @param $status
      * @return TaskForce
      */
-    public static function createTask($customerId, $name, $description, $categoryId, $files = array(), $cityId, $coordinates, $sum, $dateClosed, $status, $executorId)
+    public static function createTask($customerId, $name, $description, $categoryId, $files = array(), $cityId, $coordinates, $sum, $dateClosed, $status, $executorId = '')
     {
         //Добавляю задачу в базу, получаю данные и создаю объект
         //вот тут не поняла как положить статус базу, если константа не доступна, пока оставляю статус пустым
