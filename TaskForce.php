@@ -200,6 +200,36 @@ class TaskForce
     }
 
     /**
+     * Метод возвращает все действия
+     * @return array
+     */
+    public function getActions(){
+        return array (
+            self::ACTION_ADD,
+            self::ACTION_RESPOND,
+            self::ACTION_BEGIN,
+            self::ACTION_CLOSE,
+            self::ACTION_FAIL,
+            self::ACTION_CANCEL,
+            self::ACTION_SEND
+        );
+    }
+
+    /**
+     * Метод возвращает все статусы
+     * @return array
+     */
+    public function getStatuses(){
+        return array (
+            self::STATUS_NEW,
+            self::STATUS_START,
+            self::STATUS_CANCELED,
+            self::STATUS_CLOSED,
+            self::STATUS_FAILED
+        );
+    }
+
+    /**
      * @param $executorId
      * @param $evaluation
      * @param $comments
