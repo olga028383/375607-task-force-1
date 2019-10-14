@@ -72,6 +72,70 @@ class TaskForce
     }
 
     /**
+     * @return mixed
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCustomerID()
+    {
+        return $this->customerId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getExecutorId()
+    {
+        return $this->executorId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDateClosed()
+    {
+        return $this->dateClosed;
+    }
+
+    /**
+     * Метод возвращает все действия
+     * @return array
+     */
+    public function getActions()
+    {
+        return array(
+            self::ACTION_ADD,
+            self::ACTION_RESPOND,
+            self::ACTION_BEGIN,
+            self::ACTION_CLOSE,
+            self::ACTION_FAIL,
+            self::ACTION_CANCEL,
+            self::ACTION_SEND
+        );
+    }
+
+    /**
+     * Метод возвращает все статусы
+     * @return array
+     */
+    public function getStatuses()
+    {
+        return array(
+            self::STATUS_NEW,
+            self::STATUS_START,
+            self::STATUS_CANCELED,
+            self::STATUS_CLOSED,
+            self::STATUS_FAILED
+        );
+    }
+
+    /**
      * Метод добавляет задачу
      * @param $customerId
      * @param $name
@@ -177,8 +241,6 @@ class TaskForce
 
             switch ($this->status) {
                 case self::STATUS_NEW:
-                    $actions = array(self::ACTION_CANCEL, self::ACTION_CLOSE);
-                    break;
                 case self::STATUS_FAILED:
                     $actions = array(self::ACTION_CANCEL, self::ACTION_CLOSE);
                     break;
@@ -200,38 +262,6 @@ class TaskForce
         }
 
         return $actions;
-    }
-
-    /**
-     * Метод возвращает все действия
-     * @return array
-     */
-    public function getActions()
-    {
-        return array(
-            self::ACTION_ADD,
-            self::ACTION_RESPOND,
-            self::ACTION_BEGIN,
-            self::ACTION_CLOSE,
-            self::ACTION_FAIL,
-            self::ACTION_CANCEL,
-            self::ACTION_SEND
-        );
-    }
-
-    /**
-     * Метод возвращает все статусы
-     * @return array
-     */
-    public function getStatuses()
-    {
-        return array(
-            self::STATUS_NEW,
-            self::STATUS_START,
-            self::STATUS_CANCELED,
-            self::STATUS_CLOSED,
-            self::STATUS_FAILED
-        );
     }
 
     /**
@@ -288,37 +318,5 @@ class TaskForce
         }
         //Изменяю у задачи статус а базе
         $this->status = self::STATUS_CANCELED;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getStatus()
-    {
-        return $this->status;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getCustomerID()
-    {
-        return $this->customerId;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getExecutorId()
-    {
-        return $this->executorId;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getDateClosed()
-    {
-        return $this->dateClosed;
     }
 }
