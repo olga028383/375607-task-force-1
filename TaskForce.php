@@ -35,6 +35,20 @@ class TaskForce
 
     private $errors = array();
 
+    /**
+     * TaskForce constructor.
+     * @param $customerId
+     * @param $name
+     * @param $description
+     * @param $categoryId
+     * @param $files
+     * @param $cityId
+     * @param $coordinates
+     * @param $sum
+     * @param $dateClosed
+     * @param $status
+     * @param $taskId
+     */
     private function __construct($customerId, $name, $description, $categoryId, $files, $cityId, $coordinates, $sum, $dateClosed, $status, $taskId)
     {
         $this->customerId = $customerId;
@@ -58,6 +72,17 @@ class TaskForce
 
     /**
      * Метод добавляет задачу
+     * @param $customerId
+     * @param $name
+     * @param $description
+     * @param $categoryId
+     * @param array $files
+     * @param $cityId
+     * @param $coordinates
+     * @param $sum
+     * @param $dateClosed
+     * @param $status
+     * @return TaskForce
      */
     public static function createTask($customerId, $name, $description, $categoryId, $files = array(), $cityId, $coordinates, $sum, $dateClosed, $status)
     {
@@ -78,6 +103,10 @@ class TaskForce
         return $object;
     }
 
+    /**
+     * @param $taskId
+     * @return TaskForce
+     */
     public static function getTask($taskId)
     {
         //Получаю задачу из базы и создаю объект
@@ -97,6 +126,48 @@ class TaskForce
         return $object;
     }
 
+    /**
+     * Метод возвращает статус, в зависимости от действия
+     * @param $action
+     * @return string
+     */
+    public function getNextStatus($action){
+        $status = '';
+
+        switch($action){
+            case self::ACTION_ADD:
+                $status = self::STATUS_NEW;
+                break;
+            case self::ACTION_RESPOND:
+                $status = self::STATUS_NEW;
+                break;
+            case self::ACTION_BEGIN:
+                $status = self::STATUS_START;
+                break;
+            case self::ACTION_CLOSE:
+                $status = self::STATUS_CLOSED;
+                break;
+            case self::ACTION_FAIL:
+                $status = self::STATUS_FAILED;
+                break;
+            case self::ACTION_CANCEL:
+                $status = self::STATUS_CANCELED;
+                break;
+            case self::ACTION_SEND:
+                //ут не поняла какой статус возвращать
+                $status = self::STATUS_NEW;
+                break;
+        }
+
+        return $status;
+    }
+
+    /**
+     * @param $executorId
+     * @param $evaluation
+     * @param $comments
+     * @param $sum
+     */
     public function addResponse($executorId, $evaluation, $comments, $sum)
     {
         //Добавить отклик к задаче
@@ -105,6 +176,7 @@ class TaskForce
 
     /**
      * Задача выполняется, присваивается исполнитель
+     * @param $executorId
      */
     public function beginTask($executorId)
     {
@@ -122,6 +194,9 @@ class TaskForce
         $this->status = self::STATUS_CLOSED;
     }
 
+    /**
+     * Метод изменяет статус провеленной задачи
+     */
     public function failTask()
     {
         //Изменяет в таблице данные пользователя, счетчик провалов
@@ -129,6 +204,9 @@ class TaskForce
         $this->status = self::STATUS_FAILED;
     }
 
+    /**
+     * @return array
+     */
     public function cancelTask()
     {
 
@@ -140,21 +218,33 @@ class TaskForce
         $this->status = self::STATUS_CANCELED;
     }
 
+    /**
+     * @return mixed
+     */
     public function getStatus()
     {
         return $this->status;
     }
 
+    /**
+     * @return mixed
+     */
     public function getCustomerID()
     {
         return $this->customerId;
     }
 
+    /**
+     * @return mixed
+     */
     public function getExecutorId()
     {
         return $this->executorId;
     }
 
+    /**
+     * @return mixed
+     */
     public function getDateClosed()
     {
         return $this->dateClosed;
