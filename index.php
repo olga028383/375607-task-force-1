@@ -15,7 +15,7 @@ $object = TaskForce::createTask(1,2,3,4, false, 6,7,8,9, 10);
 
 assert(TaskForce::STATUS_NEW === $object->getNextStatus(TaskForce::ACTION_ADD), 'assert_handler');
 assert(TaskForce::STATUS_NEW === $object->getNextStatus(TaskForce::ACTION_RESPOND), 'assert_handler');
-assert(TaskForce::STATUS_START === $object->getNextStatus(TaskForce::ACTION_BEGIN), 'assert_handler');
+assert(TaskForce::STATUS_EXECUTION === $object->getNextStatus(TaskForce::ACTION_BEGIN), 'assert_handler');
 assert(TaskForce::STATUS_CLOSED === $object->getNextStatus(TaskForce::ACTION_CLOSE), 'assert_handler');
 assert(TaskForce::STATUS_FAILED === $object->getNextStatus(TaskForce::ACTION_FAIL), 'assert_handler');
 assert(TaskForce::STATUS_CANCELED === $object->getNextStatus(TaskForce::ACTION_CANCEL), 'assert_handler');

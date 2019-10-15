@@ -3,21 +3,19 @@
 class TaskForce
 {
     const STATUS_NEW = 'new';
-    const STATUS_START = 'start';
-    const STATUS_CLOSED = 'closed';
-    const STATUS_FAILED = 'failed';
+    const STATUS_EXECUTION = 'on execution';
+    const STATUS_COMPLETED = 'completed';
     const STATUS_CANCELED = 'canceled';
 
-    const RIGHTS_CUSTOMER = 'customer';
-    const RIGHTS_EXECUTOR = 'executor';
+    const ROLE_CUSTOMER = 'customer';
+    const ROLE_EXECUTOR = 'executor';
 
     const ACTION_ADD = 'add';
     const ACTION_RESPOND = 'respond';
-    const ACTION_BEGIN = 'begin';
-    const ACTION_CLOSE = 'close';
-    const ACTION_FAIL = 'fail';
+    const ACTION_EXECUTE = 'execute';
+    const ACTION_COMPLETE = 'complete';
     const ACTION_CANCEL = 'cancel';
-    const ACTION_SEND = 'send';
+    const ACTION_COMMENT = 'comment';
 
     private $customerId;
     private $executorId;
@@ -112,7 +110,7 @@ class TaskForce
         return array(
             self::ACTION_ADD,
             self::ACTION_RESPOND,
-            self::ACTION_BEGIN,
+            self::ACTION_EXECUTE,
             self::ACTION_CLOSE,
             self::ACTION_FAIL,
             self::ACTION_CANCEL,
@@ -128,7 +126,7 @@ class TaskForce
     {
         return array(
             self::STATUS_NEW,
-            self::STATUS_START,
+            self::STATUS_EXECUTION,
             self::STATUS_CANCELED,
             self::STATUS_CLOSED,
             self::STATUS_FAILED
@@ -206,20 +204,16 @@ class TaskForce
             case self::ACTION_RESPOND:
                 $status = self::STATUS_NEW;
                 break;
-            case self::ACTION_BEGIN:
-                $status = self::STATUS_START;
+            case self::ACTION_EXECUTE:
+                $status = self::STATUS_EXECUTION;
                 break;
-            case self::ACTION_CLOSE:
-                $status = self::STATUS_CLOSED;
-                break;
-            case self::ACTION_FAIL:
-                $status = self::STATUS_FAILED;
+            case self::ACTION_COMPLETE:
+                $status = self::STATUS_COMPLETED;
                 break;
             case self::ACTION_CANCEL:
                 $status = self::STATUS_CANCELED;
                 break;
-            case self::ACTION_SEND:
-                //ут не поняла какой статус возвращать
+            case self::ACTION_COMMENT:
                 $status = self::STATUS_NEW;
                 break;
             default:
@@ -239,25 +233,21 @@ class TaskForce
     {
         $actions = array();
 
-        if ($userRole === self::RIGHTS_CUSTOMER) {
+        if ($userRole === self::ROLE_CUSTOMER) {
 
             switch ($this->status) {
                 case self::STATUS_NEW:
-                case self::STATUS_FAILED:
-                    $actions = array(self::ACTION_CANCEL, self::ACTION_CLOSE);
-                    break;
-                case self::STATUS_CANCELED:
-                    $actions = array(self::ACTION_CLOSE);
+                    $actions = array(self::ACTION_CANCEL, self::ACTION_EXECUTE);
                     break;
             }
-        } else if ($userRole === self::RIGHTS_EXECUTOR) {
+        } else if ($userRole === self::ROLE_EXECUTOR) {
 
             switch ($this->status) {
                 case self::STATUS_NEW:
-                    $actions = array(self::ACTION_RESPOND, self::ACTION_BEGIN);
+                    $actions = array(self::ACTION_RESPOND, self::ACTION_COMMENT);
                     break;
-                case self::STATUS_START:
-                    $actions = array(self::ACTION_CLOSE, self::ACTION_FAIL);
+                case self::STATUS_EXECUTION:
+                    $actions = array(self::ACTION_COMPLETE, self::ACTION_CANCEL);
                     break;
 
             }
@@ -286,7 +276,7 @@ class TaskForce
     {
         //Добавляет  базу к задаче исполнителя и присваиваем новый статус
         $this->executorId = $executorId;
-        $this->status = self::STATUS_START;
+        $this->status = self::STATUS_EXECUTION;
     }
 
     /**
@@ -314,7 +304,7 @@ class TaskForce
     public function cancelTask()
     {
 
-        if ($this->status !== self::STATUS_START || $this->status !== self::STATUS_CLOSED) {
+        if ($this->status !== self::STATUS_EXECUTION || $this->status !== self::STATUS_CLOSED) {
             throw new Exception('Задачу в статусе "' . $this->status . '" отменить невозможно');
         }
         //Изменяю у задачи статус а базе
