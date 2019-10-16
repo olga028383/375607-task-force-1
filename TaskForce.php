@@ -111,10 +111,9 @@ class TaskForce
             self::ACTION_ADD,
             self::ACTION_RESPOND,
             self::ACTION_EXECUTE,
-            self::ACTION_CLOSE,
-            self::ACTION_FAIL,
+            self::ACTION_COMPLETE,
             self::ACTION_CANCEL,
-            self::ACTION_SEND
+            self::ACTION_COMMENT
         );
     }
 
@@ -196,7 +195,7 @@ class TaskForce
      */
     public function getNextStatus($action)
     {
-        $status = '';
+
         switch ($action) {
             case self::ACTION_ADD:
                 $status = self::STATUS_NEW;
@@ -247,7 +246,7 @@ class TaskForce
                     $actions = array(self::ACTION_RESPOND, self::ACTION_CANCEL, self::ACTION_COMMENT);
                     break;
                 case self::STATUS_EXECUTION:
-                    $actions = array(self::ACTION_COMPLETE, self::ACTION_CANCEL);
+                    $actions = array(self::ACTION_COMPLETE);
                     break;
 
             }
@@ -304,7 +303,7 @@ class TaskForce
     public function cancelTask()
     {
 
-        if ($this->status !== self::STATUS_EXECUTION || $this->status !== self::STATUS_CLOSED) {
+        if ($this->status !== self::STATUS_EXECUTION) {
             throw new Exception('Задачу в статусе "' . $this->status . '" отменить невозможно');
         }
         //Изменяю у задачи статус а базе
