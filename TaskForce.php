@@ -6,14 +6,16 @@ class TaskForce
     const STATUS_EXECUTION = 'on execution';
     const STATUS_COMPLETED = 'completed';
     const STATUS_CANCELED = 'canceled';
+    const STATUS_FAILED = 'failed';
 
     const ROLE_CUSTOMER = 'customer';
     const ROLE_EXECUTOR = 'executor';
 
     const ACTION_ADD = 'add';
     const ACTION_RESPOND = 'respond';
-    const ACTION_EXECUTE = 'execute';
+    const ACTION_START = 'start';
     const ACTION_COMPLETE = 'complete';
+    const ACTION_FAIL = 'fail';
     const ACTION_CANCEL = 'cancel';
     const ACTION_COMMENT = 'comment';
 
@@ -110,8 +112,9 @@ class TaskForce
         return array(
             self::ACTION_ADD,
             self::ACTION_RESPOND,
-            self::ACTION_EXECUTE,
+            self::ACTION_START,
             self::ACTION_COMPLETE,
+            self::ACTION_FAIL,
             self::ACTION_CANCEL,
             self::ACTION_COMMENT
         );
@@ -127,7 +130,7 @@ class TaskForce
             self::STATUS_NEW,
             self::STATUS_EXECUTION,
             self::STATUS_CANCELED,
-            self::STATUS_CLOSED,
+            self::STATUS_COMPLETED,
             self::STATUS_FAILED
         );
     }
@@ -200,10 +203,13 @@ class TaskForce
             case self::ACTION_ADD:
                 $status = self::STATUS_NEW;
                 break;
-            case self::ACTION_RESPOND:
-                $status = self::STATUS_NEW;
+            case self::ACTION_COMMENT:
+                $status = $this->status;
                 break;
-            case self::ACTION_EXECUTE:
+            case self::ACTION_RESPOND:
+                $status = $this->status;
+                break;
+            case self::ACTION_START:
                 $status = self::STATUS_EXECUTION;
                 break;
             case self::ACTION_COMPLETE:
@@ -212,12 +218,11 @@ class TaskForce
             case self::ACTION_CANCEL:
                 $status = self::STATUS_CANCELED;
                 break;
-            case self::ACTION_COMMENT:
-                $status = self::STATUS_NEW;
+            case self::ACTION_FAIL:
+                $status = self::STATUS_FAILED;
                 break;
             default:
                 throw new Exception('Неизвестное действие.');
-
         }
 
         return $status;
@@ -236,7 +241,7 @@ class TaskForce
 
             switch ($this->status) {
                 case self::STATUS_NEW:
-                    $actions = array(self::ACTION_CANCEL, self::ACTION_EXECUTE);
+                    $actions = array(self::ACTION_CANCEL, self::ACTION_START);
                     break;
             }
         } else if ($userRole === self::ROLE_EXECUTOR) {
@@ -246,7 +251,7 @@ class TaskForce
                     $actions = array(self::ACTION_RESPOND, self::ACTION_CANCEL, self::ACTION_COMMENT);
                     break;
                 case self::STATUS_EXECUTION:
-                    $actions = array(self::ACTION_COMPLETE);
+                    $actions = array(self::ACTION_COMPLETE, self::ACTION_FAIL);
                     break;
 
             }
@@ -279,12 +284,11 @@ class TaskForce
     }
 
     /**
-     * Метод закрывает задачу
+     * Метод говорит о том, что задача выполнена
      */
-    public function closeTask()
+    public function completeTask()
     {
-        //Не очень поняла по т/з что именно будет происходить
-        $this->status = self::STATUS_CLOSED;
+        $this->status = self::STATUS_COMPLETED;
     }
 
     /**
