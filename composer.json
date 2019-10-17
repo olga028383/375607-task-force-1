@@ -1,4 +1,13 @@
 {
+  "name": "htmlAcademy/375607-task-force-1",
+  "type": "project php level 2",
+
+  "require": {
+  },
+
+  "require-dev": {
+  },
+
   "autoload": {
     "psr-4": {
       "HtmlAcademy\\": "src/"
