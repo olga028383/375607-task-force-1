@@ -5,6 +5,13 @@ use HtmlAcademy\models\TaskForce;
 require_once 'vendor/autoload.php';
 
 assert_options(ASSERT_CALLBACK, 'assert_handler');
+
+/**
+ * Функция печатает сообщение об ошибке
+ * @param $file
+ * @param $line
+ * @param $code
+ */
 function assert_handler($file, $line, $code)
 {
     echo "<hr>Неудачная проверка утверждения:
