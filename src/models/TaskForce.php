@@ -1,5 +1,7 @@
 <?php
 
+namespace HtmlAcademy\models;
+
 class TaskForce
 {
     const STATUS_NEW = 'new';
@@ -248,7 +250,7 @@ class TaskForce
 
             switch ($this->status) {
                 case self::STATUS_NEW:
-                    $actions = array(self::ACTION_RESPOND, self::ACTION_CANCEL, self::ACTION_COMMENT);
+                    $actions = array(self::ACTION_RESPOND, self::ACTION_COMMENT);
                     break;
                 case self::STATUS_EXECUTION:
                     $actions = array(self::ACTION_COMPLETE, self::ACTION_FAIL);
