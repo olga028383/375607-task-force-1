@@ -1,6 +1,6 @@
 <?php
 
-use HtmlAcademy\models\TaskForce;
+use HtmlAcademy\Models\TaskForce;
 
 require_once 'vendor/autoload.php';
 
