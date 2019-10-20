@@ -85,6 +85,5 @@ CREATE TABLE `responses` (
 
 
 CREATE UNIQUE INDEX email ON user(email);
-CREATE INDEX user ON projects(user_id);
 CREATE INDEX user ON tasks(user_id);
 
