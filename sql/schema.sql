@@ -1,5 +1,6 @@
 CREATE DATABASE `taskforce`;
 USE `taskforce`;
+
 CREATE TABLE `categories` (
 `id` INT AUTO_INCREMENT PRIMARY KEY,
 `name` CHAR(255) NOT NULL,
@@ -8,16 +9,13 @@ CREATE TABLE `categories` (
 CREATE TABLE `cities` (
 `id` INT AUTO_INCREMENT PRIMARY KEY,
 `city` CHAR(255) NOT NULL,
-`lat` CHAR(100),
-`long` CHAR(100)
-);
-CREATE TABLE `notifications` (
-`id` INT AUTO_INCREMENT PRIMARY KEY,
-`name` CHAR(255) NOT NULL,
 );
 CREATE TABLE `users` (
 `id` INT AUTO_INCREMENT PRIMARY KEY,
 `city_id` INT,
+`district` CHAR(200),
+`lat` CHAR(100),
+`long` CHAR(100),
 `email`CHAR(155) NOT NULL,
 `name` CHAR(155) NOT NULL,
 `password` VARCHAR(525) NOT NULL,
@@ -26,24 +24,49 @@ CREATE TABLE `users` (
 CREATE TABLE `profiles` (
 `id` INT AUTO_INCREMENT PRIMARY KEY,
 `user_id` INT NOT NULL,
-`categories_id` CHAR(100),
-`notifications_id` CHAR(100),
 `avatar` CHAR(100),
-`birthday` DATETIME,
+`birthday` DATE NULLABLE,
+`biography` TEXT,
 `rating` INT,
-`popularity` INT,
+`view_count` INT,
+`number_orders` INT,
 `phone` CHAR(100),
 `skype` CHAR(100),
 `other_connect` CHAR(200),
-`show` INT,
-`active_date` DATETIME NOT NULL ,
+`notification_message` TINYINT(1),
+`notification_task_action` TINYINT(1),
+`notification_reviews` TINYINT(1),
+`show_contacts_customer` TINYINT(1),
+`not_show_profile` TINYINT(1),
+`last_active_at` DATETIME NOT NULL ,
+);
+CREATE TABLE `photos` (
+`id` INT AUTO_INCREMENT PRIMARY KEY,
+`user_id` INT NOT NULL,
+`link` CHAR(150),
+)
+CREATE TABLE `user_specialization_category` (
+`id` INT AUTO_INCREMENT PRIMARY KEY,
+`user_id` INT NOT NULL,
+`categories_id` CHAR(100),
+)
+CREATE TABLE `favorites` (
+`id` INT AUTO_INCREMENT PRIMARY KEY,
+`user_current` INT,
+`user_added` INT,
 );
 CREATE TABLE `events` (
 `id` INT AUTO_INCREMENT PRIMARY KEY,
 `user_id` INT NOT NULL,
 `notification_id` INT NOT NULL,
 `message` TEXT NOT NULL,
+`event_new` TINYINT(1),
 `sent_on` DATETIME NOT NULL
+);
+CREATE TABLE `notifications` (
+`id` INT AUTO_INCREMENT PRIMARY KEY,
+`name` CHAR(255) NOT NULL,
+`notification_type` ENUM(`message`, `task_action`, `reviews`),
 );
 CREATE TABLE `tasks` (
 `id` INT AUTO_INCREMENT PRIMARY KEY,
@@ -51,14 +74,23 @@ CREATE TABLE `tasks` (
 `category_id` INT NOT NULL,
 `executor_id` INT,
 `city_id` INT,
+`district` CHAR(200),
+`lat` CHAR(100),
+`long` CHAR(100),
 `name` CHAR(255) NOT NULL,
 `description` TEXT NOT NULL,
 `sum` INT,
-`files` TEXT,
-`status` CHAR(100) NOT NULL,
+`status` ENUM(`new`,`on execution`, `completed`, `canceled`, `failed`),
 `deadline` DATETIME,
 `created` DATETIME NOT NULL,
 `closed` DATETIME NOT NULL,
+`evaluation` INT,
+`task_ready` TINYINT(1),
+);
+CREATE TABLE `files` (
+`id` INT AUTO_INCREMENT PRIMARY KEY,
+`tasks_id` INT NOT NULL,
+`link` CHAR(150) NOT NULL,
 );
 CREATE TABLE `reviews` (
 `id` INT AUTO_INCREMENT PRIMARY KEY,
@@ -69,7 +101,8 @@ CREATE TABLE `reviews` (
 );
 CREATE TABLE `chats` (
 `id` INT AUTO_INCREMENT PRIMARY KEY,
-`user_id` INT NOT NULL,
+`customer_id` INT NOT NULL,
+`executor_id` INT NOT NULL,
 `task_id` INT NOT NULL,
 `message` TEXT NOT NULL,
 `created` DATETIME NOT NULL,
