@@ -14,8 +14,8 @@ CREATE TABLE `users` (
 `id` INT AUTO_INCREMENT PRIMARY KEY,
 `city_id` INT,
 `district` CHAR(200),
-`lat` CHAR(100),
-`long` CHAR(100),
+`lat` INT,
+`long` INT,
 `email`CHAR(155) NOT NULL,
 `name` CHAR(155) NOT NULL,
 `password` VARCHAR(525) NOT NULL,
@@ -29,7 +29,7 @@ CREATE TABLE `profiles` (
 `biography` TEXT,
 `rating` INT,
 `view_count` INT,
-`number_orders` INT,
+`order_count` INT,
 `phone` CHAR(100),
 `skype` CHAR(100),
 `other_connect` CHAR(200),
@@ -37,7 +37,7 @@ CREATE TABLE `profiles` (
 `notification_task_action` TINYINT(1),
 `notification_reviews` TINYINT(1),
 `show_contacts_customer` TINYINT(1),
-`not_show_profile` TINYINT(1),
+`show_profile` TINYINT(1),
 `last_active_at` DATETIME NOT NULL ,
 );
 CREATE TABLE `photos` (
@@ -48,9 +48,9 @@ CREATE TABLE `photos` (
 CREATE TABLE `user_specialization_category` (
 `id` INT AUTO_INCREMENT PRIMARY KEY,
 `user_id` INT NOT NULL,
-`categories_id` CHAR(100),
+`categories_id` INT,
 )
-CREATE TABLE `favorites` (
+CREATE TABLE `favourite_users` (
 `id` INT AUTO_INCREMENT PRIMARY KEY,
 `user_current` INT,
 `user_added` INT,
@@ -75,8 +75,8 @@ CREATE TABLE `tasks` (
 `executor_id` INT,
 `city_id` INT,
 `district` CHAR(200),
-`lat` CHAR(100),
-`long` CHAR(100),
+`lat` INT,
+`long` INT,
 `name` CHAR(255) NOT NULL,
 `description` TEXT NOT NULL,
 `sum` INT,
@@ -84,20 +84,21 @@ CREATE TABLE `tasks` (
 `deadline` DATETIME,
 `created` DATETIME NOT NULL,
 `closed` DATETIME NOT NULL,
-`evaluation` INT,
-`task_ready` TINYINT(1),
 );
-CREATE TABLE `files` (
+CREATE TABLE `task_files` (
 `id` INT AUTO_INCREMENT PRIMARY KEY,
-`tasks_id` INT NOT NULL,
+`task_id` INT NOT NULL,
 `link` CHAR(150) NOT NULL,
 );
 CREATE TABLE `reviews` (
 `id` INT AUTO_INCREMENT PRIMARY KEY,
-`user_id` INT NOT NULL,
+`sender_id` INT NOT NULL,
+`recipient_id` INT NOT NULL,
 `task_id` INT NOT NULL,
 `message` TEXT NOT NULL,
 `created` DATETIME NOT NULL,
+`evaluation` INT,
+`task_ready` TINYINT(1),
 );
 CREATE TABLE `chats` (
 `id` INT AUTO_INCREMENT PRIMARY KEY,
