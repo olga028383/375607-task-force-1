@@ -1,6 +1,6 @@
 <?php
 
-namespace HtmlAcademy\models;
+namespace HtmlAcademy\Models;
 
 class TaskForce
 {
