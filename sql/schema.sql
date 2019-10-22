@@ -103,6 +103,7 @@ CREATE TABLE `chats` (
 `id` INT AUTO_INCREMENT PRIMARY KEY,
 `name` CHAR(150),
 `task_id` INT NOT NULL,
+`executor_id` INT NOT NULL,
 `is_closed` TINYINT(1),
 );
 CREATE TABLE `chat_messages` (
