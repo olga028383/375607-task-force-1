@@ -1,6 +1,7 @@
 <?php
 
 namespace HtmlAcademy\Models;
+use HtmlAcademy\Models\Actions;
 
 class TaskForce
 {
@@ -13,13 +14,13 @@ class TaskForce
     const ROLE_CUSTOMER = 'customer';
     const ROLE_EXECUTOR = 'executor';
 
-    const ACTION_ADD = 'add';
-    const ACTION_RESPOND = 'respond';
-    const ACTION_START = 'start';
-    const ACTION_COMPLETE = 'complete';
-    const ACTION_FAIL = 'fail';
-    const ACTION_CANCEL = 'cancel';
-    const ACTION_COMMENT = 'comment';
+    const ACTION_ADD = Actions\AddAction::class;
+    const ACTION_RESPOND = Actions\RespondAction::class;
+    const ACTION_START = Actions\StartAction::class;
+    const ACTION_COMPLETE = Actions\CompleteAction::class;
+    const ACTION_FAIL = Actions\FailAction::class;
+    const ACTION_CANCEL = Actions\CancelAction::class;
+    const ACTION_COMMENT = Actions\CommentAction::class;
 
     private $customerId;
     private $executorId;
