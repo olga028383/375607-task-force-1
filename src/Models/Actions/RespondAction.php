@@ -11,17 +11,17 @@ namespace HtmlAcademy\Models\Actions;
 
 class RespondAction extends AbstractActions
 {
-    public function getName()
+    public static function getName()
     {
         return __CLASS__;
     }
 
-    public function getCodeName()
+    public static function getCodeName()
     {
         return 'respond';
     }
 
-    public function checkRightsUser($user_role)
+    public static function checkRightsUser($user_role)
     {
         return $user_role == 'executor' ? true : false;
     }

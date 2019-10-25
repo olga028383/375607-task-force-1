@@ -11,17 +11,17 @@ namespace HtmlAcademy\Models\Actions;
 
 class CancelAction extends AbstractActions
 {
-    public function getName()
+    public static function getName()
     {
         return __CLASS__;
     }
 
-    public function getCodeName()
+    public static function getCodeName()
     {
         return 'cancel';
     }
 
-    public function checkRightsUser($user_role)
+    public static function checkRightsUser($user_role)
     {
         return $user_role == 'customer' ? true : false;
     }

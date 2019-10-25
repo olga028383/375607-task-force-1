@@ -11,17 +11,17 @@ namespace HtmlAcademy\Models\Actions;
 
 class FailAction extends AbstractActions
 {
-    public function getName()
+    public static function getName()
     {
         return __CLASS__;
     }
 
-    public function getCodeName()
+    public static function getCodeName()
     {
         return 'fail';
     }
 
-    public function checkRightsUser($user_role)
+    public static function checkRightsUser($user_role)
     {
         return $user_role == 'executor' ? true : false;
     }

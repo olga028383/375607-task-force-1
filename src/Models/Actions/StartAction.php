@@ -11,17 +11,17 @@ namespace HtmlAcademy\Models\Actions;
 
 class StartAction extends AbstractActions
 {
-    public function getName()
+    public static function getName()
     {
         return __CLASS__;
     }
 
-    public function getCodeName()
+    public static function getCodeName()
     {
         return 'start';
     }
 
-    public function checkRightsUser($user_role)
+    public static function checkRightsUser($user_role)
     {
         return $user_role == 'customer' ? true : false;
     }

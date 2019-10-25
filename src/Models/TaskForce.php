@@ -14,14 +14,6 @@ class TaskForce
     const ROLE_CUSTOMER = 'customer';
     const ROLE_EXECUTOR = 'executor';
 
-    const ACTION_ADD = Actions\AddAction::class;
-    const ACTION_RESPOND = Actions\RespondAction::class;
-    const ACTION_START = Actions\StartAction::class;
-    const ACTION_COMPLETE = Actions\CompleteAction::class;
-    const ACTION_FAIL = Actions\FailAction::class;
-    const ACTION_CANCEL = Actions\CancelAction::class;
-    const ACTION_COMMENT = Actions\CommentAction::class;
-
     private $customerId;
     private $executorId;
 
@@ -113,13 +105,13 @@ class TaskForce
     public function getActions()
     {
         return array(
-            self::ACTION_ADD,
-            self::ACTION_RESPOND,
-            self::ACTION_START,
-            self::ACTION_COMPLETE,
-            self::ACTION_FAIL,
-            self::ACTION_CANCEL,
-            self::ACTION_COMMENT
+            Actions\AddAction::class,
+            Actions\RespondAction::class,
+            Actions\StartAction::class,
+            Actions\CompleteAction::class,
+            Actions\FailAction::class,
+            Actions\CancelAction::class,
+            Actions\CommentAction::class
         );
     }
 
@@ -203,25 +195,25 @@ class TaskForce
     {
 
         switch ($action) {
-            case self::ACTION_ADD:
+            case Actions\AddAction::class:
                 $status = self::STATUS_NEW;
                 break;
-            case self::ACTION_COMMENT:
+            case Actions\CommentAction::class:
                 $status = $this->status;
                 break;
-            case self::ACTION_RESPOND:
+            case Actions\RespondAction::class:
                 $status = $this->status;
                 break;
-            case self::ACTION_START:
+            case Actions\StartAction::class:
                 $status = self::STATUS_EXECUTION;
                 break;
-            case self::ACTION_COMPLETE:
+            case Actions\CompleteAction::class:
                 $status = self::STATUS_COMPLETED;
                 break;
-            case self::ACTION_CANCEL:
+            case Actions\CancelAction::class:
                 $status = self::STATUS_CANCELED;
                 break;
-            case self::ACTION_FAIL:
+            case Actions\FailAction::class:
                 $status = self::STATUS_FAILED;
                 break;
             default:
@@ -244,17 +236,20 @@ class TaskForce
 
             switch ($this->status) {
                 case self::STATUS_NEW:
-                    $actions = array(self::ACTION_CANCEL, self::ACTION_START);
+                    $actions = array(Actions\CancelAction::class);
+                    break;
+                case self::STATUS_EXECUTION:
+                    $actions = array(Actions\CompleteAction::class);
                     break;
             }
         } else if ($userRole === self::ROLE_EXECUTOR) {
 
             switch ($this->status) {
                 case self::STATUS_NEW:
-                    $actions = array(self::ACTION_RESPOND, self::ACTION_COMMENT);
+                    $actions = array(Actions\RespondAction::class);
                     break;
                 case self::STATUS_EXECUTION:
-                    $actions = array(self::ACTION_COMPLETE, self::ACTION_FAIL);
+                    $actions = array(Actions\FailAction::class);
                     break;
 
             }

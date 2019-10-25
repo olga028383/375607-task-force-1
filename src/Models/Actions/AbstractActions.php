@@ -11,9 +11,9 @@ namespace HtmlAcademy\Models\Actions;
 
 abstract class AbstractActions
 {
-    abstract public function getName();
+    abstract static public function getName();
 
-    abstract public function getCodeName();
+    abstract static public function getCodeName();
 
-    abstract public function checkRightsUser($user_role);
+    abstract static public function checkRightsUser($user_role);
 }
