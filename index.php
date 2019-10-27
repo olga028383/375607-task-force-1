@@ -30,5 +30,9 @@ assert(TaskForce::STATUS_FAILED === $object->getNextStatus(Actions\FailAction::c
 assert(TaskForce::STATUS_COMPLETED === $object->getNextStatus(Actions\CompleteAction::class), 'assert_handler');
 
 
-//assert(array(TaskForce::ACTION_CANCEL, TaskForce::ACTION_START) === $object->getAvailableActions(TaskForce::ROLE_CUSTOMER), 'assert_handler');
-//assert(array(TaskForce::ACTION_RESPOND, TaskForce::ACTION_COMMENT) === $object->getAvailableActions(TaskForce::ROLE_EXECUTOR), 'assert_handler');
+assert(array(Actions\CancelAction::class) === $object->getAvailableActions(TaskForce::ROLE_CUSTOMER), 'assert_handler');
+assert(array(Actions\RespondAction::class) === $object->getAvailableActions(TaskForce::ROLE_EXECUTOR), 'assert_handler');
+
+$object2 = TaskForce::createTask(1,2,3,4, false, 6,7,8,9, 'on execution');
+assert(array(Actions\CompleteAction::class) === $object2->getAvailableActions(TaskForce::ROLE_CUSTOMER), 'assert_handler');
+assert(array(Actions\FailAction::class) === $object2->getAvailableActions(TaskForce::ROLE_EXECUTOR), 'assert_handler');
