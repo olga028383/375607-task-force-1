@@ -1,34 +1,35 @@
 <?php
 
 use HtmlAcademy\Models\TaskForce;
-
+use HtmlAcademy\Models\Actions;
 require_once 'vendor/autoload.php';
 
-assert_options(ASSERT_CALLBACK, 'assert_handler');
+$object = TaskForce::createTask(1,2,3,4, false, 6,7,8,9);
+$object->setExecutorId(2);
 
-/**
- * Функция печатает сообщение об ошибке
- * @param $file
- * @param $line
- * @param $code
- */
-function assert_handler($file, $line, $code)
-{
-    echo "<hr>Неудачная проверка утверждения:
-        Файл '$file'<br />
-        Строка '$line'<br />
-        Код '$code'<br /><hr />";
-}
-
-$object = TaskForce::createTask(1,2,3,4, false, 6,7,8,9, 10);
-
-assert(TaskForce::STATUS_NEW === $object->getNextStatus(TaskForce::ACTION_ADD), 'assert_handler');
-assert(TaskForce::STATUS_NEW === $object->getNextStatus(TaskForce::ACTION_RESPOND), 'assert_handler');
-assert(TaskForce::STATUS_EXECUTION === $object->getNextStatus(TaskForce::ACTION_START), 'assert_handler');
-assert(TaskForce::STATUS_CANCELED === $object->getNextStatus(TaskForce::ACTION_CANCEL), 'assert_handler');
-assert(TaskForce::STATUS_FAILED === $object->getNextStatus(TaskForce::ACTION_FAIL), 'assert_handler');
-assert(TaskForce::STATUS_CANCELED === $object->getNextStatus(TaskForce::ACTION_CANCEL), 'assert_handler');
+assert(TaskForce::STATUS_NEW === $object->getNextStatus(Actions\AddAction::class));
+assert(TaskForce::STATUS_NEW === $object->getNextStatus(Actions\RespondAction::class));
+assert(TaskForce::STATUS_EXECUTION === $object->getNextStatus(Actions\StartAction::class));
+assert(TaskForce::STATUS_CANCELED === $object->getNextStatus(Actions\CancelAction::class));
+assert(TaskForce::STATUS_FAILED === $object->getNextStatus(Actions\FailAction::class));
+assert(TaskForce::STATUS_COMPLETED === $object->getNextStatus(Actions\CompleteAction::class));
 
 
-assert(array(TaskForce::ACTION_CANCEL, TaskForce::ACTION_START) === $object->getAvailableActions(TaskForce::ROLE_CUSTOMER), 'assert_handler');
-assert(array(TaskForce::ACTION_RESPOND, TaskForce::ACTION_COMMENT) === $object->getAvailableActions(TaskForce::ROLE_EXECUTOR), 'assert_handler');
+assert(array(Actions\StartAction::getCodeName(), Actions\CancelAction::getCodeName(), Actions\CommentAction::getCodeName()) === $object->getAvailableActions(1));
+assert(array(Actions\RespondAction::getCodeName(), Actions\CommentAction::getCodeName()) === $object->getAvailableActions(2));
+
+$object->setStatus(TaskForce::STATUS_EXECUTION);
+assert(array(Actions\CompleteAction::getCodeName()) === $object->getAvailableActions(1));
+assert(array(Actions\FailAction::getCodeName()) === $object->getAvailableActions(2));
+
+$object->setStatus(TaskForce::STATUS_COMPLETED);
+assert(array() === $object->getAvailableActions(1));
+assert(array() === $object->getAvailableActions(2));
+
+$object->setStatus(TaskForce::STATUS_CANCELED);
+assert(array() === $object->getAvailableActions(1));
+assert(array() === $object->getAvailableActions(2));
+
+$object->setStatus(TaskForce::STATUS_FAILED);
+assert(array() === $object->getAvailableActions(1));
+assert(array() === $object->getAvailableActions(2));

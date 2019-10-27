@@ -2,6 +2,8 @@
 
 namespace HtmlAcademy\Models;
 
+use HtmlAcademy\Models\Actions;
+
 class TaskForce
 {
     const STATUS_NEW = 'new';
@@ -12,14 +14,6 @@ class TaskForce
 
     const ROLE_CUSTOMER = 'customer';
     const ROLE_EXECUTOR = 'executor';
-
-    const ACTION_ADD = 'add';
-    const ACTION_RESPOND = 'respond';
-    const ACTION_START = 'start';
-    const ACTION_COMPLETE = 'complete';
-    const ACTION_FAIL = 'fail';
-    const ACTION_CANCEL = 'cancel';
-    const ACTION_COMMENT = 'comment';
 
     private $customerId;
     private $executorId;
@@ -51,7 +45,7 @@ class TaskForce
      * @param $status
      * @param $taskId
      */
-    private function __construct($customerId, $name, $description, $categoryId, $files, $cityId, $coordinates, $sum, $dateClosed, $status, $taskId, $executorId)
+    private function __construct($customerId, $name, $description, $categoryId, $files, $cityId, $coordinates, $sum, $dateClosed, $status, $taskId)
     {
         $this->customerId = $customerId;
         $this->name = $name;
@@ -63,7 +57,6 @@ class TaskForce
         $this->sum = $sum;
         $this->dateClosed = $dateClosed;
         $this->taskId = $taskId;
-        $this->executorId = $taskId;
 
         if (!$status) {
             $this->status = self::STATUS_NEW;
@@ -71,6 +64,24 @@ class TaskForce
             $this->status = $status;
         }
 
+    }
+
+    /**
+     * Функция добавляет исполнителя
+     * @param $customerId
+     */
+    public function setExecutorId($executorId)
+    {
+        $this->executorId = $executorId;
+    }
+
+    /**
+     * Функция устанавливает статус
+     * @param $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
     }
 
     /**
@@ -84,7 +95,7 @@ class TaskForce
     /**
      * @return mixed
      */
-    public function getCustomerID()
+    public function getCustomerId()
     {
         return $this->customerId;
     }
@@ -112,13 +123,13 @@ class TaskForce
     public function getActions()
     {
         return array(
-            self::ACTION_ADD,
-            self::ACTION_RESPOND,
-            self::ACTION_START,
-            self::ACTION_COMPLETE,
-            self::ACTION_FAIL,
-            self::ACTION_CANCEL,
-            self::ACTION_COMMENT
+            Actions\AddAction::class,
+            Actions\RespondAction::class,
+            Actions\StartAction::class,
+            Actions\CompleteAction::class,
+            Actions\FailAction::class,
+            Actions\CancelAction::class,
+            Actions\CommentAction::class
         );
     }
 
@@ -151,22 +162,11 @@ class TaskForce
      * @param $status
      * @return TaskForce
      */
-    public static function createTask($customerId, $name, $description, $categoryId, $files = array(), $cityId, $coordinates, $sum, $dateClosed, $status, $executorId = '')
+    public static function createTask($customerId, $name, $description, $categoryId, $files = array(), $cityId, $coordinates, $sum, $dateClosed)
     {
-        //Добавляю задачу в базу, получаю данные и создаю объект
-        //вот тут не поняла как положить статус базу, если константа не доступна, пока оставляю статус пустым
-
-        $customerId = 1;
-        $name = 'Убрать квартиру';
-        $description = 'Убрать квартру в понедельник';
-        $categoryId = "Уборка";
-        $cityId = 1;
-        $coordinates = array(55.703019, 37.530859);
-        $sum = 5000.00;
-        $dateClosed = 18.10;
+        //Добавляю значения в базу получаю задачу
         $taskId = 1;
-
-        $object = new TaskForce($customerId, $name, $description, $categoryId, $files, $cityId, $coordinates, $sum, $dateClosed, $status = '', $taskId, $executorId = '');
+        $object = new TaskForce($customerId, $name, $description, $categoryId, $files, $cityId, $coordinates, $sum, $dateClosed, $status = '', $taskId);
         return $object;
     }
 
@@ -202,29 +202,29 @@ class TaskForce
     {
 
         switch ($action) {
-            case self::ACTION_ADD:
+            case Actions\AddAction::class:
                 $status = self::STATUS_NEW;
                 break;
-            case self::ACTION_COMMENT:
+            case Actions\CommentAction::class:
                 $status = $this->status;
                 break;
-            case self::ACTION_RESPOND:
+            case Actions\RespondAction::class:
                 $status = $this->status;
                 break;
-            case self::ACTION_START:
+            case Actions\StartAction::class:
                 $status = self::STATUS_EXECUTION;
                 break;
-            case self::ACTION_COMPLETE:
+            case Actions\CompleteAction::class:
                 $status = self::STATUS_COMPLETED;
                 break;
-            case self::ACTION_CANCEL:
+            case Actions\CancelAction::class:
                 $status = self::STATUS_CANCELED;
                 break;
-            case self::ACTION_FAIL:
+            case Actions\FailAction::class:
                 $status = self::STATUS_FAILED;
                 break;
             default:
-                throw new Exception('Неизвестное действие.');
+                throw new \Exception('Неизвестное действие.');
         }
 
         return $status;
@@ -235,27 +235,13 @@ class TaskForce
      * @param $userRole
      * @return array
      */
-    public function getAvailableActions($userRole)
+    public function getAvailableActions($userId)
     {
         $actions = array();
 
-        if ($userRole === self::ROLE_CUSTOMER) {
-
-            switch ($this->status) {
-                case self::STATUS_NEW:
-                    $actions = array(self::ACTION_CANCEL, self::ACTION_START);
-                    break;
-            }
-        } else if ($userRole === self::ROLE_EXECUTOR) {
-
-            switch ($this->status) {
-                case self::STATUS_NEW:
-                    $actions = array(self::ACTION_RESPOND, self::ACTION_COMMENT);
-                    break;
-                case self::STATUS_EXECUTION:
-                    $actions = array(self::ACTION_COMPLETE, self::ACTION_FAIL);
-                    break;
-
+        foreach ($this->getActions() as $action) {
+            if ($action::checkRightsUser($userId, $this)) {
+                $actions[] = $action::getCodeName();
             }
         }
 
@@ -310,7 +296,7 @@ class TaskForce
     {
 
         if ($this->status !== self::STATUS_EXECUTION) {
-            throw new Exception('Задачу в статусе "' . $this->status . '" отменить невозможно');
+            throw new \Exception('Задачу в статусе "' . $this->status . '" отменить невозможно');
         }
         //Изменяю у задачи статус а базе
         $this->status = self::STATUS_CANCELED;
