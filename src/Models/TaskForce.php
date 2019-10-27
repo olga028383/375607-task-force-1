@@ -45,7 +45,7 @@ class TaskForce
      * @param $status
      * @param $taskId
      */
-    private function __construct($customerId, $name, $description, $categoryId, $files, $cityId, $coordinates, $sum, $dateClosed, $status, $taskId, $executorId)
+    private function __construct($customerId, $name, $description, $categoryId, $files, $cityId, $coordinates, $sum, $dateClosed, $status, $taskId)
     {
         $this->customerId = $customerId;
         $this->name = $name;
@@ -57,7 +57,6 @@ class TaskForce
         $this->sum = $sum;
         $this->dateClosed = $dateClosed;
         $this->taskId = $taskId;
-        $this->executorId = $executorId;
 
         if (!$status) {
             $this->status = self::STATUS_NEW;
@@ -67,6 +66,23 @@ class TaskForce
 
     }
 
+    /**
+     * Функция добавляет исполнителя
+     * @param $customerId
+     */
+    public function setExecutorId($executorId)
+    {
+        $this->executorId = $executorId;
+    }
+
+    /**
+     * Функция устанавливает статус
+     * @param $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    }
     /**
      * @return mixed
      */
@@ -78,7 +94,7 @@ class TaskForce
     /**
      * @return mixed
      */
-    public function getCustomerID()
+    public function getCustomerId()
     {
         return $this->customerId;
     }
@@ -145,22 +161,11 @@ class TaskForce
      * @param $status
      * @return TaskForce
      */
-    public static function createTask($customerId, $name, $description, $categoryId, $files = array(), $cityId, $coordinates, $sum, $dateClosed, $status, $executorId = '')
+    public static function createTask($customerId, $name, $description, $categoryId, $files = array(), $cityId, $coordinates, $sum, $dateClosed)
     {
-        //Добавляю задачу в базу, получаю данные и создаю объект
-        //вот тут не поняла как положить статус базу, если константа не доступна, пока оставляю статус пустым
-
-//        $customerId = 1;
-//        $name = 'Убрать квартиру';
-//        $description = 'Убрать квартру в понедельник';
-//        $categoryId = "Уборка";
-//        $cityId = 1;
-//        $coordinates = array(55.703019, 37.530859);
-//        $sum = 5000.00;
-//        $dateClosed = 18.10;
+        //Добавляю значения в базу получаю задачу
         $taskId = 1;
-
-        $object = new TaskForce($customerId, $name, $description, $categoryId, $files, $cityId, $coordinates, $sum, $dateClosed, $status = '', $taskId, $executorId = '');
+        $object = new TaskForce($customerId, $name, $description, $categoryId, $files, $cityId, $coordinates, $sum, $dateClosed, $status = '', $taskId);
         return $object;
     }
 

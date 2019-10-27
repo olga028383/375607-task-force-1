@@ -23,8 +23,8 @@ class RespondAction extends AbstractActions
         return 'respond';
     }
 
-    public static function checkRightsUser($userID, TaskForce $taskForce)
+    public static function checkRightsUser($userId, TaskForce $taskForce)
     {
-        return $taskForce->getStatus() === TaskForce::STATUS_NEW && $userID === $taskForce->getExecutorId();
+        return $taskForce->getStatus() === TaskForce::STATUS_NEW && $userId === $taskForce->getExecutorId();
     }
 }

@@ -19,7 +19,7 @@ class CommentAction extends AbstractActions
 
     public static function getCodeName()
     {
-        return 'respond';
+        return 'comment';
     }
 
     public static function checkRightsUser($userId, TaskForce $taskForce)
