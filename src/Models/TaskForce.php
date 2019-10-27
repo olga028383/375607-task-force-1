@@ -1,6 +1,7 @@
 <?php
 
 namespace HtmlAcademy\Models;
+
 use HtmlAcademy\Models\Actions;
 
 class TaskForce
@@ -56,7 +57,7 @@ class TaskForce
         $this->sum = $sum;
         $this->dateClosed = $dateClosed;
         $this->taskId = $taskId;
-        $this->executorId = $taskId;
+        $this->executorId = $executorId;
 
         if (!$status) {
             $this->status = self::STATUS_NEW;
@@ -149,14 +150,14 @@ class TaskForce
         //Добавляю задачу в базу, получаю данные и создаю объект
         //вот тут не поняла как положить статус базу, если константа не доступна, пока оставляю статус пустым
 
-        $customerId = 1;
-        $name = 'Убрать квартиру';
-        $description = 'Убрать квартру в понедельник';
-        $categoryId = "Уборка";
-        $cityId = 1;
-        $coordinates = array(55.703019, 37.530859);
-        $sum = 5000.00;
-        $dateClosed = 18.10;
+//        $customerId = 1;
+//        $name = 'Убрать квартиру';
+//        $description = 'Убрать квартру в понедельник';
+//        $categoryId = "Уборка";
+//        $cityId = 1;
+//        $coordinates = array(55.703019, 37.530859);
+//        $sum = 5000.00;
+//        $dateClosed = 18.10;
         $taskId = 1;
 
         $object = new TaskForce($customerId, $name, $description, $categoryId, $files, $cityId, $coordinates, $sum, $dateClosed, $status = '', $taskId, $executorId = '');
@@ -217,7 +218,7 @@ class TaskForce
                 $status = self::STATUS_FAILED;
                 break;
             default:
-                throw new Exception('Неизвестное действие.');
+                throw new \Exception('Неизвестное действие.');
         }
 
         return $status;
@@ -228,33 +229,15 @@ class TaskForce
      * @param $userRole
      * @return array
      */
-    public function getAvailableActions($userRole)
+    public function getAvailableActions($userId)
     {
         $actions = array();
 
-        if ($userRole === self::ROLE_CUSTOMER) {
-
-            switch ($this->status) {
-                case self::STATUS_NEW:
-                    $actions = array(Actions\CancelAction::class);
-                    break;
-                case self::STATUS_EXECUTION:
-                    $actions = array(Actions\CompleteAction::class);
-                    break;
-            }
-        } else if ($userRole === self::ROLE_EXECUTOR) {
-
-            switch ($this->status) {
-                case self::STATUS_NEW:
-                    $actions = array(Actions\RespondAction::class);
-                    break;
-                case self::STATUS_EXECUTION:
-                    $actions = array(Actions\FailAction::class);
-                    break;
-
+        foreach ($this->getActions() as $action) {
+            if ($action::checkRightsUser($userId, $this)) {
+                $actions[] = $action::getCodeName();
             }
         }
-
         return $actions;
     }
 
