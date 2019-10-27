@@ -7,6 +7,8 @@
  */
 
 namespace HtmlAcademy\Models\Actions;
+
+
 use HtmlAcademy\Models\TaskForce;
 
 class CancelAction extends AbstractActions
@@ -21,7 +23,7 @@ class CancelAction extends AbstractActions
         return 'cancel';
     }
 
-    public static function checkRightsUser($userId, TaskForce $taskForce )
+    public static function checkRightsUser($userId, TaskForce $taskForce)
     {
         return $taskForce->getStatus() === TaskForce::STATUS_NEW && $userId === $taskForce->getCustomerID();
     }

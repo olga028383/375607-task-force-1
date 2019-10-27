@@ -8,6 +8,7 @@
 
 namespace HtmlAcademy\Models\Actions;
 
+
 use HtmlAcademy\Models\TaskForce;
 
 abstract class AbstractActions

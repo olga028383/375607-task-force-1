@@ -83,6 +83,7 @@ class TaskForce
     {
         $this->status = $status;
     }
+
     /**
      * @return mixed
      */
@@ -243,6 +244,7 @@ class TaskForce
                 $actions[] = $action::getCodeName();
             }
         }
+
         return $actions;
     }
 
@@ -294,7 +296,7 @@ class TaskForce
     {
 
         if ($this->status !== self::STATUS_EXECUTION) {
-            throw new Exception('Задачу в статусе "' . $this->status . '" отменить невозможно');
+            throw new \Exception('Задачу в статусе "' . $this->status . '" отменить невозможно');
         }
         //Изменяю у задачи статус а базе
         $this->status = self::STATUS_CANCELED;
