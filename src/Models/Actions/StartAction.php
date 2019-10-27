@@ -9,6 +9,8 @@
 namespace HtmlAcademy\Models\Actions;
 
 
+use HtmlAcademy\Models\TaskForce;
+
 class StartAction extends AbstractActions
 {
     public static function getName()
@@ -21,8 +23,8 @@ class StartAction extends AbstractActions
         return 'start';
     }
 
-    public static function checkRightsUser($user_role)
+    public static function checkRightsUser($userId, TaskForce $taskForce)
     {
-        return $user_role == 'customer' ? true : false;
+        return $taskForce->getStatus() === TaskForce::STATUS_NEW && $userId === $taskForce->getCustomerID();
     }
 }

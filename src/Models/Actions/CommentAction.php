@@ -8,6 +8,7 @@
 
 namespace HtmlAcademy\Models\Actions;
 
+use HtmlAcademy\Models\TaskForce;
 
 class CommentAction extends AbstractActions
 {
@@ -21,8 +22,8 @@ class CommentAction extends AbstractActions
         return 'respond';
     }
 
-    public static function checkRightsUser($user_role)
+    public static function checkRightsUser($userId, TaskForce $taskForce)
     {
-        return $user_role == 'customer' ? true : false;
+        return $taskForce->getStatus() === TaskForce::STATUS_NEW && ($userId === $taskForce->getCustomerID() || $userId === $taskForce->getExecutorId());
     }
 }
