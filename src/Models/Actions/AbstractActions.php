@@ -15,21 +15,21 @@ abstract class AbstractActions
 {
     /**
      * Метод возвращает имя класса
-     * @return mixed
+     * @return string
      */
     abstract static public function getName();
 
     /**
      * Метод возвращает код действия
-     * @return mixed
+     * @return string
      */
     abstract static public function getCodeName();
 
     /**
      * Метод возвращает права пользователя в зависимости от статуса и роли пльзователя
-     * @param $userID
+     * @param $userId
      * @param TaskForce $taskForce
-     * @return mixed
+     * @return boolean
      */
-    abstract static public function checkRightsUser($userID, TaskForce $taskForce);
+    abstract static public function checkRightsUser($userId, TaskForce $taskForce);
 }

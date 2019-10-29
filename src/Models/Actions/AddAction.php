@@ -24,7 +24,7 @@ class AddAction extends AbstractActions
         return 'add';
     }
 
-    public static function checkRightsUser($userID, TaskForce $taskForce)
+    public static function checkRightsUser($userId, TaskForce $taskForce)
     {
         return false;
     }
