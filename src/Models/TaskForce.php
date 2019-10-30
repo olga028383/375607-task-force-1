@@ -3,6 +3,7 @@
 namespace HtmlAcademy\Models;
 
 use HtmlAcademy\Models\Actions;
+use HtmlAcademy\Models\Ex\TaskForceException;
 
 class TaskForce
 {
@@ -15,48 +16,76 @@ class TaskForce
     const ROLE_CUSTOMER = 'customer';
     const ROLE_EXECUTOR = 'executor';
 
+    private $taskId;
+    private $categoryId;
+
     private $customerId;
     private $executorId;
 
-    private $taskId;
+    private $cityId;
+    private $district;
+    private $lat;
+    private $long;
+
     private $name;
     private $description;
-    private $categoryId;
-    private $files;
-    private $cityId;
-    private $coordinates = array();
     private $sum;
+    private $dateDeadline;
+    private $dateCreated;
     private $dateClosed;
-    private $status;
 
-    private $errors = array();
+    private $files;
+    private $status;
 
     /**
      * TaskForce constructor.
-     * @param $customerId
-     * @param $name
-     * @param $description
-     * @param $categoryId
-     * @param $files
-     * @param $cityId
-     * @param $coordinates
-     * @param $sum
-     * @param $dateClosed
-     * @param $status
-     * @param $taskId
+     * @param int $taskId
+     * @param int $categoryId
+     * @param int $customerId
+     * @param int $cityId
+     * @param float $lat
+     * @param float $long
+     * @param string $name
+     * @param string $description
+     * @param int $sum
+     * @param string $dateDeadline
+     * @param string $dateCreated
+     * @param string $status
+     * @param int $executorId
+     * @param string $district
+     * @param array $files
      */
-    private function __construct($customerId, $name, $description, $categoryId, $files, $cityId, $coordinates, $sum, $dateClosed, $status, $taskId)
+    private function __construct(
+        int $taskId,
+        int $categoryId,
+        int $customerId,
+        int $cityId,
+        float $lat,
+        float $long,
+        string $name,
+        string $description,
+        int $sum,
+        string $dateDeadline,
+        string $dateCreated,
+        string $status = '',
+        int $executorId = 0,
+        string $district = '',
+        array $files = array())
     {
+        $this->taskId = $taskId;
+        $this->categoryId = $categoryId;
         $this->customerId = $customerId;
+        $this->cityId = $cityId;
+        $this->lat = $lat;
+        $this->long = $long;
         $this->name = $name;
         $this->description = $description;
-        $this->categoryId = $categoryId;
-        $this->files = $files;
-        $this->cityId = $cityId;
-        $this->coordinates = $coordinates;
         $this->sum = $sum;
-        $this->dateClosed = $dateClosed;
-        $this->taskId = $taskId;
+        $this->dateDeadline = $dateDeadline;
+        $this->dateCreated = $dateDeadline;
+        $this->executorId = $executorId;
+        $this->district = $district;
+        $this->files = $files;
 
         if (!$status) {
             $this->status = self::STATUS_NEW;
@@ -67,51 +96,37 @@ class TaskForce
     }
 
     /**
-     * Функция добавляет исполнителя
-     * @param $customerId
+     * Функция возвращает текущий статус
+     * @return string
      */
-    public function setExecutorId($executorId)
-    {
-        $this->executorId = $executorId;
-    }
-
-    /**
-     * Функция устанавливает статус
-     * @param $status
-     */
-    public function setStatus($status)
-    {
-        $this->status = $status;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getStatus()
+    public function getStatus(): string
     {
         return $this->status;
     }
 
     /**
-     * @return mixed
+     * Функция возвращает идентификатор заказчика
+     * @return int
      */
-    public function getCustomerId()
+    public function getCustomerId(): int
     {
         return $this->customerId;
     }
 
     /**
-     * @return mixed
+     * Функция возвращает текущего исполнителя или null если он не выбран
+     * @return int|null
      */
-    public function getExecutorId()
+    public function getExecutorId():?int
     {
         return $this->executorId;
     }
 
     /**
-     * @return mixed
+     * Функция возвращает дату закрытия задачи или null, если она не добавлена
+     * @return null|string
      */
-    public function getDateClosed()
+    public function getDateClosed():?string
     {
         return $this->dateClosed;
     }
@@ -120,7 +135,7 @@ class TaskForce
      * Метод возвращает все действия
      * @return array
      */
-    public function getActions()
+    public function getActions(): array
     {
         return array(
             Actions\AddAction::class,
@@ -137,7 +152,7 @@ class TaskForce
      * Метод возвращает все статусы
      * @return array
      */
-    public function getStatuses()
+    public function getStatuses(): array
     {
         return array(
             self::STATUS_NEW,
@@ -150,46 +165,111 @@ class TaskForce
 
     /**
      * Метод добавляет задачу
-     * @param $customerId
-     * @param $name
-     * @param $description
-     * @param $categoryId
+     * @param int $categoryId
+     * @param int $customerId
+     * @param int $cityId
+     * @param float $lat
+     * @param float $long
+     * @param string $name
+     * @param string $description
+     * @param int $sum
+     * @param string $dateDeadline
+     * @param string $dateCreated
+     * @param string $status
+     * @param int $executorId
+     * @param string $district
      * @param array $files
-     * @param $cityId
-     * @param $coordinates
-     * @param $sum
-     * @param $dateClosed
-     * @param $status
-     * @return TaskForce
+     * @return object
+     * @throws TaskForceException
      */
-    public static function createTask($customerId, $name, $description, $categoryId, $files = array(), $cityId, $coordinates, $sum, $dateClosed)
+    public static function createTask(
+        int $categoryId,
+        int $customerId,
+        int $cityId,
+        float $lat,
+        float $long,
+        string $name,
+        string $description,
+        int $sum,
+        string $dateDeadline,
+        string $dateCreated,
+        string $status = '',
+        int $executorId = 0,
+        string $district = '',
+        array $files = array()
+    ): object
     {
-        //Добавляю значения в базу получаю задачу
+        if (!$categoryId) {
+            throw new TaskForceException('Не передан id категории');
+        }
+
+        if (!$customerId) {
+            throw new TaskForceException('Не передан id заказчика');
+        }
+
+        if (!$cityId) {
+            throw new TaskForceException('Не передан id города');
+        }
+
+        if (!$lat) {
+            throw new TaskForceException('Не передана широта');
+        }
+
+        if (!$long) {
+            throw new TaskForceException('Не передана долгота');
+        }
+
+        if (!$name) {
+            throw new TaskForceException('Не передано название задачи');
+        }
+
+        if (!$sum) {
+            throw new TaskForceException('Не передана сумма');
+        }
+
+        if (!$dateDeadline) {
+            throw new TaskForceException('Не передана дата завершения задачи');
+        }
+
+        if (!$dateCreated) {
+            throw new TaskForceException('Не передана дата создания');
+        }
+
         $taskId = 1;
-        $object = new TaskForce($customerId, $name, $description, $categoryId, $files, $cityId, $coordinates, $sum, $dateClosed, $status = '', $taskId);
+
+        $object = new TaskForce($taskId, $categoryId, $customerId, $cityId, $lat, $long, $name, $description, $sum, $dateDeadline, $dateCreated, $status, $executorId, $district, $files);
         return $object;
     }
 
     /**
-     * @param $taskId
-     * @return TaskForce
+     * @param int $taskId
+     * @return object
+     * @throws TaskForceException
      */
-    public static function getTask($taskId)
+    public static function getTask(int $taskId): object
     {
-        //Получаю задачу из базы и создаю объект
+        //Получаю задачу из базы и создаю объект иначе выбрасываю исключение
+        if (!$taskId) {
+            throw new TaskForceException('Такой задачи не существует');
+        }
+
+        $taskId = 1;
+        $categoryId = 1;
         $customerId = 1;
+        $cityId = 1;
+        $lat = 55.703019;
+        $long = 37.530859;
         $name = 'Убрать квартиру';
         $description = 'Убрать квартру в понедельник';
-        $categoryId = "Уборка";
-        $files = array();
-        $cityId = 1;
-        $coordinates = array(55.703019, 37.530859);
         $sum = 5000.00;
-        $dateClosed = 18.10;
-        $taskId = 1;
+        $dateDeadline = '18.11.2019';
+        $dateCreated = '30.10.2019';
         $status = 'new';
+        $executorId = 0;
+        $district = '';
+        $files = array();
 
-        $object = new TaskForce($customerId, $name, $description, $categoryId, $files, $cityId, $coordinates, $sum, $dateClosed, $taskId, $executorId = '');
+        $object = new TaskForce($taskId, $categoryId, $customerId, $cityId, $lat, $long, $name, $description, $sum, $dateDeadline, $dateCreated, $status, $executorId, $district, $files);
         return $object;
     }
 
@@ -200,7 +280,6 @@ class TaskForce
      */
     public function getNextStatus($action)
     {
-
         switch ($action) {
             case Actions\AddAction::class:
                 $status = self::STATUS_NEW;
@@ -224,7 +303,7 @@ class TaskForce
                 $status = self::STATUS_FAILED;
                 break;
             default:
-                throw new \Exception('Неизвестное действие.');
+                throw new TaskForceException('Передено неизвестное действие.');
         }
 
         return $status;
@@ -232,14 +311,29 @@ class TaskForce
 
     /**
      * Возвращает список действий в зависимости от статуса задачи и роли пользователя
-     * @param $userRole
+     * @param int $userId
      * @return array
+     * @throws TaskForceException
      */
-    public function getAvailableActions($userId)
+    public function getAvailableActions(int $userId): array
     {
+
         $actions = array();
 
         foreach ($this->getActions() as $action) {
+
+            if (!class_exists($action)) {
+                throw new TaskForceException('Класс ' . $action . ' не существует');
+            }
+
+            if (!method_exists($action, 'checkRightsUser')) {
+                throw new TaskForceException('Метод "checkRightsUser" не существует');
+            }
+
+            if (!method_exists($action, 'getCodeName')) {
+                throw new TaskForceException('Метод "getCodeName" не существует');
+            }
+
             if ($action::checkRightsUser($userId, $this)) {
                 $actions[] = $action::getCodeName();
             }
@@ -249,23 +343,30 @@ class TaskForce
     }
 
     /**
-     * @param $executorId
-     * @param $evaluation
-     * @param $comments
-     * @param $sum
+     * @param int $executorId
+     * @param string $comments
+     * @param int $sum
      */
-    public function addResponse($executorId, $evaluation, $comments, $sum)
+    public function addResponse(int $executorId)
     {
+        if (!$executorId) {
+            throw new TaskForceException('Не передан идентификатор исполнителя');
+        }
+        $this->executorId = $executorId;
         //Добавить отклик к задаче
         //Будет какая-то таблица откликов с id задачи
     }
 
     /**
      * Задача выполняется, присваивается исполнитель
-     * @param $executorId
+     * @param int $executorId
+     * @throws TaskForceException
      */
-    public function beginTask($executorId)
+    public function beginTask(int $executorId)
     {
+        if (!$executorId) {
+            throw new TaskForceException('Не передан идентификатор исполнителя');
+        }
         //Добавляет  базу к задаче исполнителя и присваиваем новый статус
         $this->executorId = $executorId;
         $this->status = self::STATUS_EXECUTION;
@@ -290,12 +391,14 @@ class TaskForce
     }
 
     /**
-     * @return array
+     * @param int $userId
+     * @throws TaskForceException
      */
-    public function cancelTask($userId)
+    public function cancelTask(int $userId)
     {
+
         if (Actions\CancelAction::checkRightsUser($userId, $this)) {
-            throw new \Exception('Задачу в статусе "' . $this->status . '" отменить невозможно');
+            throw new TaskForceException('Задачу в статусе "' . $this->status . '" отменить невозможно');
         }
         //Изменяю у задачи статус а базе
         $this->status = self::STATUS_CANCELED;

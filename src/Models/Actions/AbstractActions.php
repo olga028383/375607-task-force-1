@@ -11,25 +11,29 @@ namespace HtmlAcademy\Models\Actions;
 
 use HtmlAcademy\Models\TaskForce;
 
+/**
+ * Class AbstractActions
+ * @package HtmlAcademy\Models\Actions
+ */
 abstract class AbstractActions
 {
     /**
      * Метод возвращает имя класса
      * @return string
      */
-    abstract static public function getName();
+    abstract static public function getName():string;
 
     /**
      * Метод возвращает код действия
      * @return string
      */
-    abstract static public function getCodeName();
+    abstract static public function getCodeName():string;
 
     /**
      * Метод возвращает права пользователя в зависимости от статуса и роли пльзователя
      * @param $userId
      * @param TaskForce $taskForce
-     * @return boolean
+     * @return bool
      */
-    abstract static public function checkRightsUser($userId, TaskForce $taskForce);
+    abstract static public function checkRightsUser(int $userId, TaskForce $taskForce):bool;
 }
