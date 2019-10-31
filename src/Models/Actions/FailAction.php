@@ -11,19 +11,34 @@ namespace HtmlAcademy\Models\Actions;
 
 use HtmlAcademy\Models\TaskForce;
 
+/**
+ * Class FailAction
+ * @package HtmlAcademy\Models\Actions
+ */
 class FailAction extends AbstractActions
 {
-    public static function getName()
+    /**
+     * @return string
+     */
+    public static function getName():string
     {
         return __CLASS__;
     }
 
-    public static function getCodeName()
+    /**
+     * @return string
+     */
+    public static function getCodeName():string
     {
         return 'fail';
     }
 
-    public static function checkRightsUser($userId, TaskForce $taskForce)
+    /**
+     * @param int $userId
+     * @param TaskForce $taskForce
+     * @return bool
+     */
+    public static function checkRightsUser(int $userId, TaskForce $taskForce):bool
     {
         return $taskForce->getStatus() === TaskForce::STATUS_EXECUTION && $userId === $taskForce->getExecutorId();
     }
