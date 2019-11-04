@@ -22,7 +22,7 @@ class AddAction extends AbstractActions
     /**
      * @return string
      */
-    public static function getCodeName():string
+    public static function getCodeName(): string
     {
         return 'add';
     }
@@ -32,7 +32,7 @@ class AddAction extends AbstractActions
      * @param TaskForce $taskForce
      * @return bool
      */
-    public static function checkRightsUser(int $userId, TaskForce $taskForce):bool
+    public static function checkRightsUser(int $userId, TaskForce $taskForce): bool
     {
         return false;
     }

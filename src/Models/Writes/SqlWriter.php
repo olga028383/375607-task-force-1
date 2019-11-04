@@ -13,22 +13,25 @@ class SqlWriter extends AbstractWriter
 {
     protected $extension = '.sql';
 
-    public function getExtension()
+    /**
+     * @return string
+     */
+    public function getExtension(): string
     {
         return $this->extension;
     }
 
-    public function setFilePath()
+    public function setFilePath(): string
     {
         $this->filePath = $this->file->getDirName() . $this->file->getFileName() . $this->extension;
     }
 
-    public function getFilePath()
+    public function getFilePath(): string
     {
         return $this->filePath;
     }
 
-    public function write()
+    public function write(): void
     {
         $this->setFilePath();
         $sqlFile = new \SplFileObject($this->filePath, "w");

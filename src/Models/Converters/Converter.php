@@ -12,6 +12,10 @@ namespace HtmlAcademy\Models\Converters;
 use HtmlAcademy\Models\Ex\ConverterException;
 use HtmlAcademy\Models\Readers;
 
+/**
+ * Class Converter
+ * @package HtmlAcademy\Models\Converters
+ */
 class Converter
 {
     private $pathFile;
@@ -54,21 +58,86 @@ class Converter
         $this->pathFile = $filePath;
         $this->columns = $columns;
         $this->extension = $fileInfo->getExtension();
-        $this->fileName = $fileInfo->getBasename('.'.$this->extension);
+        $this->fileName = $fileInfo->getBasename('.' . $this->extension);
 
-        if(!$tableName){
+        if (!$tableName) {
             $this->tableName = $this->fileName;
         }
 
         $this->dirName = $dirName;
     }
 
-    public function import(){
+    /**
+     * @return array
+     */
+    public function getData(): array
+    {
+        return $this->rows;
+    }
 
-        $objectReader = 'HtmlAcademy\Models\Readers\\'.ucfirst($this->extension).'Reader';
+    /**
+     * @return string
+     */
+    public function getFileObject(): string
+    {
+        return $this->fileObject;
+    }
 
-        if(!class_exists($objectReader)){
-            throw new ConverterException('Класс '.$objectReader.' для чтения файла не сушествует');
+    /**
+     * @return string
+     */
+    public function getExtension(): string
+    {
+        return $this->extension;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFileName(): string
+    {
+        return $this->fileName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDirName(): string
+    {
+        return $this->dirName;
+    }
+
+    /**
+     * @return array
+     */
+    public function getColumns(): array
+    {
+        return $this->columns;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRows(): array
+    {
+        return $this->rows;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTableName(): string
+    {
+        return $this->tableName;
+    }
+
+    public function import(): void
+    {
+
+        $objectReader = 'HtmlAcademy\Models\Readers\\' . ucfirst($this->extension) . 'Reader';
+
+        if (!class_exists($objectReader)) {
+            throw new ConverterException('Класс ' . $objectReader . ' для чтения файла не сушествует');
         }
 
         $reader = new $objectReader($this);
@@ -80,8 +149,8 @@ class Converter
 
         $objectWriter = 'HtmlAcademy\Models\Writes\SqlWriter';
 
-        if(!class_exists($objectWriter)){
-            throw new ConverterException('Класс '.$objectWriter.' для чтения файла не сушествует');
+        if (!class_exists($objectWriter)) {
+            throw new ConverterException('Класс ' . $objectWriter . ' для чтения файла не сушествует');
         }
 
         $writer = new $objectWriter($this);
@@ -89,43 +158,5 @@ class Converter
 
     }
 
-    /**
-     * @return array
-     */
-    public function getData(): array
-    {
-        return $this->rows;
-    }
 
-    public function getFileObject()
-    {
-        return $this->fileObject;
-    }
-
-    public function getExtension()
-    {
-        return $this->extension;
-    }
-
-    public function getFileName()
-    {
-        return $this->fileName;
-    }
-
-    public function getDirName()
-    {
-        return $this->dirName;
-    }
-    public function getColumns()
-    {
-        return $this->columns;
-    }
-    public function getRows()
-    {
-        return $this->rows;
-    }
-    public function getTableName()
-    {
-        return $this->tableName;
-    }
 }

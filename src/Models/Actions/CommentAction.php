@@ -21,7 +21,7 @@ class CommentAction extends AbstractActions
     /**
      * @return string
      */
-    public static function getCodeName():string
+    public static function getCodeName(): string
     {
         return 'comment';
     }
@@ -31,7 +31,7 @@ class CommentAction extends AbstractActions
      * @param TaskForce $taskForce
      * @return bool
      */
-    public static function checkRightsUser(int $userId, TaskForce $taskForce):bool
+    public static function checkRightsUser(int $userId, TaskForce $taskForce): bool
     {
         return $taskForce->getStatus() === TaskForce::STATUS_NEW && ($userId === $taskForce->getCustomerID() || $userId === $taskForce->getExecutorId());
     }

@@ -9,12 +9,20 @@ namespace HtmlAcademy\Models\Writes;
 
 use HtmlAcademy\Models\Converters\Converter;
 
+/**
+ * Class AbstractWriter
+ * @package HtmlAcademy\Models\Writes
+ */
 abstract class AbstractWriter
 {
     protected $file;
     protected $extension;
     protected $filePath;
 
+    /**
+     * AbstractWriter constructor.
+     * @param Converter $converter
+     */
     public function __construct(Converter $converter){
         $this->file = $converter;
     }

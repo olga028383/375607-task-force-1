@@ -278,7 +278,7 @@ class TaskForce
      * @param $action
      * @return string
      */
-    public function getNextStatus($action)
+    public function getNextStatus($action): void
     {
         switch ($action) {
             case Actions\AddAction::class:
@@ -347,7 +347,7 @@ class TaskForce
      * @param string $comments
      * @param int $sum
      */
-    public function addResponse(int $executorId)
+    public function addResponse(int $executorId): void
     {
         if (!$executorId) {
             throw new TaskForceException('Не передан идентификатор исполнителя');
@@ -362,7 +362,7 @@ class TaskForce
      * @param int $executorId
      * @throws TaskForceException
      */
-    public function beginTask(int $executorId)
+    public function beginTask(int $executorId): void
     {
         if (!$executorId) {
             throw new TaskForceException('Не передан идентификатор исполнителя');
@@ -375,7 +375,7 @@ class TaskForce
     /**
      * Метод говорит о том, что задача выполнена
      */
-    public function completeTask()
+    public function completeTask(): void
     {
         $this->status = self::STATUS_COMPLETED;
     }
@@ -383,7 +383,7 @@ class TaskForce
     /**
      * Метод изменяет статус провеленной задачи
      */
-    public function failTask()
+    public function failTask(): void
     {
         //Изменяет в таблице данные пользователя, счетчик провалов
         //Отвязать исполнителя от задачи?
@@ -394,7 +394,7 @@ class TaskForce
      * @param int $userId
      * @throws TaskForceException
      */
-    public function cancelTask(int $userId)
+    public function cancelTask(int $userId): void
     {
 
         if (!Actions\CancelAction::checkRightsUser($userId, $this)) {
