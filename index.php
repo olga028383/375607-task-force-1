@@ -1,7 +1,10 @@
 <?php
 
 use HtmlAcademy\Models\TaskForce;
+use HtmlAcademy\Models\Converters\Converter;
 use HtmlAcademy\Models\Actions;
+
+
 require_once 'vendor/autoload.php';
 
 $object = TaskForce::createTask(1, 1, 1, 55.703019,37.530859,'Убрать квартиру', 'Убрать квартру в понедельник', 5000, '18.11.2019', '30.10.2019');
@@ -26,10 +29,19 @@ $object->completeTask();
 assert(array() === $object->getAvailableActions(1));
 assert(array() === $object->getAvailableActions(2));
 
-$object->cancelTask($object->getCustomerId());
-assert(array() === $object->getAvailableActions(1));
-assert(array() === $object->getAvailableActions(2));
+$object2 = TaskForce::createTask(1, 1, 1, 55.703019,37.530859,'Убрать квартиру', 'Убрать квартру в понедельник', 5000, '18.11.2019', '30.10.2019');
+$object2->cancelTask($object2->getCustomerId());
+assert(array() === $object2->getAvailableActions(1));
+assert(array() === $object2->getAvailableActions(2));
 
-$object->failTask();
-assert(array() === $object->getAvailableActions(1));
-assert(array() === $object->getAvailableActions(2));
+$object3 = TaskForce::createTask(1, 1, 1, 55.703019,37.530859,'Убрать квартиру', 'Убрать квартру в понедельник', 5000, '18.11.2019', '30.10.2019');
+$object3->addResponse(2);
+$object3->beginTask(2);
+$object3->failTask();
+assert(array() === $object3->getAvailableActions(1));
+assert(array() === $object3->getAvailableActions(2));
+
+$objectConverterCategories = new Converter(__DIR__.'/data/categories.csv', array('name', 'icon'), __DIR__.'/sql/sql_data/');
+$objectConverterCategories->import();
+$objectConverterCities = new Converter(__DIR__.'/data/cities.csv', array('city', 'lat', 'long'), __DIR__.'/sql/sql_data/');
+$objectConverterCities->import();

@@ -18,13 +18,6 @@ use HtmlAcademy\Models\TaskForce;
  */
 class AddAction extends AbstractActions
 {
-    /**
-     * @return string
-     */
-    public static function getName():string
-    {
-        return __CLASS__;
-    }
 
     /**
      * @return string

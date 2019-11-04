@@ -20,14 +20,6 @@ class StartAction extends AbstractActions
     /**
      * @return string
      */
-    public static function getName():string
-    {
-        return __CLASS__;
-    }
-
-    /**
-     * @return string
-     */
     public static function getCodeName():string
     {
         return 'start';

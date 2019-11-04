@@ -9,6 +9,8 @@ CREATE TABLE `categories` (
 CREATE TABLE `cities` (
 `id` INT AUTO_INCREMENT PRIMARY KEY,
 `city` CHAR(255) NOT NULL,
+`lat` DOUBLE,
+`long` DOUBLE,
 );
 CREATE TABLE `users` (
 `id` INT AUTO_INCREMENT PRIMARY KEY,

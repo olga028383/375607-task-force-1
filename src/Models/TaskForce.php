@@ -397,7 +397,7 @@ class TaskForce
     public function cancelTask(int $userId)
     {
 
-        if (Actions\CancelAction::checkRightsUser($userId, $this)) {
+        if (!Actions\CancelAction::checkRightsUser($userId, $this)) {
             throw new TaskForceException('Задачу в статусе "' . $this->status . '" отменить невозможно');
         }
         //Изменяю у задачи статус а базе

@@ -17,13 +17,7 @@ use HtmlAcademy\Models\TaskForce;
  */
 class CancelAction extends AbstractActions
 {
-    /**
-     * @return string
-     */
-    public static function getName():string
-    {
-        return __CLASS__;
-    }
+
 
     /**
      * @return string
