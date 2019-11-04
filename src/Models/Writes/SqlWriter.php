@@ -46,7 +46,7 @@ class SqlWriter extends AbstractWriter
         $sqlFile = new \SplFileObject($this->filePath, "w");
 
         foreach ($this->file->getRows() as $row) {
-            $sqlFile->fwrite('INSERT INTO ' . $this->file->getTableName() . '(' . implode(',', $this->file->getColumns()) . ') VALUES (' . implode(',', $row) . ');' . PHP_EOL);
+            $sqlFile->fwrite('INSERT INTO ' . $this->file->getTableName() . '(' . implode(',', $this->file->getColumns()) . ') VALUES (\'' . implode('\',\'', $row) . '\');' . PHP_EOL);
         }
     }
 
