@@ -278,7 +278,7 @@ class TaskForce
      * @param $action
      * @return string
      */
-    public function getNextStatus($action): void
+    public function getNextStatus($action): string
     {
         switch ($action) {
             case Actions\AddAction::class:

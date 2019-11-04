@@ -76,9 +76,9 @@ class Converter
     }
 
     /**
-     * @return string
+     * @return object
      */
-    public function getFileObject(): string
+    public function getFileObject(): object
     {
         return $this->fileObject;
     }

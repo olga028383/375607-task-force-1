@@ -21,16 +21,25 @@ class SqlWriter extends AbstractWriter
         return $this->extension;
     }
 
-    public function setFilePath(): string
+    /**
+     * @return string
+     */
+    public function setFilePath(): void
     {
         $this->filePath = $this->file->getDirName() . $this->file->getFileName() . $this->extension;
     }
 
+    /**
+     * @return string
+     */
     public function getFilePath(): string
     {
         return $this->filePath;
     }
 
+    /**
+     *
+     */
     public function write(): void
     {
         $this->setFilePath();
