@@ -59,31 +59,31 @@ class TaskForce
         int $taskId,
         int $categoryId,
         int $customerId,
-        int $cityId,
-        float $lat,
-        float $long,
         string $name,
         string $description,
         int $sum,
         string $dateDeadline,
         string $dateCreated,
         string $status = '',
-        int $executorId = 0,
+        int $executorId = null,
+        int $cityId = null,
+        float $lat = null,
+        float $long = null,
         string $district = '',
         array $files = array())
     {
         $this->taskId = $taskId;
         $this->categoryId = $categoryId;
         $this->customerId = $customerId;
-        $this->cityId = $cityId;
-        $this->lat = $lat;
-        $this->long = $long;
         $this->name = $name;
         $this->description = $description;
         $this->sum = $sum;
         $this->dateDeadline = $dateDeadline;
         $this->dateCreated = $dateDeadline;
         $this->executorId = $executorId;
+        $this->cityId = $cityId;
+        $this->lat = $lat;
+        $this->long = $long;
         $this->district = $district;
         $this->files = $files;
 
@@ -185,19 +185,19 @@ class TaskForce
     public static function createTask(
         int $categoryId,
         int $customerId,
-        int $cityId,
-        float $lat,
-        float $long,
         string $name,
         string $description,
         int $sum,
         string $dateDeadline,
         string $dateCreated,
         string $status = '',
-        int $executorId = 0,
+        int $executorId = null,
+        int $cityId = null,
+        float $lat = null,
+        float $long = null,
         string $district = '',
         array $files = array()
-    ): object
+    ): TaskForce
     {
         if (!$categoryId) {
             throw new TaskForceException('Не передан id категории');
@@ -205,18 +205,6 @@ class TaskForce
 
         if (!$customerId) {
             throw new TaskForceException('Не передан id заказчика');
-        }
-
-        if (!$cityId) {
-            throw new TaskForceException('Не передан id города');
-        }
-
-        if (!$lat) {
-            throw new TaskForceException('Не передана широта');
-        }
-
-        if (!$long) {
-            throw new TaskForceException('Не передана долгота');
         }
 
         if (!$name) {
@@ -227,17 +215,9 @@ class TaskForce
             throw new TaskForceException('Не передана сумма');
         }
 
-        if (!$dateDeadline) {
-            throw new TaskForceException('Не передана дата завершения задачи');
-        }
-
-        if (!$dateCreated) {
-            throw new TaskForceException('Не передана дата создания');
-        }
-
         $taskId = 1;
 
-        $object = new TaskForce($taskId, $categoryId, $customerId, $cityId, $lat, $long, $name, $description, $sum, $dateDeadline, $dateCreated, $status, $executorId, $district, $files);
+        $object = new TaskForce($taskId, $categoryId, $customerId, $name, $description, $sum, $dateDeadline, $dateCreated, $status, $executorId, $cityId, $lat, $long, $district, $files);
         return $object;
     }
 
@@ -246,7 +226,7 @@ class TaskForce
      * @return object
      * @throws TaskForceException
      */
-    public static function getTask(int $taskId): object
+    public static function getTask(int $taskId): TaskForce
     {
         //Получаю задачу из базы и создаю объект иначе выбрасываю исключение
         if (!$taskId) {
@@ -269,7 +249,7 @@ class TaskForce
         $district = '';
         $files = array();
 
-        $object = new TaskForce($taskId, $categoryId, $customerId, $cityId, $lat, $long, $name, $description, $sum, $dateDeadline, $dateCreated, $status, $executorId, $district, $files);
+        $object = new TaskForce($taskId, $categoryId, $customerId, $name, $description, $sum, $dateDeadline, $dateCreated, $status, $executorId, $cityId, $lat, $long, $district, $files);
         return $object;
     }
 

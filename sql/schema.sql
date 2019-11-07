@@ -57,6 +57,10 @@ CREATE TABLE `favourite_users` (
 `user_current` INT,
 `user_added` INT
 );
+CREATE TABLE `notifications` (
+`id` INT AUTO_INCREMENT PRIMARY KEY,
+`name` ENUM('respond_new', 'message_new', 'task_start', 'task_complete', 'task_failed_executor')
+);
 CREATE TABLE `events` (
 `id` INT AUTO_INCREMENT PRIMARY KEY,
 `user_id` INT NOT NULL,
@@ -64,10 +68,6 @@ CREATE TABLE `events` (
 `message` TEXT NOT NULL,
 `event_new` TINYINT(1),
 `sent_on` DATETIME NOT NULL
-);
-CREATE TABLE `notifications` (
-`id` INT AUTO_INCREMENT PRIMARY KEY,
-`name` ENUM('respond_new', 'message_new', 'task_start', 'task_complete', 'task_failed_executor')
 );
 CREATE TABLE `tasks` (
 `id` INT AUTO_INCREMENT PRIMARY KEY,

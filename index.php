@@ -3,11 +3,13 @@
 use HtmlAcademy\Models\TaskForce;
 use HtmlAcademy\Models\Converters\Converter;
 use HtmlAcademy\Models\Actions;
+use HtmlAcademy\Models\Readers\CsvReader;
+use HtmlAcademy\Models\Writes\SqlWriter;
 
 
 require_once 'vendor/autoload.php';
 
-$object = TaskForce::createTask(1, 1, 1, 55.703019,37.530859,'Убрать квартиру', 'Убрать квартру в понедельник', 5000, '18.11.2019', '30.10.2019');
+$object = TaskForce::createTask(1, 1, 'Убрать квартиру', 'Убрать квартру в понедельник', 5000, '18.11.2019', '30.10.2019');
 
 assert(TaskForce::STATUS_NEW === $object->getNextStatus(Actions\AddAction::class));
 assert(TaskForce::STATUS_NEW === $object->getNextStatus(Actions\RespondAction::class));
@@ -29,19 +31,32 @@ $object->completeTask();
 assert(array() === $object->getAvailableActions(1));
 assert(array() === $object->getAvailableActions(2));
 
-$object2 = TaskForce::createTask(1, 1, 1, 55.703019,37.530859,'Убрать квартиру', 'Убрать квартру в понедельник', 5000, '18.11.2019', '30.10.2019');
+$object2 = TaskForce::createTask(1, 1, 'Убрать квартиру', 'Убрать квартру в понедельник', 5000, '18.11.2019', '30.10.2019');
 $object2->cancelTask($object2->getCustomerId());
 assert(array() === $object2->getAvailableActions(1));
 assert(array() === $object2->getAvailableActions(2));
 
-$object3 = TaskForce::createTask(1, 1, 1, 55.703019,37.530859,'Убрать квартиру', 'Убрать квартру в понедельник', 5000, '18.11.2019', '30.10.2019');
+$object3 = TaskForce::createTask(1, 1, 'Убрать квартиру', 'Убрать квартру в понедельник', 5000, '18.11.2019', '30.10.2019');
 $object3->addResponse(2);
 $object3->beginTask(2);
 $object3->failTask();
 assert(array() === $object3->getAvailableActions(1));
 assert(array() === $object3->getAvailableActions(2));
 
-$objectConverterCategories = new Converter(__DIR__.'/data/categories.csv', array('name', 'icon'), __DIR__.'/sql/sql_data/');
-$objectConverterCategories->import();
-$objectConverterCities = new Converter(__DIR__.'/data/cities.csv', array('city', 'lat', 'long'), __DIR__.'/sql/sql_data/');
-$objectConverterCities->import();
+
+$data = array();
+include 'dataConverter.php';
+
+foreach($data as $key => $value){
+    $reader = new CsvReader(__DIR__ . $value['pathCsv']);
+    $writer = new SqlWriter(__DIR__ . '/sql/sql_data/', $value['tableName'], $value['tableName'], $value['fields']);
+    $converter = new Converter($reader, $writer);
+    $converter->import();
+}
+
+//тут неожиданно пришла к решению о том, что эти файлы можно просто генерировать, функция даты есть, случайное число тоже, остается только создать функцию для случайного текста
+$writerSpecializationCategory = new SqlWriter(__DIR__ . '/sql/sql_data/', 'user_specialization_category', false, array('user_id' => array('rand' => array(1,20)), 'categories_id' => array('rand' => array(1,8))));
+$writerSpecializationCategory->writeFile(array('user_id', 'categories_id'), array_fill(0, 20, array_fill(0, 2, ' ')));
+
+$writerFavouriteUsers = new SqlWriter(__DIR__ . '/sql/sql_data/', 'favourite_users', false, array('user_current' => array('rand' => array(1,20)), 'user_added' => array('rand' => array(1,20))));
+$writerFavouriteUsers->writeFile(array('user_current', 'user_added'), array_fill(0, 20, array_fill(0, 2, ' ')));

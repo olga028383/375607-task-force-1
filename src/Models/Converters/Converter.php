@@ -8,9 +8,8 @@
 
 namespace HtmlAcademy\Models\Converters;
 
-
-use HtmlAcademy\Models\Ex\ConverterException;
-use HtmlAcademy\Models\Readers;
+use HtmlAcademy\Models\Readers\AbstractReaders;
+use HtmlAcademy\Models\Writes\AbstractWriter;
 
 /**
  * Class Converter
@@ -18,145 +17,31 @@ use HtmlAcademy\Models\Readers;
  */
 class Converter
 {
-    private $pathFile;
-    private $fileObject;
-    private $fileName;
-    private $tableName;
-    private $columns;
-    private $extension;
-    private $rows;
-    private $dirName;
+    /**
+     * @var AbstractReaders
+     */
+    private $reader;
 
+    /**
+     * @var AbstractWriter
+     */
+    private $writer;
 
     /**
      * Converter constructor.
-     * @param string $filePath
-     * @param array $columns
-     * @throws ConverterException
+     * @param AbstractReaders $reader
+     * @param AbstractWriter $writer
      */
-    public function __construct(string $filePath, array $columns, string $dirName, string $tableName = '')
+    public function __construct(AbstractReaders $reader, AbstractWriter $writer )
     {
-        if (empty($dirName)) {
-            throw new ConverterException('Укажите директорию для сохранения файла');
-        }
 
-        if (!file_exists($filePath)) {
-            throw new ConverterException('Файл "' . $filePath . '" не существует');
-        }
-
-        if (empty($columns)) {
-            throw new ConverterException('Не переданы столбцы');
-        }
-
-        $fileInfo = new \SplFileObject($filePath);
-
-        if (!$fileInfo->isReadable()) {
-            throw new ConverterException('Файл недоступен для чтения');
-        }
-
-        $this->fileObject = $fileInfo->openFile();
-        $this->pathFile = $filePath;
-        $this->columns = $columns;
-        $this->extension = $fileInfo->getExtension();
-        $this->fileName = $fileInfo->getBasename('.' . $this->extension);
-
-        if (!$tableName) {
-            $this->tableName = $this->fileName;
-        }
-
-        $this->dirName = $dirName;
-    }
-
-    /**
-     * @return array
-     */
-    public function getData(): array
-    {
-        return $this->rows;
-    }
-
-    /**
-     * @return object
-     */
-    public function getFileObject(): object
-    {
-        return $this->fileObject;
-    }
-
-    /**
-     * @return string
-     */
-    public function getExtension(): string
-    {
-        return $this->extension;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFileName(): string
-    {
-        return $this->fileName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDirName(): string
-    {
-        return $this->dirName;
-    }
-
-    /**
-     * @return array
-     */
-    public function getColumns(): array
-    {
-        return $this->columns;
-    }
-
-    /**
-     * @return array
-     */
-    public function getRows(): array
-    {
-        return $this->rows;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTableName(): string
-    {
-        return $this->tableName;
+        $this->reader = $reader;
+        $this->writer = $writer;
     }
 
     public function import(): void
     {
-
-        $objectReader = 'HtmlAcademy\Models\Readers\\' . ucfirst($this->extension) . 'Reader';
-
-        if (!class_exists($objectReader)) {
-            throw new ConverterException('Класс ' . $objectReader . ' для чтения файла не сушествует');
-        }
-
-        $reader = new $objectReader($this);
-
-        if (count(array_uintersect($reader->getHeaders(), $this->columns, "trim")) !== count($this->columns)) {
-            throw new ConverterException('Количество колонок не соответствует переданным');
-        }
-        $this->rows = $reader->getRows();
-
-        $objectWriter = 'HtmlAcademy\Models\Writes\SqlWriter';
-
-        if (!class_exists($objectWriter)) {
-            throw new ConverterException('Класс ' . $objectWriter . ' для чтения файла не сушествует');
-        }
-
-        $writer = new $objectWriter($this);
-        $writer->write();
-
+        $this->writer->writeFile($this->reader->getHeaders(), $this->reader->getRows());
     }
-
 
 }

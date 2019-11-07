@@ -9,15 +9,36 @@
 namespace HtmlAcademy\Models\Readers;
 
 
+use HtmlAcademy\Models\Ex\ReaderException;
+
+/**
+ * Class CsvReader
+ * @package HtmlAcademy\Models\Readers
+ */
 class CsvReader extends AbstractReaders
 {
+    /**
+     * @var string
+     */
+    protected $extensionCsv = 'csv';
+
+    public function __construct($filePath)
+    {
+        parent::__construct($filePath);
+
+        if ($this->extension !== $this->extensionCsv) {
+            throw new ReaderException('Передан неверный формат файла');
+        }
+
+    }
+
     /**
      * @return array
      */
     public function getHeaders(): array
     {
-        $this->file->getFileObject()->rewind();
-        return $this->file->getFileObject()->fgetcsv();
+        $this->fileObject->rewind();
+        return $this->fileObject->fgetcsv();
     }
 
     /**
@@ -28,10 +49,12 @@ class CsvReader extends AbstractReaders
         $result = null;
 
         foreach ($this->getLine() as $row) {
-            if (count($row) === count($this->file->getColumns())) {
+
+            if (implode($row)) {
                 $result[] = $row;
             }
         }
+
         return $result;
     }
 
@@ -41,8 +64,9 @@ class CsvReader extends AbstractReaders
     public function getLine():?iterable
     {
         $result = null;
-        while (!$this->file->getFileObject()->eof()) {
-            yield $this->file->getFileObject()->fgetcsv();
+
+        while (!$this->fileObject->eof()) {
+            yield $this->fileObject->fgetcsv();
         }
         return $result;
     }

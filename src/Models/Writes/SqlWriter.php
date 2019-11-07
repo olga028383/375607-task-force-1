@@ -8,10 +8,21 @@
 
 namespace HtmlAcademy\Models\Writes;
 
-
+/**
+ * Class SqlWriter
+ * @package HtmlAcademy\Models\Writes
+ */
 class SqlWriter extends AbstractWriter
 {
+    /**
+     * @var string
+     */
     protected $extension = '.sql';
+
+    /**
+     * @var string
+     */
+    private $filePath;
 
     /**
      * @return string
@@ -22,11 +33,11 @@ class SqlWriter extends AbstractWriter
     }
 
     /**
-     * @return string
+     * Метод создает файл
      */
     public function setFilePath(): void
     {
-        $this->filePath = $this->file->getDirName() . $this->file->getFileName() . $this->extension;
+        $this->filePath = $this->dirName . $this->fileName . $this->extension;
     }
 
     /**
@@ -38,15 +49,17 @@ class SqlWriter extends AbstractWriter
     }
 
     /**
-     *
+     * @param array $columns
+     * @param array $fields
      */
-    public function write(): void
+    public function writeFile(array $columns, array $fields): void
     {
         $this->setFilePath();
         $sqlFile = new \SplFileObject($this->filePath, "w");
 
-        foreach ($this->file->getRows() as $row) {
-            $sqlFile->fwrite('INSERT INTO ' . $this->file->getTableName() . '(' . implode(',', $this->file->getColumns()) . ') VALUES (\'' . implode('\',\'', $row) . '\');' . PHP_EOL);
+        foreach ($fields as $row) {
+            $sqlFile->fwrite('INSERT INTO' . ' ' . $this->tableName . '(`' . implode('`,`', $columns) . '`) VALUES (' . implode(',', $this->validateColumns($columns, $row)) . ');' . PHP_EOL);
+
         }
     }
 

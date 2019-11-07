@@ -5,8 +5,8 @@ $pass='67cfirf876';
 $db="taskforce";
 
 $files = array(
-    'categories.sql',
-    'cities.sql');
+    'categories.sql'
+);
 try {
     $db = new PDO("mysql:host=localhost;dbname=taskforce", $user, $pass);
 

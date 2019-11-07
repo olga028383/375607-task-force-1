@@ -10,6 +10,7 @@ namespace HtmlAcademy\Models\Readers;
 
 
 use HtmlAcademy\Models\Converters\Converter;
+use HtmlAcademy\Models\Ex\ReaderException;
 
 /**
  * Class AbstractReaders
@@ -17,14 +18,57 @@ use HtmlAcademy\Models\Converters\Converter;
  */
 abstract class AbstractReaders
 {
-    protected $file;
+    /**
+     * @var string
+     */
+    protected $pathFile;
+
+    /**
+     * @var \SplFileObject
+     */
+    protected $fileObject;
+
+    /**
+     * @var string
+     */
+    protected $fileName;
+
+    /**
+     * @var string
+     */
+    protected $extension;
+
 
     /**
      * AbstractReaders constructor.
-     * @param Converter $converter
+     * @param $filePath
+     * @throws ReaderException
      */
-    public function __construct(Converter $converter){
-        $this->file = $converter;
+    public function __construct($filePath)
+    {
+
+        if (!file_exists($filePath)) {
+            throw new ReaderException('Файл "' . $filePath . '" не существует');
+        }
+
+        $this->pathFile = $filePath;
+        $fileInfo = new \SplFileObject($this->pathFile);
+
+        if (!$fileInfo->isReadable()) {
+            throw new ReaderException('Файл недоступен для чтения');
+        }
+
+        $this->fileObject = $fileInfo->openFile();
+        $this->extension = $fileInfo->getExtension();
+        $this->fileName = $fileInfo->getBasename('.' . $this->extension);
+    }
+
+    /**
+     * @return string
+     */
+    public function getFileName(): string
+    {
+        return $this->fileName;
     }
 
     /**
@@ -41,5 +85,6 @@ abstract class AbstractReaders
      * @return mixed
      */
     abstract public function getLine();
+
 
 }
