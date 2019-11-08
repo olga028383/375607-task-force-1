@@ -14,7 +14,9 @@ $data = array(
     array(
         'name' => 'users',
         'fields' => array(
-            'city_id' => array('rand' => array(1,1109))
+            'city_id' => array('rand' => array(1,1109)),
+            'lat' => 'float',
+            'long' => 'float',
         )
     ),
     array(
@@ -55,7 +57,7 @@ $data = array(
         )
     ),
     array(
-        'name' => 'chat_message',
+        'name' => 'chat_messages',
         'fields' => array(
             'chat_id' => array('rand' => array(1,20)),
             'sender_id' => array('rand' => array(1,20)),
@@ -63,7 +65,7 @@ $data = array(
         )
     ),
     array(
-        'name' => 'chat_message',
+        'name' => 'responses',
         'fields' => array(
             'user_id' => array('rand' => array(1,20)),
             'task_id' => array('rand' => array(1,20)),

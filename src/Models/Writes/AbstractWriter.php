@@ -138,7 +138,6 @@ abstract class AbstractWriter
         }
 
         foreach ($columns as $key => $column) {
-            $column = $this->removeBom($column);
             $method = 'string';
             $parameter = $row[$key];
 

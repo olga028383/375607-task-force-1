@@ -54,11 +54,15 @@ class SqlWriter extends AbstractWriter
      */
     public function writeFile(array $columns, array $rows): void
     {
+        $cleanColumn = array();
+        foreach($columns as $column){
+            $cleanColumn[] = $this->removeBom($column);
+        }
         $this->setFilePath();
         $sqlFile = new \SplFileObject($this->filePath, "w");
 
         foreach ($rows as $row) {
-            $sqlFile->fwrite('INSERT INTO' . ' ' . $this->tableName . '(`' . implode('`,`', $columns) . '`) VALUES (' . implode(',', $this->validateColumns($columns, $row)) . ');' . PHP_EOL);
+            $sqlFile->fwrite('INSERT INTO' . ' ' . $this->tableName . '(`' . implode('`,`', $cleanColumn) . '`) VALUES (' . implode(',', $this->validateColumns($cleanColumn, $row)) . ');' . PHP_EOL);
 
         }
     }
