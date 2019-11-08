@@ -97,7 +97,7 @@ abstract class AbstractWriter
      */
     protected function stringField(string $field = ''): string
     {
-        return '\'' . $field . '\'';
+        return '\'' . addslashes ($field) . '\'';
     }
 
     /**
