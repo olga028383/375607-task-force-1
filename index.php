@@ -47,16 +47,33 @@ assert(array() === $object3->getAvailableActions(2));
 $data = array();
 include 'dataConverter.php';
 
-foreach($data as $key => $value){
-    $reader = new CsvReader(__DIR__ . $value['pathCsv']);
-    $writer = new SqlWriter(__DIR__ . '/sql/sql_data/', $value['tableName'], $value['tableName'], $value['fields']);
-    $converter = new Converter($reader, $writer);
-    $converter->import();
+try {
+
+    foreach($data as $key => $value){
+        $reader = new CsvReader(__DIR__ . '/data/'.$value['name'].'.csv');
+        $writer = new SqlWriter(__DIR__ . '/sql/sql_data/', $value['name'], $value['name'], $value['fields']);
+        $converter = new Converter($reader, $writer);
+        $converter->import();
+    }
+
+    $writerSpecializationCategory = new SqlWriter(__DIR__ . '/sql/sql_data/', 'user_specialization_category', false, array('user_id' => array('rand' => array(1,20)), 'categories_id' => array('rand' => array(1,8))));
+    $writerSpecializationCategory->writeFile(array('user_id', 'categories_id'), array_fill(0, 20, array_fill(0, 2, ' ')));
+
+    $writerFavouriteUsers = new SqlWriter(__DIR__ . '/sql/sql_data/', 'favourite_users', false, array('user_current' => array('rand' => array(1,20)), 'user_added' => array('rand' => array(1,20))));
+    $writerFavouriteUsers->writeFile(array('user_current', 'user_added'), array_fill(0, 20, array_fill(0, 2, ' ')));
+
+    $writerChats = new SqlWriter(__DIR__ . '/sql/sql_data/', 'chats', false,
+        array('task_id' => array('rand' => array(1, 5)),
+            'executor_id' => array('rand' => array(1, 20)),
+            'is_closed' => array('rand' => array(0, 1))
+        ));
+    $writerChats->writeFile(array('task_id', 'executor_id', 'is_closed'), array_fill(0, 20, array_fill(0, 3, ' ')));
+
+} catch (\HtmlAcademy\Models\Ex\ReaderException $value) {
+    echo $value->getMessage();
+} catch (\HtmlAcademy\Models\Ex\WriterException $value) {
+    echo $value->getMessage();
+} catch (\HtmlAcademy\Models\Ex\ConverterException $value) {
+    echo $value->getMessage();
 }
 
-//тут неожиданно пришла к решению о том, что эти файлы можно просто генерировать, функция даты есть, случайное число тоже, остается только создать функцию для случайного текста
-$writerSpecializationCategory = new SqlWriter(__DIR__ . '/sql/sql_data/', 'user_specialization_category', false, array('user_id' => array('rand' => array(1,20)), 'categories_id' => array('rand' => array(1,8))));
-$writerSpecializationCategory->writeFile(array('user_id', 'categories_id'), array_fill(0, 20, array_fill(0, 2, ' ')));
-
-$writerFavouriteUsers = new SqlWriter(__DIR__ . '/sql/sql_data/', 'favourite_users', false, array('user_current' => array('rand' => array(1,20)), 'user_added' => array('rand' => array(1,20))));
-$writerFavouriteUsers->writeFile(array('user_current', 'user_added'), array_fill(0, 20, array_fill(0, 2, ' ')));

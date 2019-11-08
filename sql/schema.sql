@@ -84,7 +84,7 @@ CREATE TABLE `tasks` (
 `status` ENUM('new','on execution', 'completed', 'canceled', 'failed'),
 `deadline` DATETIME,
 `created` DATETIME NOT NULL,
-`closed` DATETIME NOT NULL
+`closed` DATETIME
 );
 CREATE TABLE `task_files` (
 `id` INT AUTO_INCREMENT PRIMARY KEY,
@@ -103,7 +103,6 @@ CREATE TABLE `reviews` (
 );
 CREATE TABLE `chats` (
 `id` INT AUTO_INCREMENT PRIMARY KEY,
-`name` CHAR(150),
 `task_id` INT NOT NULL,
 `executor_id` INT NOT NULL,
 `is_closed` TINYINT(1)

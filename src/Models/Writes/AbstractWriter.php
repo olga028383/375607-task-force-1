@@ -77,7 +77,7 @@ abstract class AbstractWriter
      * @param string $field
      * @return int
      */
-    protected function intField(string $field): int
+    protected function intColumn(string $field): int
     {
         return intval($field);
     }
@@ -86,7 +86,7 @@ abstract class AbstractWriter
      * @param string $field
      * @return float
      */
-    protected function floatField(string $field): float
+    protected function floatColumn(string $field): float
     {
         return (float)$field;
     }
@@ -95,7 +95,7 @@ abstract class AbstractWriter
      * @param string $field
      * @return string
      */
-    protected function stringField(string $field = ''): string
+    protected function stringColumn(string $field = ''): string
     {
         return '\'' . addslashes ($field) . '\'';
     }
@@ -104,7 +104,7 @@ abstract class AbstractWriter
      * @param array $values
      * @return int
      */
-    protected function randField(array $values): int
+    protected function randColumn(array $values): int
     {
         return rand($values[0], $values[1]);
     }
@@ -113,7 +113,7 @@ abstract class AbstractWriter
      * @param array $values
      * @return string
      */
-    protected function dateField(array $values): string
+    protected function dateColumn(array $values): string
     {
         $dateStart = new DateTime($values[0]);
         $dateEnd = new DateTime($values[1]);
@@ -123,19 +123,24 @@ abstract class AbstractWriter
 
         return '\'' . $date->format('Y-m-d H:i:s'). '\'';
     }
+
     /**
      * @param array $columns
-     * @param array $rowField
+     * @param array $row
      * @return array
+     * @throws WriterException
      */
-    protected function validateColumns(array $columns, array $rowField): array
+    protected function validateColumns(array $columns, array $row): array
     {
         $results = null;
+        if(count($row) !== count($columns)){
+            throw new WriterException('Количество столбцов и строк не совпадает');
+        }
 
         foreach ($columns as $key => $column) {
             $column = $this->removeBom($column);
             $method = 'string';
-            $parameter = $rowField[$key];
+            $parameter = $row[$key];
 
             if (array_key_exists($column, $this->typeColumns)) {
 
@@ -148,7 +153,7 @@ abstract class AbstractWriter
 
             }
 
-            $results[$key] = $this->{$method . 'Field'}($parameter);
+            $results[$key] = $this->{$method . 'Column'}($parameter);
         }
 
         return $results;
