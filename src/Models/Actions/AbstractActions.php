@@ -21,7 +21,10 @@ abstract class AbstractActions
      * Метод возвращает имя класса
      * @return string
      */
-    abstract static public function getName():string;
+    public static function getName():string
+    {
+        return __CLASS__;
+    }
 
     /**
      * Метод возвращает код действия
@@ -30,8 +33,8 @@ abstract class AbstractActions
     abstract static public function getCodeName():string;
 
     /**
-     * Метод возвращает права пользователя в зависимости от статуса и роли пльзователя
-     * @param $userId
+     * Метод возвращает права пользователя в зависимости от статуса и роли пользователя
+     * @param int $userId
      * @param TaskForce $taskForce
      * @return bool
      */
