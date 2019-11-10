@@ -25,6 +25,26 @@ class SqlWriter extends AbstractWriter
     private $filePath;
 
     /**
+     * @var \SplFileObject
+     */
+    private $fileToWrite;
+
+    /**
+     * SqlWriter constructor.
+     * @param string $dirName
+     * @param string $fileName
+     * @param string $tableName
+     * @param array $typeColumns
+     */
+    public function __construct($dirName, $fileName, $tableName, array $typeColumns = array())
+    {
+        parent::__construct($dirName, $fileName, $tableName, $typeColumns);
+
+        $this->setFilePath();
+        $this->fileToWrite = new \SplFileObject($this->filePath, "w");
+    }
+
+    /**
      * @return string
      */
     public function getExtension(): string
@@ -48,23 +68,14 @@ class SqlWriter extends AbstractWriter
         return $this->filePath;
     }
 
+
     /**
      * @param array $columns
-     * @param array $rows
+     * @param array $row
      */
-    public function writeFile(array $columns, array $rows): void
+    public function write(array $columns, array $row): void
     {
-        $cleanColumn = array();
-        foreach($columns as $column){
-            $cleanColumn[] = $this->removeBom($column);
-        }
-        $this->setFilePath();
-        $sqlFile = new \SplFileObject($this->filePath, "w");
-
-        foreach ($rows as $row) {
-            $sqlFile->fwrite('INSERT INTO' . ' ' . $this->tableName . '(`' . implode('`,`', $cleanColumn) . '`) VALUES (' . implode(',', $this->validateColumns($cleanColumn, $row)) . ');' . PHP_EOL);
-
-        }
+        $this->fileToWrite->fwrite('INSERT INTO' . ' ' . $this->tableName . '(`' . implode('`,`', $columns) . '`) VALUES (' . implode(',', $row) . ');' . PHP_EOL);
     }
 
 }

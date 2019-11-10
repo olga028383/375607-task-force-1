@@ -16,7 +16,7 @@ use HtmlAcademy\Models\Ex\ReaderException;
  * Class AbstractReaders
  * @package HtmlAcademy\Models\Readers
  */
-abstract class AbstractReaders
+abstract class AbstractFileReader
 {
     /**
      * @var string
@@ -72,6 +72,18 @@ abstract class AbstractReaders
     }
 
     /**
+     * @param string $str
+     * @return string
+     */
+    protected function removeBom($str = ""): string
+    {
+        if (substr($str, 0, 3) == pack('CCC', 0xef, 0xbb, 0xbf)) {
+            $str = substr($str, 3);
+        }
+        return $str;
+    }
+
+    /**
      * @return mixed
      */
     abstract public function getHeaders();
@@ -79,12 +91,5 @@ abstract class AbstractReaders
     /**
      * @return mixed
      */
-    abstract public function getRows();
-
-    /**
-     * @return mixed
-     */
     abstract public function getLine();
-
-
 }

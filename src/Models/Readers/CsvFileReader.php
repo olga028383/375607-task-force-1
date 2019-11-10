@@ -15,7 +15,7 @@ use HtmlAcademy\Models\Ex\ReaderException;
  * Class CsvReader
  * @package HtmlAcademy\Models\Readers
  */
-class CsvReader extends AbstractReaders
+class CsvFileReader extends AbstractFileReader implements ReaderInterface
 {
     /**
      * @var string
@@ -38,36 +38,24 @@ class CsvReader extends AbstractReaders
     public function getHeaders(): array
     {
         $this->fileObject->rewind();
-        return $this->fileObject->fgetcsv();
-    }
 
-    /**
-     * @return array
-     */
-    public function getRows(): array
-    {
-        $result = null;
+        $result = array();
 
-        foreach ($this->getLine() as $row) {
-
-            if (implode($row)) {
-                $result[] = $row;
-            }
+        foreach ($this->fileObject->fgetcsv() as $value) {
+            $result[] = $this->removeBom($value);
         }
 
         return $result;
     }
 
     /**
-     * @return iterable|null
+     * @return iterable
      */
-    public function getLine():?iterable
+    public function getLine(): iterable
     {
-        $result = null;
-
         while (!$this->fileObject->eof()) {
             yield $this->fileObject->fgetcsv();
         }
-        return $result;
+
     }
 }

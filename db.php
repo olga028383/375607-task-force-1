@@ -6,17 +6,17 @@ $db="taskforce";
 
 $files = array(
     'categories',
-    'cities',
-    'users',
-    'profiles',
-    'user_specialization_category',
-    'favourite_users',
-    'notifications',
-    'tasks',
-    'reviews',
-    'chats',
-    'chat_messages',
-    'responses'
+//    'cities',
+//    'users',
+//    'profiles',
+//    'user_specialization_category',
+//    'favourite_users',
+//    'notifications',
+//    'tasks',
+//    'reviews',
+//    'chats',
+//    'chat_messages',
+//    'responses'
 );
 
 try {

@@ -8,40 +8,48 @@
 
 namespace HtmlAcademy\Models\Converters;
 
-use HtmlAcademy\Models\Readers\AbstractReaders;
+use HtmlAcademy\Models\Ex\ConverterException;
+use HtmlAcademy\Models\Readers\AbstractFileReader;
+use HtmlAcademy\Models\Readers\ReaderInterface;
 use HtmlAcademy\Models\Writes\AbstractWriter;
 
 /**
  * Class Converter
  * @package HtmlAcademy\Models\Converters
  */
-class Converter
+abstract class Converter
 {
     /**
-     * @var AbstractReaders
+     * @var AbstractFileReader
      */
-    private $reader;
+    protected $reader;
 
     /**
      * @var AbstractWriter
      */
-    private $writer;
+    protected $writer;
 
     /**
      * Converter constructor.
-     * @param AbstractReaders $reader
+     * @param ReaderInterface $reader
      * @param AbstractWriter $writer
+     * @param array $data
      */
-    public function __construct(AbstractReaders $reader, AbstractWriter $writer )
+    public function __construct(ReaderInterface $reader, AbstractWriter $writer, array $data )
     {
 
         $this->reader = $reader;
         $this->writer = $writer;
     }
 
-    public function import(): void
-    {
-        $this->writer->writeFile($this->reader->getHeaders(), $this->reader->getRows());
-    }
+    /**
+     * @return mixed
+     */
+    abstract public function import();
 
+    /**
+     * @param string $data
+     * @return mixed
+     */
+    abstract public function convertData(string $data);
 }

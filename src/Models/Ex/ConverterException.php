@@ -12,7 +12,7 @@ namespace HtmlAcademy\Models\Ex;
  * Class ConverterException
  * @package HtmlAcademy\Models\Ex
  */
-class ConverterException extends \Exception
+class ConverterException extends HtmlAcademyException
 {
 
 }

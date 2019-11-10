@@ -1,9 +1,10 @@
 <?php
 
+use HtmlAcademy\Models\Readers\PhpReader;
 use HtmlAcademy\Models\TaskForce;
-use HtmlAcademy\Models\Converters\Converter;
+use HtmlAcademy\Models\Converters;
 use HtmlAcademy\Models\Actions;
-use HtmlAcademy\Models\Readers\CsvReader;
+use HtmlAcademy\Models\Readers\CsvFileReader;
 use HtmlAcademy\Models\Writes\SqlWriter;
 
 
@@ -44,36 +45,29 @@ assert(array() === $object3->getAvailableActions(1));
 assert(array() === $object3->getAvailableActions(2));
 
 
-$data = array();
+$data  = array();
+$dataPhpReader = array();
 include 'dataConverter.php';
 
 try {
 
     foreach($data as $key => $value){
-        $reader = new CsvReader(__DIR__ . '/data/'.$value['name'].'.csv');
-        $writer = new SqlWriter(__DIR__ . '/sql/sql_data/', $value['name'], $value['name'], $value['fields']);
-        $converter = new Converter($reader, $writer);
+
+        switch($value['reader']){
+            case 'php':
+                $reader = new PhpReader(array_keys($value['fieldsForConvert']),  $value['rows']);
+                break;
+            case 'csv':
+                $reader = new CsvFileReader(__DIR__ . '/data/'.$value['name'].'.csv');
+                break;
+
+        }
+
+        $writer = new SqlWriter(__DIR__ . '/sql/sql_data/', $value['name'], $value['name']);
+        $converter = new Converters\ConverterToSql($reader, $writer, $value['fieldsForConvert'], $value['fieldsRandom']);
         $converter->import();
     }
 
-    $writerSpecializationCategory = new SqlWriter(__DIR__ . '/sql/sql_data/', 'user_specialization_category', false, array('user_id' => array('rand' => array(1,20)), 'categories_id' => array('rand' => array(1,8))));
-    $writerSpecializationCategory->writeFile(array('user_id', 'categories_id'), array_fill(0, 20, array_fill(0, 2, ' ')));
-
-    $writerFavouriteUsers = new SqlWriter(__DIR__ . '/sql/sql_data/', 'favourite_users', false, array('user_current' => array('rand' => array(1,20)), 'user_added' => array('rand' => array(1,20))));
-    $writerFavouriteUsers->writeFile(array('user_current', 'user_added'), array_fill(0, 20, array_fill(0, 2, ' ')));
-
-    $writerChats = new SqlWriter(__DIR__ . '/sql/sql_data/', 'chats', false,
-        array('task_id' => array('rand' => array(1, 5)),
-            'executor_id' => array('rand' => array(1, 20)),
-            'is_closed' => array('rand' => array(0, 1))
-        ));
-    $writerChats->writeFile(array('task_id', 'executor_id', 'is_closed'), array_fill(0, 20, array_fill(0, 3, ' ')));
-
-} catch (\HtmlAcademy\Models\Ex\ReaderException $value) {
-    echo $value->getMessage();
-} catch (\HtmlAcademy\Models\Ex\WriterException $value) {
-    echo $value->getMessage();
-} catch (\HtmlAcademy\Models\Ex\ConverterException $value) {
+} catch (\HtmlAcademy\Models\Ex\HtmlAcademyException $value) {
     echo $value->getMessage();
 }
-

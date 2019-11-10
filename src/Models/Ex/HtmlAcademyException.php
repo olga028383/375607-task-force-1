@@ -2,14 +2,14 @@
 /**
  * Created by PhpStorm.
  * User: User
- * Date: 06.11.2019
- * Time: 20:51
+ * Date: 10.11.2019
+ * Time: 16:07
  */
 
 namespace HtmlAcademy\Models\Ex;
 
 
-class ReaderException extends HtmlAcademyException
+class HtmlAcademyException extends \Exception
 {
 
 }

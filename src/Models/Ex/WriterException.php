@@ -9,7 +9,7 @@
 namespace HtmlAcademy\Models\Ex;
 
 
-class WriterException extends \Exception
+class WriterException extends HtmlAcademyException
 {
 
 }

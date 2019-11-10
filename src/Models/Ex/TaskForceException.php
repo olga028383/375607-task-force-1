@@ -12,7 +12,7 @@ namespace HtmlAcademy\Models\Ex;
  * Class TaskForceException
  * @package HtmlAcademy\Models\Ex
  */
-class TaskForceException extends \Exception
+class TaskForceException extends HtmlAcademyException
 {
 
 }
