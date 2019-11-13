@@ -8,7 +8,7 @@ use HtmlAcademy\Models\Readers\CsvFileReader;
 use HtmlAcademy\Models\Writes\SqlWriter;
 
 
-require_once 'vendor/autoload.php';
+require __DIR__ . '/../../vendor/autoload.php';
 
 $object = TaskForce::createTask(1, 1, 'Убрать квартиру', 'Убрать квартру в понедельник', 5000, '18.11.2019', '30.10.2019');
 
