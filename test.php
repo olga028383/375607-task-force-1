@@ -8,7 +8,7 @@ use HtmlAcademy\Models\Readers\CsvFileReader;
 use HtmlAcademy\Models\Writes\SqlWriter;
 
 
-require __DIR__ . '/../../vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
 $object = TaskForce::createTask(1, 1, 'Убрать квартиру', 'Убрать квартру в понедельник', 5000, '18.11.2019', '30.10.2019');
 
@@ -58,12 +58,12 @@ try {
                 $reader = new PhpReader(array_keys($value['fieldsForConvert']),  $value['rows']);
                 break;
             case 'csv':
-                $reader = new CsvFileReader(__DIR__ . '/data/'.$value['name'].'.csv');
+                $reader = new CsvFileReader(__DIR__ . '/htmlacademy/data/' .$value['name'].'.csv');
                 break;
 
         }
 
-        $writer = new SqlWriter(__DIR__ . '/sql/sql_data/', $value['name'], $value['name']);
+        $writer = new SqlWriter(__DIR__ . '/htmlacademy/sql/sql_data/', $value['name'], $value['name']);
         $converter = new Converters\ConverterToSql($reader, $writer, $value['fieldsForConvert'], $value['fieldsRandom']);
         $converter->import();
     }
