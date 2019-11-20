@@ -1,0 +1,13 @@
+INSERT INTO chat_messages(`chat_id`,`sender_id`,`recipient_id`,`created`,`message`) VALUES (5,10,14,'2019-05-09','Curabitur gravida nisi at nibh. In hac habitasse platea dictumst. Aliquam augue quam, sollicitudin vitae, consectetuer eget, rutrum at, lorem. Integer tincidunt ante vel ipsum. Praesent blandit lacinia erat. Vestibulum sed magna at nunc commodo placerat. Praesent blandit. Nam nulla. Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede.');
+INSERT INTO chat_messages(`chat_id`,`sender_id`,`recipient_id`,`created`,`message`) VALUES (8,18,15,'2019-05-09','Curabitur gravida nisi at nibh. In hac habitasse platea dictumst.');
+INSERT INTO chat_messages(`chat_id`,`sender_id`,`recipient_id`,`created`,`message`) VALUES (13,9,9,'2019-05-09','Curabitur gravida nisi at nibh. In hac habitasse platea dictumst.');
+INSERT INTO chat_messages(`chat_id`,`sender_id`,`recipient_id`,`created`,`message`) VALUES (9,8,2,'2019-05-09','Curabitur gravida nisi at nibh. In hac habitasse platea dictumst.');
+INSERT INTO chat_messages(`chat_id`,`sender_id`,`recipient_id`,`created`,`message`) VALUES (2,13,14,'2019-05-09','Curabitur gravida nisi at nibh. In hac habitasse platea dictumst.');
+INSERT INTO chat_messages(`chat_id`,`sender_id`,`recipient_id`,`created`,`message`) VALUES (11,9,11,'2019-05-09','Curabitur gravida nisi at nibh. In hac habitasse platea dictumst.');
+INSERT INTO chat_messages(`chat_id`,`sender_id`,`recipient_id`,`created`,`message`) VALUES (4,10,15,'2019-05-09','Curabitur gravida nisi at nibh. In hac habitasse platea dictumst.');
+INSERT INTO chat_messages(`chat_id`,`sender_id`,`recipient_id`,`created`,`message`) VALUES (1,5,3,'2019-05-09','Curabitur gravida nisi at nibh. In hac habitasse platea dictumst.');
+INSERT INTO chat_messages(`chat_id`,`sender_id`,`recipient_id`,`created`,`message`) VALUES (8,19,2,'2019-05-09','Curabitur gravida nisi at nibh. In hac habitasse platea dictumst.');
+INSERT INTO chat_messages(`chat_id`,`sender_id`,`recipient_id`,`created`,`message`) VALUES (18,14,18,'2019-05-09','Curabitur gravida nisi at nibh. In hac habitasse platea dictumst.');
+INSERT INTO chat_messages(`chat_id`,`sender_id`,`recipient_id`,`created`,`message`) VALUES (14,2,9,'2019-05-09','Curabitur gravida nisi at nibh. In hac habitasse platea dictumst.');
+INSERT INTO chat_messages(`chat_id`,`sender_id`,`recipient_id`,`created`,`message`) VALUES (1,15,19,'2019-05-09','Curabitur gravida nisi at nibh. In hac habitasse platea dictumst.');
+INSERT INTO chat_messages(`chat_id`,`sender_id`,`recipient_id`,`created`,`message`) VALUES (16,1,18,'2019-05-09','Curabitur gravida nisi at nibh. In hac habitasse platea dictumst.');

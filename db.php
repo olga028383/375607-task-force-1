@@ -6,23 +6,23 @@ $db="taskforce";
 
 $files = array(
     'categories',
-    'cities',
-    'users',
-    'profiles',
-    'user_specialization_category',
-    'favourite_users',
-    'notifications',
-    'tasks',
-    'reviews',
-    'chats',
-    'chat_messages',
-    'responses'
+//    'cities',
+//    'users',
+//    'profiles',
+//    'user_specialization_category',
+//    'favourite_users',
+//    'notifications',
+//    'tasks',
+//    'reviews',
+//    'chats',
+//    'chat_messages',
+//    'responses'
 );
 
 try {
     $db = new PDO("mysql:host=localhost;dbname=taskforce", $user, $pass);
 
-    $dir = __DIR__.'/sql/sql_data/';
+    $dir = __DIR__ . '/sql/sql_data/';
 
     foreach($files as $file){
         $sql = file_get_contents($dir.$file.'.sql');
