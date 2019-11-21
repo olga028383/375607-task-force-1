@@ -21,7 +21,8 @@ CREATE TABLE `users` (
 `email`CHAR(155) NOT NULL,
 `name` CHAR(155) NOT NULL,
 `password` VARCHAR(525) NOT NULL,
-`registered` DATETIME NOT NULL
+`registered` DATETIME NOT NULL,
+ FOREIGN KEY (`city_id`)  REFERENCES cities (`id`)
 );
 CREATE TABLE `profiles` (
 `id` INT AUTO_INCREMENT PRIMARY KEY,
@@ -40,22 +41,28 @@ CREATE TABLE `profiles` (
 `notification_reviews` TINYINT(1),
 `show_contacts_customer` TINYINT(1),
 `show_profile` TINYINT(1),
-`last_active_at` DATETIME NOT NULL
+`last_active_at` DATETIME NOT NULL,
+ FOREIGN KEY (`user_id`)  REFERENCES categories (`id`)
 );
 CREATE TABLE `photos` (
 `id` INT AUTO_INCREMENT PRIMARY KEY,
 `user_id` INT NOT NULL,
-`link` CHAR(150)
+`link` CHAR(150),
+FOREIGN KEY (`user_id`)  REFERENCES users (`id`)
 );
 CREATE TABLE `user_specialization_category` (
 `id` INT AUTO_INCREMENT PRIMARY KEY,
 `user_id` INT NOT NULL,
-`categories_id` INT
+`categories_id` INT,
+FOREIGN KEY (`user_id`)  REFERENCES users (`id`),
+FOREIGN KEY (`categories_id`)  REFERENCES users (`id`)
 );
 CREATE TABLE `favourite_users` (
 `id` INT AUTO_INCREMENT PRIMARY KEY,
 `user_current` INT,
-`user_added` INT
+`user_added` INT,
+FOREIGN KEY (`user_current`)  REFERENCES users (`id`),
+FOREIGN KEY (`user_added`)  REFERENCES users (`id`)
 );
 CREATE TABLE `notifications` (
 `id` INT AUTO_INCREMENT PRIMARY KEY,
@@ -67,7 +74,9 @@ CREATE TABLE `events` (
 `notification_id` INT NOT NULL,
 `message` TEXT NOT NULL,
 `event_new` TINYINT(1),
-`sent_on` DATETIME NOT NULL
+`sent_on` DATETIME NOT NULL,
+FOREIGN KEY (`user_id`)  REFERENCES users (`id`),
+FOREIGN KEY (`notification_id`)  REFERENCES notifications (`id`)
 );
 CREATE TABLE `tasks` (
 `id` INT AUTO_INCREMENT PRIMARY KEY,
@@ -84,12 +93,17 @@ CREATE TABLE `tasks` (
 `status` ENUM('new','on execution', 'completed', 'canceled', 'failed'),
 `deadline` DATETIME,
 `created` DATETIME NOT NULL,
-`closed` DATETIME
+`closed` DATETIME,
+ FOREIGN KEY (`category_id`)  REFERENCES categories (`id`),
+ FOREIGN KEY (`customer_id`)  REFERENCES users (`id`),
+ FOREIGN KEY (`executor_id`)  REFERENCES users (`id`),
+ FOREIGN KEY (`city_id`)  REFERENCES cities (`id`)
 );
 CREATE TABLE `task_files` (
 `id` INT AUTO_INCREMENT PRIMARY KEY,
 `task_id` INT NOT NULL,
-`link` CHAR(150) NOT NULL
+`link` CHAR(150) NOT NULL,
+FOREIGN KEY (`task_id`)  REFERENCES tasks (`id`)
 );
 CREATE TABLE `reviews` (
 `id` INT AUTO_INCREMENT PRIMARY KEY,
@@ -99,13 +113,18 @@ CREATE TABLE `reviews` (
 `message` TEXT NOT NULL,
 `created` DATETIME NOT NULL,
 `evaluation` INT,
-`task_ready` TINYINT(1)
+`task_ready` TINYINT(1),
+FOREIGN KEY (`task_id`)  REFERENCES tasks (`id`),
+ FOREIGN KEY (`sender_id`)  REFERENCES users (`id`),
+ FOREIGN KEY (`recipient_id`)  REFERENCES users (`id`)
 );
 CREATE TABLE `chats` (
 `id` INT AUTO_INCREMENT PRIMARY KEY,
 `task_id` INT NOT NULL,
 `executor_id` INT NOT NULL,
-`is_closed` TINYINT(1)
+`is_closed` TINYINT(1),
+FOREIGN KEY (`task_id`)  REFERENCES tasks (`id`),
+ FOREIGN KEY (`executor_id`)  REFERENCES users (`id`)
 );
 CREATE TABLE `chat_messages` (
 `id` INT AUTO_INCREMENT PRIMARY KEY,
@@ -113,7 +132,10 @@ CREATE TABLE `chat_messages` (
 `sender_id` INT NOT NULL,
 `recipient_id` INT NOT NULL,
 `message` TEXT NOT NULL,
-`created` DATETIME NOT NULL
+`created` DATETIME NOT NULL,
+FOREIGN KEY (`chat_id`)  REFERENCES chats (`id`),
+FOREIGN KEY (`sender_id`)  REFERENCES users (`id`),
+FOREIGN KEY (`recipient_id`)  REFERENCES users (`id`)
 );
 CREATE TABLE `responses` (
 `id` INT AUTO_INCREMENT PRIMARY KEY,
@@ -121,7 +143,9 @@ CREATE TABLE `responses` (
 `task_id` INT NOT NULL,
 `message` TEXT NOT NULL,
 `sum` INT,
-`created` DATETIME NOT NULL
+`created` DATETIME NOT NULL,
+FOREIGN KEY (`user_id`)  REFERENCES users (`id`),
+FOREIGN KEY (`task_id`)  REFERENCES tasks (`id`)
 );
 
 

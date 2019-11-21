@@ -1,28 +1,28 @@
 <?php
 
-$user='olga';
-$pass='67cfirf876';
+$user='mysql';
+$pass='mysql';
 $db="taskforce";
 
 $files = array(
     'categories',
-//    'cities',
-//    'users',
-//    'profiles',
-//    'user_specialization_category',
-//    'favourite_users',
-//    'notifications',
-//    'tasks',
-//    'reviews',
-//    'chats',
-//    'chat_messages',
-//    'responses'
+    'cities',
+    'users',
+    'profiles',
+    'user_specialization_category',
+    'favourite_users',
+    'notifications',
+    'tasks',
+    'reviews',
+    'chats',
+    'chat_messages',
+    'responses'
 );
 
 try {
-    $db = new PDO("mysql:host=localhost;dbname=taskforce", $user, $pass);
+    $db = new PDO("mysql:host=127.0.0.1;port=3307;dbname=taskforce", $user, $pass);
 
-    $dir = __DIR__ . '/sql/sql_data/';
+    $dir = __DIR__ . '/htmlacademy/sql/sql_data/';
 
     foreach($files as $file){
         $sql = file_get_contents($dir.$file.'.sql');

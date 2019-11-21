@@ -170,7 +170,7 @@ $data = array(
     ),
     array(
         'reader' => 'php',
-        'name' => 'user_specialization_category',
+        'name' => 'chats',
         'rows' => array_fill(0, 20, array_fill(0, 3, ' ')),
         'fieldsForConvert' => array(
             'task_id' => 'number',
