@@ -9,10 +9,10 @@ use Yii;
  *
  * @property int $id
  * @property int $user_id
- * @property int $categories_id
+ * @property int|null $categories_id
  *
- * @property User $user
- * @property User $categories
+ * @property Users $user
+ * @property Users $categories
  */
 class UserSpecializationCategory extends \yii\db\ActiveRecord
 {
@@ -32,8 +32,8 @@ class UserSpecializationCategory extends \yii\db\ActiveRecord
         return [
             [['user_id'], 'required'],
             [['user_id', 'categories_id'], 'integer'],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
-            [['categories_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['categories_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [['categories_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['categories_id' => 'id']],
         ];
     }
 
@@ -54,7 +54,7 @@ class UserSpecializationCategory extends \yii\db\ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
+        return $this->hasOne(Users::class, ['id' => 'user_id']);
     }
 
     /**
@@ -62,6 +62,6 @@ class UserSpecializationCategory extends \yii\db\ActiveRecord
      */
     public function getCategories()
     {
-        return $this->hasOne(User::className(), ['id' => 'categories_id']);
+        return $this->hasOne(Users::class, ['id' => 'categories_id']);
     }
 }

@@ -11,11 +11,11 @@ use Yii;
  * @property int $user_id
  * @property int $task_id
  * @property string $message
- * @property int $sum
+ * @property int|null $sum
  * @property string $created
  *
- * @property User $user
- * @property Task $task
+ * @property Users $user
+ * @property Tasks $task
  */
 class Responses extends \yii\db\ActiveRecord
 {
@@ -37,8 +37,8 @@ class Responses extends \yii\db\ActiveRecord
             [['user_id', 'task_id', 'sum'], 'integer'],
             [['message'], 'string'],
             [['created'], 'safe'],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
-            [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Task::className(), 'targetAttribute' => ['task_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tasks::className(), 'targetAttribute' => ['task_id' => 'id']],
         ];
     }
 
@@ -62,7 +62,7 @@ class Responses extends \yii\db\ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
+        return $this->hasOne(Users::class, ['id' => 'user_id']);
     }
 
     /**
@@ -70,6 +70,6 @@ class Responses extends \yii\db\ActiveRecord
      */
     public function getTask()
     {
-        return $this->hasOne(Task::className(), ['id' => 'task_id']);
+        return $this->hasOne(Tasks::class, ['id' => 'task_id']);
     }
 }

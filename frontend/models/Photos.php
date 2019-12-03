@@ -9,9 +9,9 @@ use Yii;
  *
  * @property int $id
  * @property int $user_id
- * @property string $link
+ * @property string|null $link
  *
- * @property User $user
+ * @property Users $user
  */
 class Photos extends \yii\db\ActiveRecord
 {
@@ -32,7 +32,7 @@ class Photos extends \yii\db\ActiveRecord
             [['user_id'], 'required'],
             [['user_id'], 'integer'],
             [['link'], 'string', 'max' => 150],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -53,6 +53,6 @@ class Photos extends \yii\db\ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
+        return $this->hasOne(Users::class, ['id' => 'user_id']);
     }
 }

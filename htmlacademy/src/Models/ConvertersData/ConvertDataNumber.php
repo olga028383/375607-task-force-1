@@ -6,12 +6,11 @@
  * Time: 15:41
  */
 
-namespace HtmlAcademy\Models\ConvertersData\Sql;
-use HtmlAcademy\Models\ConvertersData\ConvertDataInterface;
+namespace HtmlAcademy\Models\ConvertersData;
 
 /**
  * Class ConvertDataNumber
- * @package HtmlAcademy\Models\ConvertersData\Sql
+ * @package HtmlAcademy\Models\ConvertersData
  */
 class ConvertDataNumber implements ConvertDataInterface
 {
@@ -19,8 +18,8 @@ class ConvertDataNumber implements ConvertDataInterface
      * @param string $data
      * @return int
      */
-    public function convert(string $data): int
+    public function convert(string $data): ?int
     {
-        return intval($data);
+        return intval($data)? intval($data) : null;
     }
 }

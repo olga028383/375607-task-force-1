@@ -8,11 +8,11 @@ use Yii;
  * This is the model class for table "favourite_users".
  *
  * @property int $id
- * @property int $user_current
- * @property int $user_added
+ * @property int|null $user_current
+ * @property int|null $user_added
  *
- * @property User $userCurrent
- * @property User $userAdded
+ * @property Users $userCurrent
+ * @property Users $userAdded
  */
 class FavouriteUsers extends \yii\db\ActiveRecord
 {
@@ -31,8 +31,8 @@ class FavouriteUsers extends \yii\db\ActiveRecord
     {
         return [
             [['user_current', 'user_added'], 'integer'],
-            [['user_current'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_current' => 'id']],
-            [['user_added'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_added' => 'id']],
+            [['user_current'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_current' => 'id']],
+            [['user_added'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_added' => 'id']],
         ];
     }
 
@@ -53,7 +53,7 @@ class FavouriteUsers extends \yii\db\ActiveRecord
      */
     public function getUserCurrent()
     {
-        return $this->hasOne(User::className(), ['id' => 'user_current']);
+        return $this->hasOne(Users::class, ['id' => 'user_current']);
     }
 
     /**
@@ -61,6 +61,6 @@ class FavouriteUsers extends \yii\db\ActiveRecord
      */
     public function getUserAdded()
     {
-        return $this->hasOne(User::className(), ['id' => 'user_added']);
+        return $this->hasOne(Users::class, ['id' => 'user_added']);
     }
 }

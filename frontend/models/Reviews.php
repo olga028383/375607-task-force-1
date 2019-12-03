@@ -13,12 +13,12 @@ use Yii;
  * @property int $task_id
  * @property string $message
  * @property string $created
- * @property int $evaluation
- * @property int $task_ready
+ * @property int|null $evaluation
+ * @property int|null $task_ready
  *
- * @property Task $task
- * @property User $sender
- * @property User $recipient
+ * @property Tasks $task
+ * @property Users $sender
+ * @property Users $recipient
  */
 class Reviews extends \yii\db\ActiveRecord
 {
@@ -40,9 +40,9 @@ class Reviews extends \yii\db\ActiveRecord
             [['sender_id', 'recipient_id', 'task_id', 'evaluation', 'task_ready'], 'integer'],
             [['message'], 'string'],
             [['created'], 'safe'],
-            [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Task::className(), 'targetAttribute' => ['task_id' => 'id']],
-            [['sender_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['sender_id' => 'id']],
-            [['recipient_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['recipient_id' => 'id']],
+            [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tasks::className(), 'targetAttribute' => ['task_id' => 'id']],
+            [['sender_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['sender_id' => 'id']],
+            [['recipient_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['recipient_id' => 'id']],
         ];
     }
 
@@ -68,7 +68,7 @@ class Reviews extends \yii\db\ActiveRecord
      */
     public function getTask()
     {
-        return $this->hasOne(Task::className(), ['id' => 'task_id']);
+        return $this->hasOne(Tasks::class, ['id' => 'task_id']);
     }
 
     /**
@@ -76,7 +76,7 @@ class Reviews extends \yii\db\ActiveRecord
      */
     public function getSender()
     {
-        return $this->hasOne(User::className(), ['id' => 'sender_id']);
+        return $this->hasOne(Users::class, ['id' => 'sender_id']);
     }
 
     /**
@@ -84,6 +84,6 @@ class Reviews extends \yii\db\ActiveRecord
      */
     public function getRecipient()
     {
-        return $this->hasOne(User::className(), ['id' => 'recipient_id']);
+        return $this->hasOne(Users::class, ['id' => 'recipient_id']);
     }
 }

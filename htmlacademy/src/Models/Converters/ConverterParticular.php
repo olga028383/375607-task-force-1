@@ -7,25 +7,23 @@
  */
 
 namespace HtmlAcademy\Models\Converters;
-
-use HtmlAcademy\Models\Readers\AbstractFileReader;
+use HtmlAcademy\Models\ConvertersData\ConvertDataFloat;
+use HtmlAcademy\Models\ConvertersData\ConvertDataInterface;
+use HtmlAcademy\Models\ConvertersData\ConvertDataNumber;
+use HtmlAcademy\Models\ConvertersData\ConvertDataString;
+use HtmlAcademy\Models\Ex\ConverterException;
+use HtmlAcademy\Models\RandomData\RandomDataDate;
+use HtmlAcademy\Models\RandomData\RandomDataInterface;
+use HtmlAcademy\Models\RandomData\RandomDataNumber;
 use HtmlAcademy\Models\Readers\ReaderInterface;
 use HtmlAcademy\Models\Writes\AbstractWriter;
-use HtmlAcademy\Models\Ex\ConverterException;
-
-use HtmlAcademy\Models\RandomData\RandomDataDate;
-use HtmlAcademy\Models\RandomData\RandomDataNumber;
-
-use HtmlAcademy\Models\ConvertersData\Sql\ConvertDataFloat;
-use HtmlAcademy\Models\ConvertersData\Sql\ConvertDataString;
-use HtmlAcademy\Models\ConvertersData\Sql\ConvertDataNumber;
 
 
 /**
  * Class ConverterCsvToSql
  * @package HtmlAcademy\Models\Converters
  */
-class ConverterToSql extends Converter
+class ConverterParticular extends Converter
 {
     /**
      * @array
@@ -38,8 +36,8 @@ class ConverterToSql extends Converter
     private $randomData;
 
     /**
-     * ConverterCsvToSql constructor.
-     * @param AbstractFileReader $reader
+     * ConverterParticular constructor.
+     * @param ReaderInterface $reader
      * @param AbstractWriter $writer
      * @param array $dataForConvert
      * @param array $randomData
@@ -51,7 +49,7 @@ class ConverterToSql extends Converter
             throw new ConverterException('Массив данных для преобразования в Sql формат, должен быть заполнен');
         }
 
-        parent::__construct($reader, $writer, $dataForConvert);
+        parent::__construct($reader, $writer);
         $this->dataForConvert = $dataForConvert;
         $this->randomData = $randomData;
 
@@ -71,7 +69,7 @@ class ConverterToSql extends Converter
         foreach ($this->reader->getLine() as $line) {
             $formatData = array();
 
-            if(count($headers) !== count($line)){
+            if (count($headers) !== count($line)) {
                 continue;
             }
 
@@ -85,58 +83,47 @@ class ConverterToSql extends Converter
                 $formatData[$key] = $this->convertData($this->dataForConvert[$data])->convert($line[$key]);
             }
 
-            $this->writer->write($headers,  $formatData);
+            $this->writer->write($headers, $formatData);
         }
     }
 
     /**
      * @param string $data
-     * @return null|object
+     * @return RandomDataInterface|null
      * @throws ConverterException
      */
-    public function getRandomData(string $data): ? object
+    public function getRandomData(string $data): ? RandomDataInterface
     {
-        $result = null;
 
         switch ($data) {
             case 'date':
-                $result = new RandomDataDate();
-                break;
+                return new RandomDataDate();
             case 'number':
-                $result = new RandomDataNumber();
-                break;
-            default:
-                throw new ConverterException($data . ' такого генератора cлучайных данных не существует');
+                return new RandomDataNumber();
         }
 
-        return $result;
+        throw new ConverterException($data . ' такого генератора cлучайных данных не существует');
     }
 
     /**
      * @param string $data
-     * @return null|object
+     * @return ConvertDataInterface|null
      * @throws ConverterException
      */
-    public function convertData(string $data): ? object
+    public function convertData(string $data): ? ConvertDataInterface
     {
-        $result = null;
 
         switch ($data) {
             case 'string':
-                $result = new ConvertDataString();
-                break;
+                return new ConvertDataString();
             case 'number':
-                $result = new ConvertDataNumber();
-                break;
+                return new ConvertDataNumber();
             case 'float':
-                $result = new ConvertDataFloat();
-                break;
-            default:
-                throw new ConverterException($data . ' такого преобразователя данных не существует');
+                return new ConvertDataFloat();
 
         }
 
-        return $result;
+        throw new ConverterException($data . ' такого преобразователя данных не существует');
     }
 
 }

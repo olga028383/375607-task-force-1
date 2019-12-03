@@ -10,27 +10,27 @@ use Yii;
  * @property int $id
  * @property int $customer_id
  * @property int $category_id
- * @property int $executor_id
- * @property int $city_id
- * @property string $district
- * @property double $lat
- * @property double $long
+ * @property int|null $executor_id
+ * @property int|null $city_id
+ * @property string|null $district
+ * @property float|null $lat
+ * @property float|null $long
  * @property string $name
  * @property string $description
- * @property int $sum
- * @property string $status
- * @property string $deadline
+ * @property int|null $sum
+ * @property string|null $status
+ * @property string|null $deadline
  * @property string $created
- * @property string $closed
+ * @property string|null $closed
  *
- * @property Chat[] $chats
- * @property Response[] $responses
- * @property Review[] $reviews
- * @property TaskFile[] $taskFiles
- * @property Category $category
- * @property User $customer
- * @property User $executor
- * @property City $city
+ * @property Chats[] $chats
+ * @property Responses[] $responses
+ * @property Reviews[] $reviews
+ * @property TaskFiles[] $taskFiles
+ * @property Categories $category
+ * @property Users $customer
+ * @property Users $executor
+ * @property Cities $city
  */
 class Tasks extends \yii\db\ActiveRecord
 {
@@ -55,10 +55,10 @@ class Tasks extends \yii\db\ActiveRecord
             [['deadline', 'created', 'closed'], 'safe'],
             [['district'], 'string', 'max' => 200],
             [['name'], 'string', 'max' => 255],
-            [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::className(), 'targetAttribute' => ['category_id' => 'id']],
-            [['customer_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['customer_id' => 'id']],
-            [['executor_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['executor_id' => 'id']],
-            [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => City::className(), 'targetAttribute' => ['city_id' => 'id']],
+            [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Categories::class, 'targetAttribute' => ['category_id' => 'id']],
+            [['customer_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['customer_id' => 'id']],
+            [['executor_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['executor_id' => 'id']],
+            [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::class, 'targetAttribute' => ['city_id' => 'id']],
         ];
     }
 
@@ -91,7 +91,7 @@ class Tasks extends \yii\db\ActiveRecord
      */
     public function getChats()
     {
-        return $this->hasMany(Chat::className(), ['task_id' => 'id']);
+        return $this->hasMany(Chats::class, ['task_id' => 'id']);
     }
 
     /**
@@ -99,7 +99,7 @@ class Tasks extends \yii\db\ActiveRecord
      */
     public function getResponses()
     {
-        return $this->hasMany(Response::className(), ['task_id' => 'id']);
+        return $this->hasMany(Responses::class, ['task_id' => 'id']);
     }
 
     /**
@@ -107,7 +107,7 @@ class Tasks extends \yii\db\ActiveRecord
      */
     public function getReviews()
     {
-        return $this->hasMany(Review::className(), ['task_id' => 'id']);
+        return $this->hasMany(Reviews::class, ['task_id' => 'id']);
     }
 
     /**
@@ -115,7 +115,7 @@ class Tasks extends \yii\db\ActiveRecord
      */
     public function getTaskFiles()
     {
-        return $this->hasMany(TaskFile::className(), ['task_id' => 'id']);
+        return $this->hasMany(TaskFiles::class, ['task_id' => 'id']);
     }
 
     /**
@@ -123,7 +123,7 @@ class Tasks extends \yii\db\ActiveRecord
      */
     public function getCategory()
     {
-        return $this->hasOne(Category::className(), ['id' => 'category_id']);
+        return $this->hasOne(Categories::class, ['id' => 'category_id']);
     }
 
     /**
@@ -131,7 +131,7 @@ class Tasks extends \yii\db\ActiveRecord
      */
     public function getCustomer()
     {
-        return $this->hasOne(User::className(), ['id' => 'customer_id']);
+        return $this->hasOne(Users::class, ['id' => 'customer_id']);
     }
 
     /**
@@ -139,7 +139,7 @@ class Tasks extends \yii\db\ActiveRecord
      */
     public function getExecutor()
     {
-        return $this->hasOne(User::className(), ['id' => 'executor_id']);
+        return $this->hasOne(Users::class, ['id' => 'executor_id']);
     }
 
     /**
@@ -147,6 +147,32 @@ class Tasks extends \yii\db\ActiveRecord
      */
     public function getCity()
     {
-        return $this->hasOne(City::className(), ['id' => 'city_id']);
+        return $this->hasOne(Cities::class, ['id' => 'city_id']);
     }
+
+    /**
+     * @return string
+     */
+    public function getTimeCreationToCurrent(): string
+    {
+        $current = new \DateTime();
+        $interval = $current->diff(new \DateTime($this->created));
+
+        $str = '';
+
+        if($interval->y){
+            $str .= $interval->y . ' г., ';
+        }
+
+        if($interval->m){
+            $str .= $interval->m . ' м., ';
+        }
+
+        if($interval->h){
+            $str .= $interval->h . ' часов ';
+        }
+
+        return $str;
+    }
+
 }

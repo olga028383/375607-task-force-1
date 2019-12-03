@@ -11,11 +11,11 @@ use Yii;
  * @property int $user_id
  * @property int $notification_id
  * @property string $message
- * @property int $event_new
+ * @property int|null $event_new
  * @property string $sent_on
  *
- * @property User $user
- * @property Notification $notification
+ * @property Users $user
+ * @property Notifications $notification
  */
 class Events extends \yii\db\ActiveRecord
 {
@@ -37,8 +37,8 @@ class Events extends \yii\db\ActiveRecord
             [['user_id', 'notification_id', 'event_new'], 'integer'],
             [['message'], 'string'],
             [['sent_on'], 'safe'],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
-            [['notification_id'], 'exist', 'skipOnError' => true, 'targetClass' => Notification::className(), 'targetAttribute' => ['notification_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [['notification_id'], 'exist', 'skipOnError' => true, 'targetClass' => Notifications::className(), 'targetAttribute' => ['notification_id' => 'id']],
         ];
     }
 
@@ -62,7 +62,7 @@ class Events extends \yii\db\ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
+        return $this->hasOne(Users::class, ['id' => 'user_id']);
     }
 
     /**
@@ -70,6 +70,6 @@ class Events extends \yii\db\ActiveRecord
      */
     public function getNotification()
     {
-        return $this->hasOne(Notification::className(), ['id' => 'notification_id']);
+        return $this->hasOne(Notifications::class, ['id' => 'notification_id']);
     }
 }

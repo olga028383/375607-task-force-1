@@ -29,6 +29,7 @@ class SqlWriter extends AbstractWriter
      */
     private $fileToWrite;
 
+
     /**
      * SqlWriter constructor.
      * @param string $dirName
@@ -36,12 +37,13 @@ class SqlWriter extends AbstractWriter
      * @param string $tableName
      * @param array $typeColumns
      */
-    public function __construct($dirName, $fileName, $tableName, array $typeColumns = array())
+    public function __construct(string $dirName, string $fileName, string $tableName, array $typeColumns = array())
     {
         parent::__construct($dirName, $fileName, $tableName, $typeColumns);
 
         $this->setFilePath();
         $this->fileToWrite = new \SplFileObject($this->filePath, "w");
+
     }
 
     /**
@@ -53,6 +55,14 @@ class SqlWriter extends AbstractWriter
     }
 
     /**
+     * @return string
+     */
+    public function getFilePath(): string
+    {
+        return $this->filePath;
+    }
+
+    /**
      * Метод создает файл
      */
     public function setFilePath(): void
@@ -61,20 +71,20 @@ class SqlWriter extends AbstractWriter
     }
 
     /**
-     * @return string
-     */
-    public function getFilePath(): string
-    {
-        return $this->filePath;
-    }
-
-
-    /**
      * @param array $columns
      * @param array $row
      */
     public function write(array $columns, array $row): void
     {
+
+        foreach ($row as &$item) {
+            if (is_string($item)) {
+                $item = '\'' . $item . '\'';
+            } else if (is_null($item)) {
+                $item = 'NULL';
+            }
+        }
+
         $this->fileToWrite->fwrite('INSERT INTO' . ' ' . $this->tableName . '(`' . implode('`,`', $columns) . '`) VALUES (' . implode(',', $row) . ');' . PHP_EOL);
     }
 

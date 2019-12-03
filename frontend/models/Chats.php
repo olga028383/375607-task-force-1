@@ -10,11 +10,11 @@ use Yii;
  * @property int $id
  * @property int $task_id
  * @property int $executor_id
- * @property int $is_closed
+ * @property int|null $is_closed
  *
- * @property ChatMessage[] $chatMessages
- * @property Task $task
- * @property User $executor
+ * @property ChatMessages[] $chatMessages
+ * @property Tasks $task
+ * @property Users $executor
  */
 class Chats extends \yii\db\ActiveRecord
 {
@@ -34,8 +34,8 @@ class Chats extends \yii\db\ActiveRecord
         return [
             [['task_id', 'executor_id'], 'required'],
             [['task_id', 'executor_id', 'is_closed'], 'integer'],
-            [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Task::className(), 'targetAttribute' => ['task_id' => 'id']],
-            [['executor_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['executor_id' => 'id']],
+            [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tasks::className(), 'targetAttribute' => ['task_id' => 'id']],
+            [['executor_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['executor_id' => 'id']],
         ];
     }
 
@@ -57,7 +57,7 @@ class Chats extends \yii\db\ActiveRecord
      */
     public function getChatMessages()
     {
-        return $this->hasMany(ChatMessage::className(), ['chat_id' => 'id']);
+        return $this->hasMany(ChatMessages::class, ['chat_id' => 'id']);
     }
 
     /**
@@ -65,7 +65,7 @@ class Chats extends \yii\db\ActiveRecord
      */
     public function getTask()
     {
-        return $this->hasOne(Task::className(), ['id' => 'task_id']);
+        return $this->hasOne(Tasks::class, ['id' => 'task_id']);
     }
 
     /**
@@ -73,6 +73,6 @@ class Chats extends \yii\db\ActiveRecord
      */
     public function getExecutor()
     {
-        return $this->hasOne(User::className(), ['id' => 'executor_id']);
+        return $this->hasOne(Users::class, ['id' => 'executor_id']);
     }
 }
