@@ -24,7 +24,7 @@ class TaskController extends Controller
         $tasks = Tasks::find()
             ->with(['category', 'city'])
             ->where(['status' => TaskForce::STATUS_NEW])
-            ->orderBy('id')
+            ->orderBy('created')
             ->all();
 
         return $this->render('browse', [
