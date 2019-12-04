@@ -47,7 +47,7 @@ class m191202_180854_create_table_events extends Migration
             'events'
         );
 
-        $this->dropTable('users');
+        $this->dropTable('events');
 
     }
 }

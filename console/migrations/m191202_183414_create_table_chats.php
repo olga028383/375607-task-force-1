@@ -38,12 +38,12 @@ class m191202_183414_create_table_chats extends Migration
     {
         $this->dropForeignKey(
             'fk-chats-task_id',
-            'reviews'
+            'chats'
         );
 
         $this->dropForeignKey(
             'fk-chats-executor_id',
-            'reviews'
+            'chats'
         );
 
         $this->dropTable('chats');

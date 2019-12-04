@@ -35,7 +35,7 @@ class m191202_175640_create_table_user_specialization_category extends Migration
     public function down()
     {
         $this->dropForeignKey(
-            'fk-user_specialization_category-city_id',
+            'fk-user_specialization_category-user_id',
             'user_specialization_category'
         );
 

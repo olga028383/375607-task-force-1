@@ -40,12 +40,12 @@ class m191202_183944_create_table_responses extends Migration
     public function down()
     {
         $this->dropForeignKey(
-            'fk-responses-chat_id',
+            'fk-responses-task_id',
             'responses'
         );
 
         $this->dropForeignKey(
-            'fk-responses-task_id',
+            'fk-responses-user_id',
             'responses'
         );
 

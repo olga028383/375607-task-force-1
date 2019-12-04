@@ -35,7 +35,7 @@ class m191202_180045_create_table_favourite_users extends Migration
     public function down()
     {
         $this->dropForeignKey(
-            'fk-favourite_users-user_id',
+            'fk-favourite_users-user_current',
             'favourite_users'
         );
 

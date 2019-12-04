@@ -82,7 +82,7 @@ class m191202_181422_create_table_tasks extends Migration
             'tasks'
         );
 
-        $this->dropTable('users');
+        $this->dropTable('tasks');
 
     }
 }
