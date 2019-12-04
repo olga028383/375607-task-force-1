@@ -7,8 +7,8 @@ use HtmlAcademy\Models\Actions;
 use HtmlAcademy\Models\Readers\CsvFileReader;
 use HtmlAcademy\Models\Writes\SqlWriter;
 
-$path = 'I:\OSPanel\domains\yii-taskforce';
-require $path . '/vendor/autoload.php';
+var_dump(file_exists('./vendor/autoload.php'));
+require  './vendor/autoload.php';
 
 
 $object = TaskForce::createTask(1, 1, 'Убрать квартиру', 'Убрать квартру в понедельник', 5000, '18.11.2019', '30.10.2019');
@@ -61,12 +61,12 @@ try {
                 $reader = new PhpReader(array_keys($value['fieldsForConvert']), $value['rows']);
                 break;
             case 'csv':
-                $reader = new CsvFileReader($path . '/htmlacademy/data/' . $value['name'] . '.csv');
+                $reader = new CsvFileReader('./htmlacademy/data/' . $value['name'] . '.csv');
                 break;
 
         }
 
-        $writer = new SqlWriter($path . '/htmlacademy/sql/sql_data/', $value['name'], $value['name']);
+        $writer = new SqlWriter('./htmlacademy/sql/sql_data/', $value['name'], $value['name']);
         $converter = new Converters\ConverterParticular($reader, $writer, $value['fieldsForConvert'], $value['fieldsRandom']);
         $converter->import();
     }
