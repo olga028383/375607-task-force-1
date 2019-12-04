@@ -79,7 +79,7 @@ class SqlWriter extends AbstractWriter
 
         foreach ($row as &$item) {
             if (is_string($item)) {
-                $item = '\'' . $item . '\'';
+                $item = '\'' . addslashes($item) . '\'';
             } else if (is_null($item)) {
                 $item = 'NULL';
             }
