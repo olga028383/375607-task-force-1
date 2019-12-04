@@ -8,7 +8,6 @@
 
 namespace frontend\controllers;
 
-use frontend\models\Categories;
 use frontend\models\Tasks;
 use HtmlAcademy\Models\TaskForce;
 use yii\web\Controller;
@@ -19,12 +18,13 @@ class TaskController extends Controller
     /**
      *
      */
-    public function actionIndex(){
+    public function actionIndex()
+    {
 
         $tasks = Tasks::find()
             ->with(['category', 'city'])
             ->where(['status' => TaskForce::STATUS_NEW])
-            ->orderBy('created')
+            ->orderBy(['created' => SORT_DESC])
             ->all();
 
         return $this->render('browse', [
