@@ -1,36 +1,56 @@
 <?php
 
 /* @var $this yii\web\View */
+/* @var $tasks array*/
 
 use yii\helpers\Html;
 
 $this->title = 'Новые задания';
 $this->params['breadcrumbs'][] = $this->title;
 
-
 ?>
-
+<div>
+    <?php
+        echo \Yii::t(
+            'app',
+            '{n, plural, =0{} =1{1 год} =11{# лет} other{ # лет}}',
+            ['n' => 11]
+        );
+    ?>
+</div>
 <main class="page-main">
     <div class="main-container page-container">
         <section class="new-task">
             <div class="new-task__wrapper">
                 <h1><?=Html::encode($this->title)?></h1>
-                <?foreach($tasks as $task):?>
+                <?php
+                foreach($tasks as $task):?>
                     <div class="new-task__card">
                     <div class="new-task__title">
-                        <a href="#" class="link-regular"><h2><?=$task->name?></h2></a>
-                        <a  class="new-task__type link-regular" href="#"><p><?=$task->category->name?></p></a>
+                        <a href="#" class="link-regular"><h2><?= Html::encode($task->name)?></h2></a>
+                        <a  class="new-task__type link-regular" href="#"><p><?= Html::encode($task->category->name)?></p></a>
                     </div>
-                    <div class="new-task__icon new-task__icon--<?=$task->category->icon?>"></div>
+                    <div class="new-task__icon new-task__icon--<?= Html::encode($task->category->icon)?>"></div>
                     <p class="new-task_description">
                         <?=$task->description?>
                     </p>
-                    <b class="new-task__price new-task__price--translation"><?=$task->sum?><b> ₽</b></b>
-                    <p class="new-task__place"><?=$task->city->name?><?=$task->district?></p>
-                    <span class="new-task__time"><?=$task->getTimeCreationToCurrent();?> назад</span>
-                </div>
-                <?endforeach?>
+                    <b class="new-task__price new-task__price--translation"><?= Html::encode($task->sum)?><b> ₽</b></b>
+                    <p class="new-task__place">
+                        <?php
+                            if($task->city){
+                                $task->city->name;
+                            }
+                            echo $task->district;
+                        ?>
+                    </p>
+                    <span class="new-task__time"><?=$task->getTimeCreationToCurrent()?> назад</span>
+
+                    </div>
+                <?php
+                endforeach;
+                ?>
             </div>
+
             <div class="new-task__pagination">
                 <ul class="new-task__pagination-list">
                     <li class="pagination__item"><a href="#"></a></li>
