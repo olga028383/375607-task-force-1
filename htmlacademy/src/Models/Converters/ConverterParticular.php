@@ -36,6 +36,11 @@ class ConverterParticular extends Converter
     private $randomData;
 
     /**
+     * @var
+     */
+    private $fieldIncrement;
+
+    /**
      * ConverterParticular constructor.
      * @param ReaderInterface $reader
      * @param AbstractWriter $writer
@@ -43,7 +48,7 @@ class ConverterParticular extends Converter
      * @param array $randomData
      * @throws ConverterException
      */
-    public function __construct(ReaderInterface $reader, AbstractWriter $writer, array $dataForConvert, array $randomData = array())
+    public function __construct(ReaderInterface $reader, AbstractWriter $writer, array $dataForConvert, array $randomData = array(), string $fieldIncrement = '')
     {
         if (empty($dataForConvert)) {
             throw new ConverterException('Массив данных для преобразования в Sql формат, должен быть заполнен');
@@ -52,7 +57,7 @@ class ConverterParticular extends Converter
         parent::__construct($reader, $writer);
         $this->dataForConvert = $dataForConvert;
         $this->randomData = $randomData;
-
+        $this->fieldIncrement = $fieldIncrement;
     }
 
     /**
@@ -62,12 +67,21 @@ class ConverterParticular extends Converter
     {
         $headers = $this->reader->getHeaders();
 
+        if($this->fieldIncrement && !in_array($this->fieldIncrement, $headers)) {
+            array_unshift($headers, $this->fieldIncrement);
+        }
+
         if (count($headers) !== count($this->dataForConvert)) {
             throw new ConverterException('Переданы не все столбцы для конвертации данных');
         }
 
+        $count = 0;
         foreach ($this->reader->getLine() as $line) {
             $formatData = array();
+
+            if($this->fieldIncrement) {
+                array_unshift($line, ++$count);
+            }
 
             if (count($headers) !== count($line)) {
                 continue;
@@ -82,6 +96,7 @@ class ConverterParticular extends Converter
 
                 $formatData[$key] = $this->convertData($this->dataForConvert[$data])->convert($line[$key]);
             }
+
 
             $this->writer->write($headers, $formatData);
         }

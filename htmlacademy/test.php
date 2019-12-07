@@ -67,7 +67,7 @@ try {
         }
 
         $writer = new SqlWriter('./htmlacademy/sql/sql_data/', $value['name'], $value['name']);
-        $converter = new Converters\ConverterParticular($reader, $writer, $value['fieldsForConvert'], $value['fieldsRandom']);
+        $converter = new Converters\ConverterParticular($reader, $writer, $value['fieldsForConvert'], $value['fieldsRandom'], $value['fieldIncrement']);
         $converter->import();
     }
 

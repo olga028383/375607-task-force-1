@@ -151,28 +151,43 @@ class Tasks extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return string
+     * @return \DateInterval
      */
-    public function getTimeCreationToCurrent(): string
+    private function getTimeCreationToCurrent(): \DateInterval
     {
         $current = new \DateTime();
-        $interval = $current->diff(new \DateTime($this->created));
-
-        $str = '';
-
-        if($interval->y){
-            $str .= $interval->y . ' г., ';
-        }
-
-        if($interval->m){
-            $str .= $interval->m . ' м., ';
-        }
-
-        if($interval->h){
-            $str .= $interval->h . ' часов ';
-        }
-
-        return $str;
+        return $current->diff(new \DateTime($this->created));
     }
 
+    /**
+     * @return int
+     */
+    public function getYear(): int
+    {
+        return $this->getTimeCreationToCurrent()->y;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMonth(): int
+    {
+        return $this->getTimeCreationToCurrent()->m;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDay(): int
+    {
+        return $this->getTimeCreationToCurrent()->d;
+    }
+
+    /**
+     * @return int
+     */
+    public function getHour(): int
+    {
+        return $this->getTimeCreationToCurrent()->h;
+    }
 }

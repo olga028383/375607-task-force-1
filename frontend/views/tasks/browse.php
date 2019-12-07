@@ -1,52 +1,65 @@
 <?php
 
 /* @var $this yii\web\View */
-/* @var $tasks array*/
 
+/* @var $tasks array */
+
+use morphos\Russian;
 use yii\helpers\Html;
 
 $this->title = 'Новые задания';
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
-<div>
-    <?php
-        echo \Yii::t(
-            'app',
-            '{n, plural, =0{} =1{1 год} =11{# лет} other{ # лет}}',
-            ['n' => 11]
-        );
-    ?>
-</div>
+
 <main class="page-main">
     <div class="main-container page-container">
         <section class="new-task">
             <div class="new-task__wrapper">
-                <h1><?=Html::encode($this->title)?></h1>
+                <h1><?= Html::encode($this->title) ?></h1>
                 <?php
-                foreach($tasks as $task):?>
+                foreach ($tasks as $task):?>
                     <div class="new-task__card">
-                    <div class="new-task__title">
-                        <a href="#" class="link-regular"><h2><?= Html::encode($task->name)?></h2></a>
-                        <a  class="new-task__type link-regular" href="#"><p><?= Html::encode($task->category->name)?></p></a>
-                    </div>
-                    <div class="new-task__icon new-task__icon--<?= Html::encode($task->category->icon)?>"></div>
-                    <p class="new-task_description">
-                        <?=$task->description?>
-                    </p>
-                    <b class="new-task__price new-task__price--translation"><?= Html::encode($task->sum)?><b> ₽</b></b>
-                    <p class="new-task__place">
-                        <?php
-                            if($task->city){
+                        <div class="new-task__title">
+                            <a href="#" class="link-regular"><h2><?= Html::encode($task->name) ?></h2></a>
+                            <a class="new-task__type link-regular" href="#">
+                                <p><?= Html::encode($task->category->name) ?></p></a>
+                        </div>
+                        <div class="new-task__icon new-task__icon--<?= Html::encode($task->category->icon) ?>"></div>
+                        <p class="new-task_description">
+                            <?= $task->description ?>
+                        </p>
+                        <b class="new-task__price new-task__price--translation"><?= Html::encode($task->sum) ?><b> ₽</b></b>
+                        <p class="new-task__place">
+                            <?php
+                            if ($task->city) {
                                 $task->city->name;
                             }
                             echo $task->district;
-                        ?>
-                    </p>
-                    <span class="new-task__time"><?=$task->getTimeCreationToCurrent()?> назад</span>
+                            ?>
+                        </p>
+                        <span class="new-task__time">
+                        <?php
 
+                            if ($task->getYear()) {
+                                echo Russian\pluralize($task->getYear(), 'год').' ';
+                            }
+
+                            if ($task->getMonth()) {
+                                echo Russian\pluralize($task->getMonth(), 'месяц').' ';
+                            }
+                            if ($task->getDay()) {
+                                echo Russian\pluralize($task->getDay(), 'день').' ';
+                            }
+
+                            if ($task->getHour()) {
+                                echo Russian\pluralize($task->getHour(), 'час') .' ';
+                            }
+
+                        ?> назад
+                        </span>
                     </div>
-                <?php
+                    <?php
                 endforeach;
                 ?>
             </div>
@@ -62,7 +75,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 </ul>
             </div>
         </section>
-        <section  class="search-task">
+        <section class="search-task">
             <div class="search-task__wrapper">
                 <form class="search-task__form" name="test" method="post" action="#">
                     <fieldset class="search-task__categories">
@@ -70,13 +83,13 @@ $this->params['breadcrumbs'][] = $this->title;
                         <input class="visually-hidden checkbox__input" id="1" type="checkbox" name="" value="" checked>
                         <label for="1">Курьерские услуги </label>
                         <input class="visually-hidden checkbox__input" id="2" type="checkbox" name="" value="" checked>
-                        <label  for="2">Грузоперевозки </label>
+                        <label for="2">Грузоперевозки </label>
                         <input class="visually-hidden checkbox__input" id="3" type="checkbox" name="" value="">
-                        <label  for="3">Переводы </label>
+                        <label for="3">Переводы </label>
                         <input class="visually-hidden checkbox__input" id="4" type="checkbox" name="" value="">
-                        <label  for="4">Строительство и ремонт </label>
+                        <label for="4">Строительство и ремонт </label>
                         <input class="visually-hidden checkbox__input" id="5" type="checkbox" name="" value="">
-                        <label  for="5">Выгул животных </label>
+                        <label for="5">Выгул животных </label>
                     </fieldset>
                     <fieldset class="search-task__categories">
                         <legend>Дополнительно</legend>
@@ -86,7 +99,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <label for="7">Удаленная работа </label>
                     </fieldset>
                     <label class="search-task__name" for="8">Период</label>
-                    <select class="multiple-select input" id="8"size="1" name="time[]">
+                    <select class="multiple-select input" id="8" size="1" name="time[]">
                         <option value="day">За день</option>
                         <option selected value="week">За неделю</option>
                         <option value="month">За месяц</option>
