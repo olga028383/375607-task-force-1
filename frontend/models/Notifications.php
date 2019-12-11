@@ -8,9 +8,9 @@ use Yii;
  * This is the model class for table "notifications".
  *
  * @property int $id
- * @property string $name
+ * @property string|null $name
  *
- * @property Event[] $events
+ * @property Events[] $events
  */
 class Notifications extends \yii\db\ActiveRecord
 {
@@ -48,6 +48,6 @@ class Notifications extends \yii\db\ActiveRecord
      */
     public function getEvents()
     {
-        return $this->hasMany(Event::className(), ['notification_id' => 'id']);
+        return $this->hasMany(Events::class, ['notification_id' => 'id']);
     }
 }

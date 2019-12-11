@@ -42,7 +42,7 @@ CREATE TABLE `profiles` (
 `show_contacts_customer` TINYINT(1),
 `show_profile` TINYINT(1),
 `last_active_at` DATETIME NOT NULL,
- FOREIGN KEY (`user_id`)  REFERENCES categories (`id`)
+ FOREIGN KEY (`user_id`)  REFERENCES users (`id`)
 );
 CREATE TABLE `photos` (
 `id` INT AUTO_INCREMENT PRIMARY KEY,
@@ -55,7 +55,7 @@ CREATE TABLE `user_specialization_category` (
 `user_id` INT NOT NULL,
 `categories_id` INT,
 FOREIGN KEY (`user_id`)  REFERENCES users (`id`),
-FOREIGN KEY (`categories_id`)  REFERENCES users (`id`)
+FOREIGN KEY (`categories_id`)  REFERENCES categories (`id`)
 );
 CREATE TABLE `favourite_users` (
 `id` INT AUTO_INCREMENT PRIMARY KEY,

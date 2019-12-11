@@ -11,7 +11,7 @@ use Yii;
  * @property int $task_id
  * @property string $link
  *
- * @property Task $task
+ * @property Tasks $task
  */
 class TaskFiles extends \yii\db\ActiveRecord
 {
@@ -32,7 +32,7 @@ class TaskFiles extends \yii\db\ActiveRecord
             [['task_id', 'link'], 'required'],
             [['task_id'], 'integer'],
             [['link'], 'string', 'max' => 150],
-            [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Task::className(), 'targetAttribute' => ['task_id' => 'id']],
+            [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tasks::className(), 'targetAttribute' => ['task_id' => 'id']],
         ];
     }
 
@@ -53,6 +53,6 @@ class TaskFiles extends \yii\db\ActiveRecord
      */
     public function getTask()
     {
-        return $this->hasOne(Task::className(), ['id' => 'task_id']);
+        return $this->hasOne(Tasks::class, ['id' => 'task_id']);
     }
 }

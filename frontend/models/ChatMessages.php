@@ -14,9 +14,9 @@ use Yii;
  * @property string $message
  * @property string $created
  *
- * @property Chat $chat
- * @property User $sender
- * @property User $recipient
+ * @property Chats $chat
+ * @property Users $sender
+ * @property Users $recipient
  */
 class ChatMessages extends \yii\db\ActiveRecord
 {
@@ -38,9 +38,9 @@ class ChatMessages extends \yii\db\ActiveRecord
             [['chat_id', 'sender_id', 'recipient_id'], 'integer'],
             [['message'], 'string'],
             [['created'], 'safe'],
-            [['chat_id'], 'exist', 'skipOnError' => true, 'targetClass' => Chat::className(), 'targetAttribute' => ['chat_id' => 'id']],
-            [['sender_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['sender_id' => 'id']],
-            [['recipient_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['recipient_id' => 'id']],
+            [['chat_id'], 'exist', 'skipOnError' => true, 'targetClass' => Chats::className(), 'targetAttribute' => ['chat_id' => 'id']],
+            [['sender_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['sender_id' => 'id']],
+            [['recipient_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['recipient_id' => 'id']],
         ];
     }
 
@@ -64,7 +64,7 @@ class ChatMessages extends \yii\db\ActiveRecord
      */
     public function getChat()
     {
-        return $this->hasOne(Chat::className(), ['id' => 'chat_id']);
+        return $this->hasOne(Chats::class, ['id' => 'chat_id']);
     }
 
     /**
@@ -72,7 +72,7 @@ class ChatMessages extends \yii\db\ActiveRecord
      */
     public function getSender()
     {
-        return $this->hasOne(User::className(), ['id' => 'sender_id']);
+        return $this->hasOne(Users::class, ['id' => 'sender_id']);
     }
 
     /**
@@ -80,6 +80,6 @@ class ChatMessages extends \yii\db\ActiveRecord
      */
     public function getRecipient()
     {
-        return $this->hasOne(User::className(), ['id' => 'recipient_id']);
+        return $this->hasOne(Users::class, ['id' => 'recipient_id']);
     }
 }

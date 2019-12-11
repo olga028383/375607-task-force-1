@@ -9,11 +9,11 @@ use Yii;
  *
  * @property int $id
  * @property string $city
- * @property double $lat
- * @property double $long
+ * @property float|null $lat
+ * @property float|null $long
  *
- * @property Task[] $tasks
- * @property User[] $users
+ * @property Tasks[] $tasks
+ * @property Users[] $users
  */
 class Cities extends \yii\db\ActiveRecord
 {
@@ -55,7 +55,7 @@ class Cities extends \yii\db\ActiveRecord
      */
     public function getTasks()
     {
-        return $this->hasMany(Task::className(), ['city_id' => 'id']);
+        return $this->hasMany(Tasks::class, ['city_id' => 'id']);
     }
 
     /**
@@ -63,6 +63,6 @@ class Cities extends \yii\db\ActiveRecord
      */
     public function getUsers()
     {
-        return $this->hasMany(User::className(), ['city_id' => 'id']);
+        return $this->hasMany(Users::class, ['city_id' => 'id']);
     }
 }
