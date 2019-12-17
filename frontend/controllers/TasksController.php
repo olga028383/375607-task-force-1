@@ -61,10 +61,10 @@ class TasksController extends Controller
 //                ->all();
 //        }
 
-        $tasks = Tasks::find()
+        $query = Tasks::find()
             ->with(['category', 'city']);
 
-       $tasks->all();
+       $tasks = $query->all();
 
 //        $tasks = Tasks::find()
 //                ->with(['category', 'city'])
@@ -72,7 +72,7 @@ class TasksController extends Controller
 //                ->andWhere(['>', 'created', 'deadline'])
 //                ->orderBy(['created' => SORT_DESC])
 //               ->all();
-        dump($tasks);
+       // dump($tasks);
         return $this->render('browse', [
             'tasks' => $tasks,
             'filterFormModel' => $filterFormModel
