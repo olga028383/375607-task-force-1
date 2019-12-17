@@ -4,8 +4,12 @@
 
 /* @var $tasks array */
 
+/* @var $filterFormModel */
+
+use frontend\models\Categories;
 use morphos\Russian;
 use yii\helpers\Html;
+use yii\widgets\ActiveForm;
 
 $this->title = 'Новые задания';
 $this->params['breadcrumbs'][] = $this->title;
@@ -41,20 +45,20 @@ $this->params['breadcrumbs'][] = $this->title;
                         <span class="new-task__time">
                         <?php
 
-                            if ($task->getYear()) {
-                                echo Russian\pluralize($task->getYear(), 'год').' ';
-                            }
+                        if ($task->getYear()) {
+                            echo Russian\pluralize($task->getYear(), 'год') . ' ';
+                        }
 
-                            if ($task->getMonth()) {
-                                echo Russian\pluralize($task->getMonth(), 'месяц').' ';
-                            }
-                            if ($task->getDay()) {
-                                echo Russian\pluralize($task->getDay(), 'день').' ';
-                            }
+                        if ($task->getMonth()) {
+                            echo Russian\pluralize($task->getMonth(), 'месяц') . ' ';
+                        }
+                        if ($task->getDay()) {
+                            echo Russian\pluralize($task->getDay(), 'день') . ' ';
+                        }
 
-                            if ($task->getHour()) {
-                                echo Russian\pluralize($task->getHour(), 'час') .' ';
-                            }
+                        if ($task->getHour()) {
+                            echo Russian\pluralize($task->getHour(), 'час') . ' ';
+                        }
 
                         ?> назад
                         </span>
@@ -77,37 +81,59 @@ $this->params['breadcrumbs'][] = $this->title;
         </section>
         <section class="search-task">
             <div class="search-task__wrapper">
-                <form class="search-task__form" name="test" method="post" action="#">
-                    <fieldset class="search-task__categories">
-                        <legend>Категории</legend>
-                        <input class="visually-hidden checkbox__input" id="1" type="checkbox" name="" value="" checked>
-                        <label for="1">Курьерские услуги </label>
-                        <input class="visually-hidden checkbox__input" id="2" type="checkbox" name="" value="" checked>
-                        <label for="2">Грузоперевозки </label>
-                        <input class="visually-hidden checkbox__input" id="3" type="checkbox" name="" value="">
-                        <label for="3">Переводы </label>
-                        <input class="visually-hidden checkbox__input" id="4" type="checkbox" name="" value="">
-                        <label for="4">Строительство и ремонт </label>
-                        <input class="visually-hidden checkbox__input" id="5" type="checkbox" name="" value="">
-                        <label for="5">Выгул животных </label>
-                    </fieldset>
-                    <fieldset class="search-task__categories">
-                        <legend>Дополнительно</legend>
-                        <input class="visually-hidden checkbox__input" id="6" type="checkbox" name="" value="">
-                        <label for="6">Без исполнителя </label>
-                        <input class="visually-hidden checkbox__input" id="7" type="checkbox" name="" value="" checked>
-                        <label for="7">Удаленная работа </label>
-                    </fieldset>
-                    <label class="search-task__name" for="8">Период</label>
-                    <select class="multiple-select input" id="8" size="1" name="time[]">
-                        <option value="day">За день</option>
-                        <option selected value="week">За неделю</option>
-                        <option value="month">За месяц</option>
-                    </select>
-                    <label class="search-task__name" for="9">Поиск по названию</label>
-                    <input class="input-middle input" id="9" type="search" name="q" placeholder="">
-                    <button class="button" type="submit">Искать</button>
-                </form>
+
+                <?php
+                $form = ActiveForm::begin([
+                    'id' => 'filter-form',
+                    'options' => ['class' => 'search-task__form'],
+                ]);
+
+                ?>
+                <fieldset class="search-task__categories">
+                    <legend><?php echo $filterFormModel->getAttributeLabel('categories'); ?></legend>
+
+                    <?php
+                        //echo Html::activeCheckboxList($filterFormModel,'categories[]', Categories::find()->select(['name', 'id'])->indexBy('id')->column())
+                    ?>
+
+                    <?php echo $form->field($filterFormModel, 'categories[]')
+                        ->checkboxList(Categories::find()->select(['name', 'id'])->indexBy('id')->column()) ?>
+
+                    <!--                        <input class="visually-hidden checkbox__input" id="1" type="checkbox" name="" value="" checked>-->
+                    <!--                        <label for="1">Курьерские услуги </label>-->
+
+                </fieldset>
+
+                <fieldset class="search-task__categories">
+                    <legend>Дополнительно</legend>
+
+                    <?php echo Html::activeInput('checkbox', $filterFormModel, 'withoutExecutor', array('class' => 'visually-hidden checkbox__input', 'id' => 6)); ?>
+                    <label for="6">Без исполнителя </label>
+
+                    <?php echo Html::activeInput('checkbox', $filterFormModel, 'distantWork', array('class' => 'visually-hidden checkbox__input', 'id' => 7)); ?>
+                    <label for="7">Удаленная работа </label>
+
+                </fieldset>
+
+                <label class="search-task__name" for="8">Период</label>
+
+
+                <?php
+                //Как сюда добавить selected для week
+                echo Html::activeDropDownList($filterFormModel, 'time[]',
+                    array('day' => 'За день',
+                        'week' => 'За неделю',
+                        'month' => 'За месяц'),
+                    array('class' => 'multiple-select input', 'size' => 1)); ?>
+
+
+                <label class="search-task__name" for="9">Поиск по названию</label>
+
+                <?php echo Html::activeTextInput($filterFormModel, 'search', array('class' => 'input-middle input')) ?>
+
+                <?= Html::submitButton('Искать', ['class' => 'button']) ?>
+
+                <?php ActiveForm::end() ?>
             </div>
         </section>
     </div>
