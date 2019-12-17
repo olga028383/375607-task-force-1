@@ -25,54 +25,32 @@ class TasksController extends Controller
         $filterFormModel = new FilterForm();
         $request = Yii::$app->request;
 
-//        if($request->getIsPost()) {
-//
-//            $post = $request->post();
-//
-//            $query = (new \yii\db\Query())
-//                ->from('tasks')
-//                ->leftJoin('categories', 'categories.id = tasks.category_id')
-//                ->leftJoin('cities', 'cities.id = tasks.city_id');
-//
-//            foreach($post["FilterForm"] as $name => $data){
-//
-//                switch($name)
-//                {
-//                    case 'categories':
-//                        $query->andFilterWhere(['category_id' => $data]);
-//                    break;
-//                    case 'withoutExecutor':
-//                        $query->andFilterWhere(['executor_id' => NULL]);
-//                        break;
-//                }
-//            }
-//
-//            $tasks = $query->all();
-//            //dump($tasks);
-//
-//
-//        }else{
-//
-//            $tasks = Tasks::find()
-//                ->with(['category', 'city'])
-//                ->where(['status' => TaskForce::STATUS_NEW])
-//                ->andWhere(['>', 'created', 'deadline'])
-//                ->orderBy(['created' => SORT_DESC])
-//                ->all();
-//        }
-
         $query = Tasks::find()
-            ->with(['category', 'city']);
+            ->with(['category', 'city'])
+            ->where(['status' => TaskForce::STATUS_NEW]);
 
-       $tasks = $query->all();
 
-//        $tasks = Tasks::find()
-//                ->with(['category', 'city'])
-//                ->where(['status' => TaskForce::STATUS_NEW])
-//                ->andWhere(['>', 'created', 'deadline'])
-//                ->orderBy(['created' => SORT_DESC])
-//               ->all();
-       // dump($tasks);
+        if ($request->getIsPost()) {
+
+            $post = $request->post();
+
+            foreach ($post["FilterForm"] as $name => $data) {
+
+                switch ($name) {
+                    case 'categories':
+                        $query->andWhere(['category_id' => $data]);
+                        break;
+                    case 'withoutExecutor':
+                        $query->andWhere(['executor_id' => NULL]);
+                        break;
+                }
+            }
+        }
+
+        $tasks = $query->andWhere(['>', 'created', 'deadline'])
+            ->orderBy(['created' => SORT_DESC])
+            ->all();
+
         return $this->render('browse', [
             'tasks' => $tasks,
             'filterFormModel' => $filterFormModel
