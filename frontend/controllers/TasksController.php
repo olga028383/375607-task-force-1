@@ -25,43 +25,54 @@ class TasksController extends Controller
         $filterFormModel = new FilterForm();
         $request = Yii::$app->request;
 
-        if($request->getIsPost()) {
+//        if($request->getIsPost()) {
+//
+//            $post = $request->post();
+//
+//            $query = (new \yii\db\Query())
+//                ->from('tasks')
+//                ->leftJoin('categories', 'categories.id = tasks.category_id')
+//                ->leftJoin('cities', 'cities.id = tasks.city_id');
+//
+//            foreach($post["FilterForm"] as $name => $data){
+//
+//                switch($name)
+//                {
+//                    case 'categories':
+//                        $query->andFilterWhere(['category_id' => $data]);
+//                    break;
+//                    case 'withoutExecutor':
+//                        $query->andFilterWhere(['executor_id' => NULL]);
+//                        break;
+//                }
+//            }
+//
+//            $tasks = $query->all();
+//            //dump($tasks);
+//
+//
+//        }else{
+//
+//            $tasks = Tasks::find()
+//                ->with(['category', 'city'])
+//                ->where(['status' => TaskForce::STATUS_NEW])
+//                ->andWhere(['>', 'created', 'deadline'])
+//                ->orderBy(['created' => SORT_DESC])
+//                ->all();
+//        }
 
-            $post = $request->post();
+        $tasks = Tasks::find()
+            ->with(['category', 'city']);
 
-            $query = (new \yii\db\Query())
-                ->from('tasks')
-                ->leftJoin('categories', 'categories.id = tasks.category_id')
-                ->leftJoin('cities', 'cities.id = tasks.city_id');
+       $tasks->all();
 
-            foreach($post["FilterForm"] as $name => $data){
-
-                switch($name)
-                {
-                    case 'categories':
-                        $query->andFilterWhere(['category_id' => $data]);
-                    break;
-                    case 'withoutExecutor':
-                        $query->andFilterWhere(['executor_id' => NULL]);
-                        break;
-                }
-            }
-
-            $tasks = $query->all();
-            //dump($tasks);
-
-
-        }else{
-
-            $tasks = Tasks::find()
-                ->with(['category', 'city'])
-                ->where(['status' => TaskForce::STATUS_NEW])
-                ->andWhere(['>', 'created', 'deadline'])
-                ->orderBy(['created' => SORT_DESC])
-                ->all();
-        }
-
-
+//        $tasks = Tasks::find()
+//                ->with(['category', 'city'])
+//                ->where(['status' => TaskForce::STATUS_NEW])
+//                ->andWhere(['>', 'created', 'deadline'])
+//                ->orderBy(['created' => SORT_DESC])
+//               ->all();
+        dump($tasks);
         return $this->render('browse', [
             'tasks' => $tasks,
             'filterFormModel' => $filterFormModel
