@@ -36,6 +36,7 @@ use yii\db\ActiveQuery;
 class Tasks extends \yii\db\ActiveRecord
 {
     use TimeCreationToCurrentTrait;
+
     /**
      * {@inheritdoc}
      */
@@ -152,16 +153,4 @@ class Tasks extends \yii\db\ActiveRecord
         return $this->hasOne(Cities::class, ['id' => 'city_id']);
     }
 
-//    public static function find()
-//    {
-//        return new TasksQuery(get_called_class());
-//    }
 }
-
-//class TasksQuery extends ActiveQuery
-//{
-//    public function containsCategories(array $data)
-//    {
-//        return $this->andWhere(['categories' => $data]);
-//    }
-//}

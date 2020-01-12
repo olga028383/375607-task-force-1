@@ -17,38 +17,44 @@ use yii\web\Controller;
 class TasksController extends Controller
 {
 
-    /**
-     *
-     */
     public function actionIndex()
     {
         $filterFormModel = new FilterForm();
-        $request = Yii::$app->request;
+        $filterFormModel->load($_POST);
 
         $query = Tasks::find()
             ->with(['category', 'city'])
-            ->where(['status' => TaskForce::STATUS_NEW]);
+            ->where(['status' => TaskForce::STATUS_NEW])
+            ->andWhere('deadline > created');
 
 
-        if ($request->getIsPost()) {
+        foreach ($filterFormModel as $key => $data) {
+            if ($data) {
 
-            $post = $request->post();
-
-            foreach ($post["FilterForm"] as $name => $data) {
-
-                switch ($name) {
+                switch ($key) {
                     case 'categories':
                         $query->andWhere(['category_id' => $data]);
                         break;
-                    case 'withoutExecutor':
-                        $query->andWhere(['executor_id' => NULL]);
+                    case 'myCity':
+                        //Не обрабатывала, т как пока не работали с пользователями
                         break;
+                    case 'distantWork':
+                        $query->andWhere(['city_id' => NULL]);
+                        break;
+                    case 'time':
+                        $query->andWhere(['>', 'created', $filterFormModel->getStartDateOfPeriod($data)]);
+                        break;
+                        break;
+                    case 'search':
+                        $query->andWhere(['LIKE', 'name', $data]);
+                        break;
+
                 }
             }
+
         }
 
-        $tasks = $query->andWhere(['>', 'created', 'deadline'])
-            ->orderBy(['created' => SORT_DESC])
+        $tasks = $query->orderBy(['created' => SORT_DESC])
             ->all();
 
         return $this->render('browse', [

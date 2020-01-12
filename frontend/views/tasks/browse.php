@@ -11,6 +11,9 @@ use morphos\Russian;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
+$request = Yii::$app->request;
+$get = $request->get();
+
 $this->title = 'Новые задания';
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -37,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <p class="new-task__place">
                             <?php
                             if ($task->city) {
-                                $task->city->name;
+                                $task->city->city;
                             }
                             echo $task->district;
                             ?>
@@ -83,6 +86,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="search-task__wrapper">
 
                 <?php
+
                 $form = ActiveForm::begin([
                     'id' => 'filter-form',
                     'options' => ['class' => 'search-task__form'],
@@ -90,46 +94,62 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 ?>
                 <fieldset class="search-task__categories">
-                    <legend><?php echo $filterFormModel->getAttributeLabel('categories'); ?></legend>
+                    <legend>Категории</legend>
+                    <?php echo $form->field($filterFormModel, 'categories[]', array('options' => array('class' => '')))
+                        ->checkboxList(Categories::find()->select(['name', 'id'])->indexBy('id')->column(), array('item' => function ($index, $label, $name, $checked, $value) use ($filterFormModel) {
+                            $activeCheckbox = '';
 
-                    <?php
-                        //echo Html::activeCheckboxList($filterFormModel,'categories[]', Categories::find()->select(['name', 'id'])->indexBy('id')->column())
+                            if (!empty($filterFormModel['categories']) && in_array($value, $filterFormModel['categories'])) {
+                                $activeCheckbox = 'checked';
+                            }
+                            return '<input class="visually-hidden checkbox__input" id="categories_' . $value . '" type="checkbox" name="' . $name . '" value="' . $value . '"' . $activeCheckbox . '>
+                                        <label for="categories_' . $value . '">' . $label . '</label>';
+                        }))->label(false);
                     ?>
-
-                    <?php echo $form->field($filterFormModel, 'categories[]')
-                        ->checkboxList(Categories::find()->select(['name', 'id'])->indexBy('id')->column()) ?>
-
-                    <!--                        <input class="visually-hidden checkbox__input" id="1" type="checkbox" name="" value="" checked>-->
-                    <!--                        <label for="1">Курьерские услуги </label>-->
 
                 </fieldset>
 
                 <fieldset class="search-task__categories">
                     <legend>Дополнительно</legend>
+                    <?php echo $form->field($filterFormModel, 'myCity', array(
+                        'template' => '{input}{label}',
+                        'options' => array('class' => ''),
+                        'labelOptions' => array('style' => 'display: block; margin-bottom: 0')
+                    ))
+                        ->checkbox(array('class' => 'visually-hidden checkbox__input'), false);
 
-                    <?php echo Html::activeInput('checkbox', $filterFormModel, 'withoutExecutor', array('class' => 'visually-hidden checkbox__input', 'id' => 6)); ?>
-                    <label for="6">Без исполнителя </label>
-
-                    <?php echo Html::activeInput('checkbox', $filterFormModel, 'distantWork', array('class' => 'visually-hidden checkbox__input', 'id' => 7)); ?>
-                    <label for="7">Удаленная работа </label>
+                    echo $form->field($filterFormModel, 'distantWork', array(
+                        'template' => '{input}{label}',
+                        'options' => array('class' => ''),
+                        'labelOptions' => array('style' => 'display: block; margin-bottom: 0')
+                    ))
+                        ->checkbox(array('class' => 'visually-hidden checkbox__input'), false); ?>
 
                 </fieldset>
 
-                <label class="search-task__name" for="8">Период</label>
 
+                <?php echo $form->field($filterFormModel, 'time', array(
+                    'template' => '{label}{input}',
+                    'options' => array('class' => ''),
+                    'labelOptions' => array('class' => 'search-task__name', 'style' => 'display: block; margin-bottom: 0')
+                ))
+                    ->dropDownList(
+                        $filterFormModel->availableTime,
+                        array(
+                            'class' => "multiple-select input",
+                            'style' => 'width: 100%',
+                            'prompt' => array('text' => 'За все время', 'options' => ['value' => '0', 'class' => 'prompt']),
+                            'options' => array($filterFormModel['time'] => ['selected' => true]))
+                    );
 
-                <?php
-                //Как сюда добавить selected для week
-                echo Html::activeDropDownList($filterFormModel, 'time[]',
-                    array('day' => 'За день',
-                        'week' => 'За неделю',
-                        'month' => 'За месяц'),
-                    array('class' => 'multiple-select input', 'size' => 1)); ?>
+                echo $form->field($filterFormModel, 'search', array(
+                    'template' => '{label}{input}',
+                    'options' => array('class' => ''),
+                    'labelOptions' => array('class' => 'search-task__name', 'style' => 'display: block; margin-bottom: 0')
+                ))
+                    ->input('text', array('class' => 'input-middle input', 'style' => 'width: 100%'));
 
-
-                <label class="search-task__name" for="9">Поиск по названию</label>
-
-                <?php echo Html::activeTextInput($filterFormModel, 'search', array('class' => 'input-middle input')) ?>
+                ?>
 
                 <?= Html::submitButton('Искать', ['class' => 'button']) ?>
 
