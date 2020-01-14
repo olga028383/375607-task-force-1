@@ -12,6 +12,7 @@ use frontend\models\FilterForm;
 use frontend\models\Tasks;
 use HtmlAcademy\Models\TaskForce;
 use Yii;
+use yii\data\Pagination;
 use yii\web\Controller;
 
 class TasksController extends Controller
@@ -54,11 +55,17 @@ class TasksController extends Controller
 
         }
 
+        $countQuery = clone $query;
+        $pages = new Pagination(['totalCount' => $countQuery->count(), 'pageSize' => 5,  'forcePageParam' => false, 'pageSizeParam' => false]);
         $tasks = $query->orderBy(['created' => SORT_DESC])
+            ->offset($pages->offset)
+            ->limit($pages->limit)
             ->all();
+
 
         return $this->render('browse', [
             'tasks' => $tasks,
+            'pages' => $pages,
             'filterFormModel' => $filterFormModel
         ]);
 

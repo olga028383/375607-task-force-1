@@ -4,12 +4,15 @@
 
 /* @var $tasks array */
 
+/* @var $pages */
+
 /* @var $filterFormModel */
 
 use frontend\models\Categories;
 use morphos\Russian;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\widgets\LinkPager;
 
 $request = Yii::$app->request;
 $get = $request->get();
@@ -72,15 +75,21 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
 
             <div class="new-task__pagination">
-                <ul class="new-task__pagination-list">
-                    <li class="pagination__item"><a href="#"></a></li>
-                    <li class="pagination__item pagination__item--current">
-                        <a>1</a></li>
-                    <li class="pagination__item"><a href="#">2</a></li>
-                    <li class="pagination__item"><a href="#">3</a></li>
-                    <li class="pagination__item"><a href="#"></a></li>
-                </ul>
+
+                <?php echo LinkPager::widget([
+                    'pagination' => $pages,
+                    'options' => ['class'=>"new-task__pagination-list"],
+                    'pageCssClass' => 'pagination__item',
+                    'activePageCssClass' => 'pagination__item--current',
+                    'prevPageCssClass' => 'pagination__item',
+                    'nextPageCssClass' => 'pagination__item',
+                    'prevPageLabel' => '',
+                    'nextPageLabel' => ''
+                    ]);
+                ?>
+
             </div>
+
         </section>
         <section class="search-task">
             <div class="search-task__wrapper">

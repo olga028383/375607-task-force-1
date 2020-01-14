@@ -43,6 +43,7 @@ return [
             'enableStrictParsing' => false,
             'rules' => [
                 '//' => '/',
+                'tasks/page/<page:\d+>' => 'tasks/index',
                 'tasks' => 'tasks/index'
             ],
         ],
