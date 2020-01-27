@@ -62,6 +62,6 @@ class UserSpecializationCategory extends \yii\db\ActiveRecord
      */
     public function getCategories()
     {
-        return $this->hasOne(Users::class, ['id' => 'categories_id']);
+        return $this->hasOne(Categories::class, ['id' => 'categories_id']);
     }
 }

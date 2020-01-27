@@ -81,7 +81,6 @@ class m191211_172907_generate_sql_files extends Migration
 
                 ),
                 'fieldsRandom' => array(
-                    'user_id' => array('number' => array(1, 20)),
                     'notification_message' => array('number' => array(0, 1)),
                     'notification_task_action' => array('number' => array(0, 1)),
                     'notification_reviews' => array('number' => array(0, 1)),

@@ -8,11 +8,10 @@
 
 namespace frontend\controllers;
 
-use app\models\Profiles;
 use frontend\models\FilterForm;
 use frontend\models\Users;
-use Yii;
 use yii\data\Pagination;
+use yii\data\Sort;
 use yii\web\Controller;
 
 class UsersController extends Controller
@@ -20,14 +19,40 @@ class UsersController extends Controller
 
     public function actionIndex()
     {
+
+        //1.Не могу понять как показать только тех пользователей, у которых заполнена хотя бы 1 категория, ниже закомментировано рабочее решение, но оно мне не нравится, как-то сложно
+        //2. Сортировка по связаным полям, не могу понять как настроить
+
         $filterFormModel = new FilterForm();
         $filterFormModel->load($_POST);
 
         $query = Users::find()
-            ->joinWith(['userSpecializationCategories' => function($query) {
-                $query->leftJoin('categories','`categories`.`id` = `user_specialization_category`.`categories_id`');
-            }], true, 'RIGHT JOIN');
+            ->with('categories', 'profile', 'tasks');
+            //->joinWith(['userSpecializationCategories' => function($query) {
+               // $query->leftJoin('categories','categories.id = user_specialization_category.categories_id');
+            //}], true, 'RIGHT JOIN');
 
+        $sort = new Sort([
+            'attributes' => [
+                'rating' => [
+                    'label' => 'Рейтингу',
+                    'class' => 'link-regular'
+                ],
+                'order_count' => [
+                    'label' => 'Числу заказов',
+                    'class' => 'link-regular'
+                ],
+                'view_count' => [
+                    'label' => 'Популярности',
+                    'class' => 'link-regular'
+                ],
+            ],
+            'defaultOrder' =>[
+                'profile.rating' =>[
+                    'asc' => 'profile.rating ASC',
+                ]
+            ]
+        ]);
 
         foreach ($filterFormModel as $key => $data) {
             if ($data) {
@@ -36,15 +61,7 @@ class UsersController extends Controller
                     case 'categories':
                         $query->andWhere(['category_id' => $data]);
                         break;
-                    case 'myCity':
-                        //Не обрабатывала, т как пока не работали с пользователями
-                        break;
-                    case 'distantWork':
-                        $query->andWhere(['city_id' => NULL]);
-                        break;
-                    case 'time':
-                        $query->andWhere(['>', 'created', $filterFormModel->getStartDateOfPeriod($data)]);
-                        break;
+
                         break;
                     case 'search':
                         $query->andWhere(['LIKE', 'name', $data]);
@@ -60,13 +77,15 @@ class UsersController extends Controller
         $users = $query
             ->offset($pages->offset)
             ->limit($pages->limit)
+            ->orderBy($sort->orders)
             ->all();
 
-        dump($users);
+       //dump($users);
         return $this->render('users', [
             'users' => $users,
             'pages' => $pages,
-            'filterFormModel' => $filterFormModel
+            'filterFormModel' => $filterFormModel,
+            'sort'=> $sort
         ]);
 
     }

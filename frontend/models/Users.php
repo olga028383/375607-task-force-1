@@ -2,6 +2,7 @@
 
 namespace frontend\models;
 
+use app\models\Profiles;
 use Yii;
 
 /**
@@ -35,6 +36,9 @@ use Yii;
  */
 class Users extends \yii\db\ActiveRecord
 {
+
+    use TimeCreationToCurrentTrait;
+
     /**
      * {@inheritdoc}
      */
@@ -157,5 +161,20 @@ class Users extends \yii\db\ActiveRecord
     public function getCity()
     {
         return $this->hasOne(Cities::class, ['id' => 'city_id']);
+    }
+
+    public function getCategories()
+    {
+        return $this->hasMany(Categories::class, ['id' => 'categories_id'])
+            ->viaTable('user_specialization_category', ['user_id' => 'id'], function($query){
+
+            });
+    }
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProfile()
+    {
+        return $this->hasOne(Profiles::class, ['user_id' => 'id']);
     }
 }

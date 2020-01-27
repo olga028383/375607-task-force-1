@@ -19,27 +19,26 @@ $get = $request->get();
 
 $this->title = 'Новые задания';
 $this->params['breadcrumbs'][] = $this->title;
-
 ?>
 
 <main class="page-main">
     <div class="main-container page-container">
         <section class="new-task">
             <div class="new-task__wrapper">
-                <h1><?= Html::encode($this->title) ?></h1>
+                <h1><?php echo Html::encode($this->title) ?></h1>
                 <?php
                 foreach ($tasks as $task):?>
                     <div class="new-task__card">
                         <div class="new-task__title">
-                            <a href="#" class="link-regular"><h2><?= Html::encode($task->name) ?></h2></a>
+                            <a href="#" class="link-regular"><h2><?php echo Html::encode($task->name) ?></h2></a>
                             <a class="new-task__type link-regular" href="#">
-                                <p><?= Html::encode($task->category->name) ?></p></a>
+                                <p><?php echo Html::encode($task->category->name) ?></p></a>
                         </div>
-                        <div class="new-task__icon new-task__icon--<?= Html::encode($task->category->icon) ?>"></div>
+                        <div class="new-task__icon new-task__icon--<?php echo Html::encode($task->category->icon) ?>"></div>
                         <p class="new-task_description">
                             <?= $task->description ?>
                         </p>
-                        <b class="new-task__price new-task__price--translation"><?= Html::encode($task->sum) ?><b> ₽</b></b>
+                        <b class="new-task__price new-task__price--translation"><?php echo Html::encode($task->sum) ?><b> ₽</b></b>
                         <p class="new-task__place">
                             <?php
                             if ($task->city) {
