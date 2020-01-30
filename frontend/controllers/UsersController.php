@@ -92,7 +92,7 @@ class UsersController extends Controller
 
 
         }
-        //dump( $query);
+
         $countQuery = clone $query;
         $pages = new Pagination(['totalCount' => $countQuery->count(), 'pageSize' => 5, 'forcePageParam' => false, 'pageSizeParam' => false]);
         $users = $query
