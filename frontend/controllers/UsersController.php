@@ -10,6 +10,7 @@ namespace frontend\controllers;
 
 use frontend\models\FilterForm;
 use frontend\models\Users;
+use HtmlAcademy\Models\TaskForce;
 use yii\data\Pagination;
 use yii\data\Sort;
 use yii\web\Controller;
@@ -20,72 +21,92 @@ class UsersController extends Controller
     public function actionIndex()
     {
 
-        //1.Не могу понять как показать только тех пользователей, у которых заполнена хотя бы 1 категория, ниже закомментировано рабочее решение, но оно мне не нравится, как-то сложно
-        //2. Сортировка по связаным полям, не могу понять как настроить, на данный момент ошибка
-
         $filterFormModel = new FilterForm();
         $filterFormModel->load($_POST);
 
         $query = Users::find()
-            ->with('categories', 'profile', 'tasks');
-            //->joinWith(['userSpecializationCategories' => function($query) {
-               // $query->leftJoin('categories','categories.id = user_specialization_category.categories_id');
-            //}], true, 'RIGHT JOIN');
+            ->joinWith(['userSpecializationCategories' => function ($query) {
+            }], true, 'RIGHT JOIN')
+            ->groupBy('users.id')
+            ->joinWith('profile')
+            ->joinWith('tasks')
+            ->joinWith('reviews');
+
 
         $sort = new Sort([
             'attributes' => [
                 'rating' => [
+                    'asc' => ['profiles.rating' => SORT_ASC],
+                    'desc' => ['profiles.rating' => SORT_DESC],
                     'label' => 'Рейтингу',
                     'class' => 'link-regular'
                 ],
                 'order_count' => [
+                    'asc' => ['profiles.order_count' => SORT_ASC],
+                    'desc' => ['profiles.order_count' => SORT_DESC],
                     'label' => 'Числу заказов',
                     'class' => 'link-regular'
                 ],
                 'view_count' => [
+                    'asc' => ['profiles.view_count' => SORT_ASC],
+                    'desc' => ['profiles.view_count' => SORT_DESC],
                     'label' => 'Популярности',
                     'class' => 'link-regular'
                 ],
             ],
-            'defaultOrder' =>[
-                'profile.rating' =>[
-                    'asc' => 'profile.rating ASC',
-                ]
+            'defaultOrder' => [
+                'rating' => SORT_ASC
             ]
         ]);
 
+
         foreach ($filterFormModel as $key => $data) {
-            if ($data) {
+
+            if ($data && $key === 'search') {
+
+                $query->andWhere(['LIKE', 'users.name', $data]);
+                $filterFormModel = new FilterForm();
+                $filterFormModel->search = $data;
+
+            } else if ($data) {
 
                 switch ($key) {
                     case 'categories':
-                        $query->andWhere(['category_id' => $data]);
+                        $query->andWhere(['user_specialization_category.categories_id' => $data]);
                         break;
-
+                    case 'free':
+                        $query->andWhere([
+                            'or',
+                            ['tasks.status' => TaskForce::STATUS_COMPLETED],
+                            ['tasks.executor_id' => NULL]
+                        ]);
                         break;
-                    case 'search':
-                        $query->andWhere(['LIKE', 'name', $data]);
+                    case 'online':
+                        $query->andWhere(['>', 'profiles.last_active_at', $filterFormModel->getStartDateOfPeriod('30 minutes')]);
                         break;
-
+                    case 'withReviews':
+                        $query->andWhere('users.id = reviews.recipient_id');
+                        break;
                 }
             }
 
-        }
 
+        }
+        //dump( $query);
         $countQuery = clone $query;
-        $pages = new Pagination(['totalCount' => $countQuery->count(), 'pageSize' => 5,  'forcePageParam' => false, 'pageSizeParam' => false]);
+        $pages = new Pagination(['totalCount' => $countQuery->count(), 'pageSize' => 5, 'forcePageParam' => false, 'pageSizeParam' => false]);
         $users = $query
             ->offset($pages->offset)
             ->limit($pages->limit)
             ->orderBy($sort->orders)
             ->all();
 
-       //dump($users);
+
         return $this->render('users', [
             'users' => $users,
             'pages' => $pages,
             'filterFormModel' => $filterFormModel,
-            'sort'=> $sort
+            'sort' => $sort
         ]);
 
     }

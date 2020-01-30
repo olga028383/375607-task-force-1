@@ -50,19 +50,19 @@ $this->params['breadcrumbs'][] = $this->title;
                         <span class="new-task__time">
                         <?php
 
-                        if ($task->getYear()) {
-                            echo Russian\pluralize($task->getYear(), 'год') . ' ';
+                        if ($task->getYear($task->created)) {
+                            echo Russian\pluralize($task->getYear($task->created), 'год') . ' ';
                         }
 
-                        if ($task->getMonth()) {
-                            echo Russian\pluralize($task->getMonth(), 'месяц') . ' ';
+                        if ($task->getMonth($task->created)) {
+                            echo Russian\pluralize($task->getMonth($task->created), 'месяц') . ' ';
                         }
-                        if ($task->getDay()) {
-                            echo Russian\pluralize($task->getDay(), 'день') . ' ';
+                        if ($task->getDay($task->created)) {
+                            echo Russian\pluralize($task->getDay($task->created), 'день') . ' ';
                         }
 
-                        if ($task->getHour()) {
-                            echo Russian\pluralize($task->getHour(), 'час') . ' ';
+                        if ($task->getHour($task->created)) {
+                            echo Russian\pluralize($task->getHour($task->created), 'час') . ' ';
                         }
 
                         ?> назад

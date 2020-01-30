@@ -43,8 +43,12 @@ $stars = 5;
                                     <img src="/img/empty.webp" width="65" height="65">
                                 <?php endif?>
                             </a>
-                            <span>17 заданий</span>
-                            <span>6 отзывов</span>
+                            <span><?php echo count($user->tasks)?></span>
+                            <span>
+                               <?php
+                                    echo Russian\pluralize(count($user->reviews), 'отзыв');
+                                ?>
+                            </span>
                         </div>
                         <div class="feedback-card__top--name user__search-card">
                             <p class="link-name"><a href="#" class="link-regular"><?php echo $user->name ?></a>
@@ -138,12 +142,30 @@ $stars = 5;
                     </fieldset>
                     <fieldset class="search-task__categories">
                         <legend>Дополнительно</legend>
-                        <input class="visually-hidden checkbox__input" id="106" type="checkbox" name="" value="" disabled>
-                        <label for="106">Сейчас свободен</label>
-                        <input class="visually-hidden checkbox__input" id="107" type="checkbox" name="" value="" checked>
-                        <label for="107">Сейчас онлайн</label>
-                        <input class="visually-hidden checkbox__input" id="108" type="checkbox" name="" value="" checked>
-                        <label for="108">Есть отзывы</label>
+
+                        <?php echo $form->field($filterFormModel, 'free', array(
+                            'template' => '{input}{label}',
+                            'options' => array('class' => ''),
+                            'labelOptions' => array('style' => 'display: block; margin-bottom: 0')
+                        ))
+                            ->checkbox(array('class' => 'visually-hidden checkbox__input'), false);
+                        ?>
+
+                        <?php echo $form->field($filterFormModel, 'online', array(
+                            'template' => '{input}{label}',
+                            'options' => array('class' => ''),
+                            'labelOptions' => array('style' => 'display: block; margin-bottom: 0')
+                        ))
+                            ->checkbox(array('class' => 'visually-hidden checkbox__input'), false);
+                        ?>
+
+                        <?php echo $form->field($filterFormModel, 'withReviews', array(
+                            'template' => '{input}{label}',
+                            'options' => array('class' => ''),
+                            'labelOptions' => array('style' => 'display: block; margin-bottom: 0')
+                        ))
+                            ->checkbox(array('class' => 'visually-hidden checkbox__input'), false);
+                        ?>
                     </fieldset>
 
                 <?php echo $form->field($filterFormModel, 'search', array(

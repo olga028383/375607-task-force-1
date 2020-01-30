@@ -33,19 +33,45 @@ class FilterForm extends Model
      * @var
      */
     public $availableTime = array(
-        'day' => 'За день',
-        'week' => 'За неделю',
-        'month' => 'За месяц'
+        '1 day' => 'За день',
+        '1 week' => 'За неделю',
+        '1 month' => 'За месяц'
     );
 
     /**
      * @var
      */
     public $time;
+
     /**
      * @var
      */
     public $search;
+
+    /**
+     * @var
+     */
+    public $free;
+
+    /**
+     * @var
+     */
+    public $online;
+
+    /**
+     * @var
+     */
+    public $withReviews;
+
+    /**
+     * @var array
+     */
+    private $availablePeriod = array(
+        '1 day',
+        '1 week',
+        '1 month',
+        '30 minutes'
+    );
 
     /**
      * @return array
@@ -58,6 +84,9 @@ class FilterForm extends Model
             'distantWork' => 'Удаленная работа',
             'time' => 'Период',
             'search' => 'Поиск',
+            'free' => 'Сейчас свободен',
+            'online' => 'Сейчас онлайн',
+            'withReviews' => 'Есть отзывы'
         ];
     }
 
@@ -67,7 +96,7 @@ class FilterForm extends Model
     public function rules()
     {
         return [
-            [['categories', 'myCity', 'distantWork', 'time', 'search'], 'safe'],
+            [['categories', 'myCity', 'distantWork', 'time', 'search', 'free', 'online', 'withReviews'], 'safe'],
         ];
     }
 
@@ -78,12 +107,12 @@ class FilterForm extends Model
      */
     public function getStartDateOfPeriod(string $period): string
     {
-        if (!array_key_exists($period, $this->availableTime)) {
+        if (!in_array($period, $this->availablePeriod)) {
             throw new ErrorException('Данного периода нет в массиве');
         }
 
         $current = new \DateTime();
-        $current->sub(\DateInterval::createFromDateString('1 ' . $period));
+        $current->sub(\DateInterval::createFromDateString($period));
         return $current->format('Y-m-d H:i:s');
     }
 
