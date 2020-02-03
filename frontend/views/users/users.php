@@ -123,6 +123,7 @@ $stars = 5;
                 <?php $form = ActiveForm::begin([
                     'id' => 'filter-form',
                     'options' => ['class' => 'search-task__form'],
+                    'method'=> 'get'
                     ]);
                 ?>
                     <fieldset class="search-task__categories">

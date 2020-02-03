@@ -22,7 +22,7 @@ class UsersController extends Controller
     {
 
         $filterFormModel = new FilterForm();
-        $filterFormModel->load($_POST);
+        $filterFormModel->load($_GET);
 
         $query = Users::find()
             ->joinWith(['userSpecializationCategories' => function ($query) {
