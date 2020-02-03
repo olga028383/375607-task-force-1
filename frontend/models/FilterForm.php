@@ -22,7 +22,7 @@ class FilterForm extends Model
     /**
      * @var
      */
-    public $myCity;
+    public $withoutResponse;
 
     /**
      * @var
@@ -80,7 +80,7 @@ class FilterForm extends Model
     {
         return [
             'categories' => 'Категории',
-            'myCity' => 'Мой город',
+            'withoutResponse' => 'Без откликов',
             'distantWork' => 'Удаленная работа',
             'time' => 'Период',
             'search' => 'Поиск',
@@ -96,7 +96,7 @@ class FilterForm extends Model
     public function rules()
     {
         return [
-            [['categories', 'myCity', 'distantWork', 'time', 'search', 'free', 'online', 'withReviews'], 'safe'],
+            [['categories', 'withoutResponse', 'distantWork', 'time', 'search', 'free', 'online', 'withReviews'], 'safe'],
         ];
     }
 

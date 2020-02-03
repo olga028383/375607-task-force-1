@@ -119,7 +119,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <fieldset class="search-task__categories">
                     <legend>Дополнительно</legend>
-                    <?php echo $form->field($filterFormModel, 'myCity', array(
+                    <?php echo $form->field($filterFormModel, 'withoutResponse', array(
                         'template' => '{input}{label}',
                         'options' => array('class' => ''),
                         'labelOptions' => array('style' => 'display: block; margin-bottom: 0')

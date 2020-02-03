@@ -26,7 +26,7 @@ class TasksController extends Controller
         $query = Tasks::find()
             ->with(['category', 'city'])
             ->where(['status' => TaskForce::STATUS_NEW])
-            ->andWhere('deadline > created');
+            ->andWhere('deadline > tasks.created');
 
 
         foreach ($filterFormModel as $key => $data) {
@@ -36,14 +36,15 @@ class TasksController extends Controller
                     case 'categories':
                         $query->andWhere(['category_id' => $data]);
                         break;
-                    case 'myCity':
-                        //Не обрабатывала, т как пока не работали с пользователями
+                    case 'withoutResponse':
+                        $query->joinWith('responses');
+                        $query->andWhere(['responses.user_id' => NULL]);
                         break;
                     case 'distantWork':
                         $query->andWhere(['city_id' => NULL]);
                         break;
                     case 'time':
-                        $query->andWhere(['>', 'created', $filterFormModel->getStartDateOfPeriod($data)]);
+                        $query->andWhere(['>', 'tasks.created', $filterFormModel->getStartDateOfPeriod($data)]);
                         break;
                         break;
                     case 'search':
@@ -57,7 +58,7 @@ class TasksController extends Controller
 
         $countQuery = clone $query;
         $pages = new Pagination(['totalCount' => $countQuery->count(), 'pageSize' => 5,  'forcePageParam' => false, 'pageSizeParam' => false]);
-        $tasks = $query->orderBy(['created' => SORT_DESC])
+        $tasks = $query->orderBy(['tasks.created' => SORT_DESC])
             ->offset($pages->offset)
             ->limit($pages->limit)
             ->all();
