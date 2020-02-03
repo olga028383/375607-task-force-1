@@ -21,7 +21,7 @@ class TasksController extends Controller
     public function actionIndex()
     {
         $filterFormModel = new FilterForm();
-        $filterFormModel->load($_POST);
+        $filterFormModel->load($_GET);
 
         $query = Tasks::find()
             ->with(['category', 'city'])

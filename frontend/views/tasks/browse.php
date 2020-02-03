@@ -98,6 +98,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 $form = ActiveForm::begin([
                     'id' => 'filter-form',
                     'options' => ['class' => 'search-task__form'],
+                    'method'=> 'get'
                 ]);
 
                 ?>
