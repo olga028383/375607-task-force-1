@@ -53,9 +53,15 @@ class UsersController extends Controller
                     'label' => 'Популярности',
                     'class' => 'link-regular'
                 ],
+                'registered' => [
+                    'asc' => ['registered' => SORT_ASC],
+                    'desc' => ['registered' => SORT_DESC],
+                    'label' => 'Дата регистрации',
+                    'class' => 'link-regular'
+                ],
             ],
             'defaultOrder' => [
-                'rating' => SORT_ASC
+                'registered' => SORT_DESC
             ]
         ]);
 
