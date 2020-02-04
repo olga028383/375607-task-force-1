@@ -12,47 +12,61 @@ use frontend\models\FilterForm;
 use frontend\models\Tasks;
 use HtmlAcademy\Models\TaskForce;
 use Yii;
+use yii\data\Pagination;
 use yii\web\Controller;
 
 class TasksController extends Controller
 {
 
-    /**
-     *
-     */
     public function actionIndex()
     {
         $filterFormModel = new FilterForm();
-        $request = Yii::$app->request;
+        $filterFormModel->load($_GET);
 
         $query = Tasks::find()
             ->with(['category', 'city'])
-            ->where(['status' => TaskForce::STATUS_NEW]);
+            ->where(['status' => TaskForce::STATUS_NEW])
+            ->andWhere('deadline > tasks.created');
 
 
-        if ($request->getIsPost()) {
+        foreach ($filterFormModel as $key => $data) {
+            if ($data) {
 
-            $post = $request->post();
-
-            foreach ($post["FilterForm"] as $name => $data) {
-
-                switch ($name) {
+                switch ($key) {
                     case 'categories':
                         $query->andWhere(['category_id' => $data]);
                         break;
-                    case 'withoutExecutor':
-                        $query->andWhere(['executor_id' => NULL]);
+                    case 'withoutResponse':
+                        $query->joinWith('responses');
+                        $query->andWhere(['responses.user_id' => NULL]);
                         break;
+                    case 'distantWork':
+                        $query->andWhere(['city_id' => NULL]);
+                        break;
+                    case 'time':
+                        $query->andWhere(['>', 'tasks.created', $filterFormModel->getStartDateOfPeriod($data)]);
+                        break;
+                        break;
+                    case 'search':
+                        $query->andWhere(['LIKE', 'name', $data]);
+                        break;
+
                 }
             }
+
         }
 
-        $tasks = $query->andWhere(['>', 'created', 'deadline'])
-            ->orderBy(['created' => SORT_DESC])
+        $countQuery = clone $query;
+        $pages = new Pagination(['totalCount' => $countQuery->count(), 'pageSize' => 5,  'forcePageParam' => false, 'pageSizeParam' => false]);
+        $tasks = $query->orderBy(['tasks.created' => SORT_DESC])
+            ->offset($pages->offset)
+            ->limit($pages->limit)
             ->all();
+
 
         return $this->render('browse', [
             'tasks' => $tasks,
+            'pages' => $pages,
             'filterFormModel' => $filterFormModel
         ]);
 

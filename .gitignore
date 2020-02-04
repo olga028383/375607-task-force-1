@@ -41,4 +41,6 @@ phpunit.phar
 /backend/web/index.php
 /backend/web/index-test.php
 /backend/web/robots.txt
-/htmlacademy/sql/sql_data/*.sql
+/htmlacademy/sql/sql_data/*
+/frontend/runtime/debug/index.data
+
