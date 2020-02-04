@@ -3,9 +3,9 @@
 use yii\db\Migration;
 
 /**
- * Class m191202_190115_create_table_add_data_from_files
+ * Class m191211_175632_create_table_add_data_from_files
  */
-class m191202_190115_create_table_add_data_from_files extends Migration
+class m191211_175632_create_table_add_data_from_files extends Migration
 {
     /**
      * @var array
@@ -40,7 +40,7 @@ class m191202_190115_create_table_add_data_from_files extends Migration
      */
     public function up()
     {
-        $path =  './htmlacademy/sql/sql_data/';
+        $path = './htmlacademy/sql/sql_data/';
         foreach ($this->tables as $table) {
             $sql = file_get_contents($path . $table . '.sql');
             $this->execute($sql);
@@ -57,5 +57,4 @@ class m191202_190115_create_table_add_data_from_files extends Migration
             $this->delete($table);
         }
     }
-
 }

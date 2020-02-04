@@ -1,15 +1,9 @@
 <?php
 
-use HtmlAcademy\Models\Readers\PhpReader;
 use HtmlAcademy\Models\TaskForce;
-use HtmlAcademy\Models\Converters;
 use HtmlAcademy\Models\Actions;
-use HtmlAcademy\Models\Readers\CsvFileReader;
-use HtmlAcademy\Models\Writes\SqlWriter;
 
-var_dump(file_exists('./vendor/autoload.php'));
 require  './vendor/autoload.php';
-
 
 $object = TaskForce::createTask(1, 1, 'Убрать квартиру', 'Убрать квартру в понедельник', 5000, '18.11.2019', '30.10.2019');
 
@@ -44,33 +38,3 @@ $object3->beginTask(2);
 $object3->failTask();
 assert(array() === $object3->getAvailableActions(1));
 assert(array() === $object3->getAvailableActions(2));
-
-
-$data = array();
-$dataPhpReader = array();
-include 'dataConverter.php';
-
-try {
-
-    foreach ($data as $key => $value) {
-
-        $reader = '';
-
-        switch ($value['reader']) {
-            case 'php':
-                $reader = new PhpReader(array_keys($value['fieldsForConvert']), $value['rows']);
-                break;
-            case 'csv':
-                $reader = new CsvFileReader('./htmlacademy/data/' . $value['name'] . '.csv');
-                break;
-
-        }
-
-        $writer = new SqlWriter('./htmlacademy/sql/sql_data/', $value['name'], $value['name']);
-        $converter = new Converters\ConverterParticular($reader, $writer, $value['fieldsForConvert'], $value['fieldsRandom'], $value['fieldIncrement']);
-        $converter->import();
-    }
-
-} catch (\HtmlAcademy\Models\Ex\HtmlAcademyException $value) {
-    echo $value->getMessage();
-}

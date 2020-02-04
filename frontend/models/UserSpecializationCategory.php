@@ -32,8 +32,8 @@ class UserSpecializationCategory extends \yii\db\ActiveRecord
         return [
             [['user_id'], 'required'],
             [['user_id', 'categories_id'], 'integer'],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'id']],
-            [['categories_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['categories_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['user_id' => 'id']],
+            [['categories_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::class, 'targetAttribute' => ['categories_id' => 'id']],
         ];
     }
 
@@ -62,6 +62,6 @@ class UserSpecializationCategory extends \yii\db\ActiveRecord
      */
     public function getCategories()
     {
-        return $this->hasOne(Users::class, ['id' => 'categories_id']);
+        return $this->hasOne(Categories::class, ['id' => 'categories_id']);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace frontend\models;
 
+use app\models\Profiles;
 use Yii;
 
 /**
@@ -35,6 +36,9 @@ use Yii;
  */
 class Users extends \yii\db\ActiveRecord
 {
+
+    use TimeCreationToCurrentTrait;
+
     /**
      * {@inheritdoc}
      */
@@ -56,7 +60,7 @@ class Users extends \yii\db\ActiveRecord
             [['district'], 'string', 'max' => 200],
             [['email', 'name'], 'string', 'max' => 155],
             [['password'], 'string', 'max' => 525],
-            [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['city_id' => 'id']],
+            [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::class, 'targetAttribute' => ['city_id' => 'id']],
         ];
     }
 
@@ -132,7 +136,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getReviews()
     {
-        return $this->hasMany(Reviews::class, ['sender_id' => 'id']);
+        return $this->hasMany(Reviews::class, ['recipient_id' => 'id']);
     }
 
     /**
@@ -140,7 +144,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getTasks()
     {
-        return $this->hasMany(Tasks::class, ['customer_id' => 'id']);
+        return $this->hasMany(Tasks::class, ['executor_id' => 'id']);
     }
 
     /**
@@ -157,5 +161,19 @@ class Users extends \yii\db\ActiveRecord
     public function getCity()
     {
         return $this->hasOne(Cities::class, ['id' => 'city_id']);
+    }
+
+    public function getCategories()
+    {
+        return $this->hasMany(Categories::class, ['id' => 'categories_id'])
+            ->viaTable('user_specialization_category', ['user_id' => 'id'], function($query){
+            });
+    }
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProfile()
+    {
+        return $this->hasOne(Profiles::class, ['user_id' => 'id']);
     }
 }
