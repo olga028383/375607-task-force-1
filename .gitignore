@@ -1,21 +1,12 @@
-# yii console commands
-/yii
-/yii_test
-/yii_test.bat
-
-# phpstorm project files
+.DS_Store
 .idea
-
-# netbeans project files
-nbproject
-
-# zend studio for eclipse project files
-.buildpath
-.project
-.settings
-
-# windows thumbnail cache
+*.ai
+*.log
+*.pdf
+*.psd
+*.sublime*
 Thumbs.db
+
 
 # composer vendor dir
 /vendor
@@ -43,3 +34,4 @@ phpunit.phar
 /backend/web/robots.txt
 /htmlacademy/sql/sql_data/*
 /frontend/runtime/debug/index.data
+
