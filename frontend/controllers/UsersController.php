@@ -123,7 +123,7 @@ class UsersController extends Controller
             ->joinWith('userSpecializationCategories', true, 'RIGHT JOIN')
             ->groupBy('users.id')
             ->where(['users.id' => $id])
-            ->with('photos')
+            ->with('photos', 'tasks')
             ->one();
 
         if (!$user) {

@@ -34,7 +34,7 @@ $stars = 5;
                 </div>
                 <b class="done-task">
                     <?php
-                    echo Russian\pluralize(5, 'заказ');
+                    echo Russian\pluralize(count($user->tasks), 'заказ');
                     ?>
                 </b>
                 <b class="done-review">
