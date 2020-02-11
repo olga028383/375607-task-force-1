@@ -145,30 +145,9 @@ $stars = 5;
                     <?php //echo $task->count?>
                 </span>
                     <span class="last-">
-                    <?php
-
-                    if ($task->customer->getYear($task->customer->profile->last_active_at)) {
-                        echo Russian\pluralize($task->customer->getYear($task->customer->profile->last_active_at), 'год') . ' ';
-                    }
-
-                    if ($task->customer->getMonth($task->customer->profile->last_active_at)) {
-                        echo Russian\pluralize($task->customer->getMonth($task->customer->profile->last_active_at), 'месяц') . ' ';
-                    }
-                    if ($task->customer->getDay($task->customer->profile->last_active_at)) {
-                        echo Russian\pluralize($task->customer->getDay($task->customer->profile->last_active_at), 'день') . ' ';
-                    }
-
-                    if ($task->customer->getHour($task->customer->profile->last_active_at)) {
-                        echo Russian\pluralize($task->customer->getHour($task->customer->profile->last_active_at), 'час') . ' ';
-                    }
-                    if ($task->customer->getMinutes($task->customer->profile->last_active_at)) {
-                        echo Russian\pluralize($task->customer->getMinutes($task->customer->profile->last_active_at), 'минута') . ' ';
-                    }
-                    if ($task->customer->getSecond($task->customer->profile->last_active_at)) {
-                        echo Russian\pluralize($task->customer->getSecond($task->customer->profile->last_active_at), 'секунда') . ' ';
-                    }
-                    ?>
-
+                         <?php
+                             echo $task->customer->getFullDate($task->customer->profile->last_active_at);
+                         ?>
                         на сайте</span></p>
                 <a href="/user/view/<?php echo $task->customer->id ?>" class="link-regular">Смотреть профиль</a>
             </div>

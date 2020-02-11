@@ -48,7 +48,7 @@ $stars = 5;
                 <span>
                     Был на сайте
                     <?php
-                    echo $user->getFullDate($user->profile->last_active_at);
+                        echo $user->getFullDate($user->profile->last_active_at);
                     ?>
                     назад</span>
                 </span>
@@ -91,8 +91,8 @@ $stars = 5;
             <div class="content-view__feedback-wrapper reviews-wrapper">
                 <?php foreach ($user->reviews as $review): ?>
                     <div class="feedback-card__reviews">
-                        <p class="link-task link">Задание <a href="#"
-                                                             class="link-regular"><?php echo $review->task->name ?></a>
+                        <p class="link-task link">Задание
+                            <a href="/task/view/<?php echo $review->task->id ?>" class="link-regular"><?php echo $review->task->name ?></a>
                         </p>
                         <div class="card__review">
 
