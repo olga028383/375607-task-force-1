@@ -150,6 +150,14 @@ class Users extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getTasksCustomer()
+    {
+        return $this->hasMany(Tasks::class, ['customer_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getUserSpecializationCategories()
     {
         return $this->hasMany(UserSpecializationCategory::class, ['user_id' => 'id']);

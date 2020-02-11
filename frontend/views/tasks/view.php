@@ -124,6 +124,7 @@ $stars = 5;
             <?php endforeach ?>
         </div>
     </section>
+
 <?php if ($task->executor_id !== null): ?>
     <section class="connect-desk">
         <div class="connect-desk__profile-mini">
@@ -142,7 +143,7 @@ $stars = 5;
                 </div>
                 <p class="info-customer">
                 <span>
-                    <?php //echo $task->count?>
+                    <?php echo count($task->customer->tasksCustomer)?>
                 </span>
                     <span class="last-">
                          <?php

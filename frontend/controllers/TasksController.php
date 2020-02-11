@@ -77,11 +77,8 @@ class TasksController extends Controller
 
     public function actionView($id)
     {
-        //Вот тут, когда передаю $subQuery ожидаю, что появится значение count в выборке - еще 1 столбец, но его нет
-        $subQuery = (new Query())->select('COUNT(*)')->from('tasks');
+
         $task = Tasks::find()
-            ->select('tasks.*')
-            ->addSelect(['count'=> $subQuery])
             ->where(['tasks.id' => $id])
             ->with('category', 'taskFiles', 'customer', 'responses')
             ->one();

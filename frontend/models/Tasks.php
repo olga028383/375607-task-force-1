@@ -136,7 +136,8 @@ class Tasks extends \yii\db\ActiveRecord
      */
     public function getCustomer()
     {
-        return $this->hasOne(Users::class, ['id' => 'customer_id'])->joinWith('profile');
+        return $this->hasOne(Users::class, ['id' => 'customer_id'])
+            ->with('profile','tasksCustomer');
     }
 
     /**
@@ -144,7 +145,8 @@ class Tasks extends \yii\db\ActiveRecord
      */
     public function getExecutor()
     {
-        return $this->hasOne(Users::class, ['id' => 'executor_id'])->joinWith('profile');
+        return $this->hasOne(Users::class, ['id' => 'executor_id'])
+            ->with('profile');
     }
 
     /**
