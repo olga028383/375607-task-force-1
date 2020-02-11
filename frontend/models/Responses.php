@@ -2,6 +2,7 @@
 
 namespace frontend\models;
 
+use app\models\Profiles;
 use Yii;
 
 /**
@@ -19,6 +20,8 @@ use Yii;
  */
 class Responses extends \yii\db\ActiveRecord
 {
+    use TimeCreationToCurrentTrait;
+
     /**
      * {@inheritdoc}
      */
@@ -62,7 +65,7 @@ class Responses extends \yii\db\ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(Users::class, ['id' => 'user_id']);
+        return $this->hasOne(Users::class, ['id' => 'user_id'])->joinWith('profile');
     }
 
     /**

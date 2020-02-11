@@ -136,7 +136,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getReviews()
     {
-        return $this->hasMany(Reviews::class, ['recipient_id' => 'id']);
+        return $this->hasMany(Reviews::class, ['recipient_id' => 'id'])->joinWith('profile');
     }
 
     /**
@@ -163,12 +163,15 @@ class Users extends \yii\db\ActiveRecord
         return $this->hasOne(Cities::class, ['id' => 'city_id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getCategories()
     {
         return $this->hasMany(Categories::class, ['id' => 'categories_id'])
-            ->viaTable('user_specialization_category', ['user_id' => 'id'], function($query){
-            });
+            ->viaTable('user_specialization_category', ['user_id' => 'id']);
     }
+
     /**
      * @return \yii\db\ActiveQuery
      */

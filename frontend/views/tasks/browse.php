@@ -18,7 +18,6 @@ $request = Yii::$app->request;
 $get = $request->get();
 
 $this->title = 'Новые задания';
-$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <main class="page-main">
@@ -30,7 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 foreach ($tasks as $task):?>
                     <div class="new-task__card">
                         <div class="new-task__title">
-                            <a href="#" class="link-regular"><h2><?php echo Html::encode($task->name) ?></h2></a>
+                            <a href="/task/view/<?php echo $task->id?>" class="link-regular"><h2><?php echo Html::encode($task->name) ?></h2></a>
                             <a class="new-task__type link-regular" href="#">
                                 <p><?php echo Html::encode($task->category->name) ?></p></a>
                         </div>
@@ -49,22 +48,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         </p>
                         <span class="new-task__time">
                         <?php
-
-                        if ($task->getYear($task->created)) {
-                            echo Russian\pluralize($task->getYear($task->created), 'год') . ' ';
-                        }
-
-                        if ($task->getMonth($task->created)) {
-                            echo Russian\pluralize($task->getMonth($task->created), 'месяц') . ' ';
-                        }
-                        if ($task->getDay($task->created)) {
-                            echo Russian\pluralize($task->getDay($task->created), 'день') . ' ';
-                        }
-
-                        if ($task->getHour($task->created)) {
-                            echo Russian\pluralize($task->getHour($task->created), 'час') . ' ';
-                        }
-
+                            echo $task->getYear($task->created);
+                            echo $task->getMonth($task->created);
+                            echo $task->getDay($task->created);
+                            echo $task->getHour($task->created);
                         ?> назад
                         </span>
                     </div>
