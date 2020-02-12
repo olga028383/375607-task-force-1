@@ -9,11 +9,13 @@
 namespace frontend\controllers;
 
 use frontend\models\FilterForm;
+use frontend\models\Reviews;
 use frontend\models\Users;
 use HtmlAcademy\Models\TaskForce;
 use yii\data\Pagination;
 use yii\data\Sort;
 use yii\web\Controller;
+use yii\web\NotFoundHttpException;
 
 class UsersController extends Controller
 {
@@ -25,13 +27,10 @@ class UsersController extends Controller
         $filterFormModel->load($_GET);
 
         $query = Users::find()
-            ->joinWith(['userSpecializationCategories' => function ($query) {
-            }], true, 'RIGHT JOIN')
+            ->joinWith('userSpecializationCategories', true, 'RIGHT JOIN')
             ->groupBy('users.id')
             ->joinWith('profile')
-            ->joinWith('tasks')
-            ->joinWith('reviews');
-
+            ->joinWith('tasks');
 
         $sort = new Sort([
             'attributes' => [
@@ -115,5 +114,23 @@ class UsersController extends Controller
             'sort' => $sort
         ]);
 
+    }
+    //Здесь вопрос по изображениям, нужно ли создавать миниатюры фото, выполненных работ, на данном этапе
+    // или мы это будем делать при загрузке изображений
+    public function actionView($id)
+    {
+        $user = Users::find()
+            ->joinWith('userSpecializationCategories', true, 'RIGHT JOIN')
+            ->groupBy('users.id')
+            ->where(['users.id' => $id])
+            ->with('photos', 'tasks')
+            ->one();
+
+        if (!$user) {
+            throw new NotFoundHttpException("Пользователь $id не найден");
+        }
+
+        return $this->render('view', ['user' => $user,]
+        );
     }
 }

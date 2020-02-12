@@ -11,7 +11,6 @@ use yii\widgets\ActiveForm;
 use yii\widgets\LinkPager;
 
 $this->title = 'Исполнители';
-$this->params['breadcrumbs'][] = $this->title;
 $stars = 5;
 ?>
 <main class="page-main">
@@ -36,11 +35,11 @@ $stars = 5;
                 <div class="content-view__feedback-card user__search-wrapper">
                     <div class="feedback-card__top">
                         <div class="user__search-icon">
-                            <a href="#">
+                            <a href="/user/view/<?php echo $user->id?>">
                                 <?php if($user->profile->avatar):?>
-                                    <img src="/img/man-glasses.jpg" width="65" height="65">
+                                    <img src="<?php echo $user->profile->avatar?>" width="65" height="65" alt="<?php echo $user->name?>">
                                 <?php else:?>
-                                    <img src="/img/empty.webp" width="65" height="65">
+                                    <img src="/img/man-glasses.jpg" width="65" height="65">
                                 <?php endif?>
                             </a>
                             <span><?php echo count($user->tasks)?></span>
@@ -51,18 +50,17 @@ $stars = 5;
                             </span>
                         </div>
                         <div class="feedback-card__top--name user__search-card">
-                            <p class="link-name"><a href="#" class="link-regular"><?php echo $user->name ?></a>
+                            <p class="link-name"><a href="/user/view/<?php echo $user->id?>" class="link-regular"><?php echo $user->name ?></a>
                             </p>
 
-                            <?php
-
-                            for($i = 0; $i < $stars; $i++):?>
+                            <?php for($i = 0; $i < $stars; $i++):?>
                                 <?php if(round($user->profile->rating) > $i):?>
                                     <span></span>
                                 <?php else:?>
                                     <span class="star-disabled"></span>
                                 <?php endif?>
                             <?php endfor?>
+
                             <b><?php echo floatval($user->profile->rating)?></b>
                             <p class="user__search-content">
                                 <?php echo $user->profile->biography ?>
@@ -70,29 +68,8 @@ $stars = 5;
                         </div>
                         <span class="new-task__time">Был на сайте
                             <?php
-
-                           if ($user->getYear($user->profile->last_active_at)) {
-                              echo Russian\pluralize($user->getYear($user->profile->last_active_at), 'год') . ' ';
-                           }
-
-                            if ($user->getMonth($user->profile->last_active_at)) {
-                                echo Russian\pluralize($user->getMonth($user->profile->last_active_at), 'месяц') . ' ';
-                           }
-                            if ($user->getDay($user->profile->last_active_at)) {
-                                echo Russian\pluralize($user->getDay($user->profile->last_active_at), 'день') . ' ';
-                            }
-
-                            if ($user->getHour($user->profile->last_active_at)) {
-                                echo Russian\pluralize($user->getHour($user->profile->last_active_at), 'час') . ' ';
-                            }
-                            if ($user->getMinutes($user->profile->last_active_at)) {
-                                echo Russian\pluralize($user->getMinutes($user->profile->last_active_at), 'минута') . ' ';
-                            }
-                            if ($user->getSecond($user->profile->last_active_at)) {
-                                echo Russian\pluralize($user->getSecond($user->profile->last_active_at), 'секунда') . ' ';
-                            }
+                                echo $user->getFullDate($user->profile->last_active_at);
                             ?>
-
                             назад</span>
                     </div>
                     <div class="link-specialization user__search-link--bottom">

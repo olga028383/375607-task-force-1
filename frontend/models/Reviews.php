@@ -2,6 +2,7 @@
 
 namespace frontend\models;
 
+use app\models\Profiles;
 use Yii;
 
 /**
@@ -76,7 +77,7 @@ class Reviews extends \yii\db\ActiveRecord
      */
     public function getSender()
     {
-        return $this->hasOne(Users::class, ['id' => 'sender_id']);
+        return $this->hasOne(Users::class, ['id' => 'sender_id'])->joinWith('profile');
     }
 
     /**
@@ -84,6 +85,30 @@ class Reviews extends \yii\db\ActiveRecord
      */
     public function getRecipient()
     {
-        return $this->hasOne(Users::class, ['id' => 'recipient_id']);
+        return $this->hasOne(Users::class, ['id' => 'recipient_id'])->joinWith('profile');
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProfileSender()
+    {
+        return $this->hasOne(Profiles::class, ['user_id' => 'sender_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProfileRecipient()
+    {
+        return $this->hasOne(Profiles::class, ['user_id' => 'recipient_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProfile()
+    {
+        return $this->hasOne(Profiles::class, ['user_id' => 'id']);
     }
 }

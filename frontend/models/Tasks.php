@@ -2,8 +2,10 @@
 
 namespace frontend\models;
 
+use app\models\Profiles;
 use Yii;
 use yii\db\ActiveQuery;
+use yii\debug\models\search\Profile;
 
 /**
  * This is the model class for table "tasks".
@@ -102,7 +104,7 @@ class Tasks extends \yii\db\ActiveRecord
      */
     public function getResponses()
     {
-        return $this->hasMany(Responses::class, ['task_id' => 'id']);
+        return $this->hasMany(Responses::class, ['task_id' => 'id'])->with('user');
     }
 
     /**
@@ -134,7 +136,8 @@ class Tasks extends \yii\db\ActiveRecord
      */
     public function getCustomer()
     {
-        return $this->hasOne(Users::class, ['id' => 'customer_id']);
+        return $this->hasOne(Users::class, ['id' => 'customer_id'])
+            ->with('profile','tasksCustomer');
     }
 
     /**
@@ -142,7 +145,8 @@ class Tasks extends \yii\db\ActiveRecord
      */
     public function getExecutor()
     {
-        return $this->hasOne(Users::class, ['id' => 'executor_id']);
+        return $this->hasOne(Users::class, ['id' => 'executor_id'])
+            ->with('profile');
     }
 
     /**

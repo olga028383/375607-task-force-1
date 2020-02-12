@@ -9,11 +9,14 @@
 namespace frontend\controllers;
 
 use frontend\models\FilterForm;
+use frontend\models\Responses;
 use frontend\models\Tasks;
 use HtmlAcademy\Models\TaskForce;
 use Yii;
 use yii\data\Pagination;
+use yii\db\Query;
 use yii\web\Controller;
+use yii\web\NotFoundHttpException;
 
 class TasksController extends Controller
 {
@@ -57,7 +60,7 @@ class TasksController extends Controller
         }
 
         $countQuery = clone $query;
-        $pages = new Pagination(['totalCount' => $countQuery->count(), 'pageSize' => 5,  'forcePageParam' => false, 'pageSizeParam' => false]);
+        $pages = new Pagination(['totalCount' => $countQuery->count(), 'pageSize' => 5, 'forcePageParam' => false, 'pageSizeParam' => false]);
         $tasks = $query->orderBy(['tasks.created' => SORT_DESC])
             ->offset($pages->offset)
             ->limit($pages->limit)
@@ -70,5 +73,20 @@ class TasksController extends Controller
             'filterFormModel' => $filterFormModel
         ]);
 
+    }
+
+    public function actionView($id)
+    {
+
+        $task = Tasks::find()
+            ->where(['tasks.id' => $id])
+            ->with('category', 'taskFiles', 'customer', 'responses')
+            ->one();
+
+        if (!$task) {
+            throw new NotFoundHttpException("Задача с $id не найдена");
+        }
+
+        return $this->render('view', ['task' => $task]);
     }
 }

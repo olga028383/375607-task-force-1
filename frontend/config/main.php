@@ -45,8 +45,10 @@ return [
                 '//' => '/',
                 'tasks/page/<page:\d+>' => 'tasks/index',
                 'tasks' => 'tasks/index',
+                'task/view/<id:\d+>' => 'tasks/view',
                 'users/page/<page:\d+>' => 'users/index',
-                'users' => 'users/index'
+                'users' => 'users/index',
+                'user/view/<id:\d+>' => 'users/view',
             ],
         ],
 
