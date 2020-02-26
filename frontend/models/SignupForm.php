@@ -1,4 +1,5 @@
 <?php
+
 namespace frontend\models;
 
 use Yii;
@@ -10,10 +11,25 @@ use common\models\User;
  */
 class SignupForm extends Model
 {
+    /**
+     * @var
+     */
     public $username;
+
+    /**
+     * @var
+     */
     public $email;
+
+    /**
+     * @var
+     */
     public $password;
 
+    /**
+     * @var
+     */
+    public $city;
 
     /**
      * {@inheritdoc}
@@ -21,25 +37,34 @@ class SignupForm extends Model
     public function rules()
     {
         return [
+            [['username', 'email', 'password', 'city'], 'required', 'message' => 'Это поле обязательно для заполнения'],
+
             ['username', 'trim'],
-            ['username', 'required'],
-            ['username', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This username has already been taken.'],
             ['username', 'string', 'min' => 2, 'max' => 255],
 
             ['email', 'trim'],
-            ['email', 'required'],
             ['email', 'email'],
-            ['email', 'string', 'max' => 255],
-            ['email', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This email address has already been taken.'],
+            ['email', 'unique', 'targetClass' => '\frontend\models\Users', 'message' => 'Введите валидный адрес электронной почты'],
 
-            ['password', 'required'],
-            ['password', 'string', 'min' => 6],
+            ['password', 'string', 'min' => 8, 'message' => 'ароль должен быть не менее 8 символов'],
         ];
     }
 
     /**
-     * Signs user up.
-     *
+     * @return array
+     */
+    public function attributeLabels()
+    {
+        return [
+            'username' => 'Ваше имя',
+            'email' => 'Электронная почта',
+            'password' => 'Пароль',
+            'city' => 'Город проживания',
+        ];
+    }
+
+    /**
+     * Signs user up
      * @return bool whether the creating new account was successful and email was sent
      */
     public function signup()
@@ -47,15 +72,14 @@ class SignupForm extends Model
         if (!$this->validate()) {
             return null;
         }
-        
-        $user = new User();
-        $user->username = $this->username;
+
+        $user = new Users();
+        $user->name = $this->username;
         $user->email = $this->email;
         $user->setPassword($this->password);
-        $user->generateAuthKey();
-        $user->generateEmailVerificationToken();
-        return $user->save() && $this->sendEmail($user);
-
+        $user->city_id = $this->city;
+        $user->registered = gmdate("Y-m-d H:i:s");
+        return $user->save();
     }
 
     /**

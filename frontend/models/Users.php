@@ -4,6 +4,7 @@ namespace frontend\models;
 
 use app\models\Profiles;
 use Yii;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "users".
@@ -79,6 +80,27 @@ class Users extends \yii\db\ActiveRecord
             'name' => 'Name',
             'password' => 'Password',
             'registered' => 'Registered',
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function behaviors()
+    {
+        return [
+            'timestamp' => [
+                'class' => TimestampBehavior::class,
+                'attributes' => [
+                    \yii\db\BaseActiveRecord::EVENT_BEFORE_INSERT => ['registered'],
+                ],
+                'value' => function () {
+                    return gmdate("Y-m-d H:i:s");
+                },
+
+
+            ],
+
         ];
     }
 
@@ -186,5 +208,15 @@ class Users extends \yii\db\ActiveRecord
     public function getProfile()
     {
         return $this->hasOne(Profiles::class, ['user_id' => 'id']);
+    }
+
+    /**
+     * Generates password hash from password and sets it to the model
+     *
+     * @param string $password
+     */
+    public function setPassword($password)
+    {
+        $this->password = Yii::$app->security->generatePasswordHash($password);
     }
 }
