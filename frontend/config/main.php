@@ -49,6 +49,7 @@ return [
                 'users/page/<page:\d+>' => 'users/index',
                 'users' => 'users/index',
                 'user/view/<id:\d+>' => 'users/view',
+                'signup' => 'signup/index',
             ],
         ],
 
