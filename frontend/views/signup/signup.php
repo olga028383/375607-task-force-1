@@ -21,16 +21,15 @@ $this->title = 'Регистрация';
 
 
         <?php echo $form->field($model, 'email', array(
-            'options' => array('class' => ''),
-                                                                // как вот тут добавить класс, если возвращается ошибка?
-            'labelOptions' => array('for' => 'signupform-email', 'class' => (!$model['email'])? 'input-danger': '' ),
+            'options' => array('class' => 'field-group'),
+            'labelOptions' => array('for' => 'signupform-email'),
             'errorOptions' => array('tag' => 'span')
         ))
             ->textInput(array('rows' => '1', 'placeholder' => 'kumarm@mail.ru', 'class' => 'input textarea', 'style' => 'width: 100%'), false)
         ?>
 
         <?php echo $form->field($model, 'username', array(
-            'options' => array('class' => ''),
+            'options' => array('class' => 'field-group'),
             'labelOptions' => array('for' => 'signupform-username', 'class' => $model['username']),
             'errorOptions' => array('tag' => 'span')
         ))
@@ -39,8 +38,8 @@ $this->title = 'Регистрация';
         ?>
 
         <?php echo $form->field($model, 'city', array(
-            'options' => array('class' => ''),
-            'labelOptions' => array('for' => 'signupform-city', 'style' => 'display: block; margin-bottom: 0'),
+            'options' => array('class' => 'field-group'),
+            'labelOptions' => array('for' => 'signupform-city'),
             'errorOptions' => array('tag' => 'span')
         ))
             ->dropDownList(
@@ -53,7 +52,7 @@ $this->title = 'Регистрация';
             );?>
 
         <?php echo $form->field($model, 'password', array(
-            'options' => array('class' => ''),
+            'options' => array('class' => 'field-group'),
             'labelOptions' => array('for' => 'signupform-password', 'class' => $model['email']),
             'errorOptions' => array('tag' => 'span')
         ))
