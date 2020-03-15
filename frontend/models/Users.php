@@ -5,6 +5,7 @@ namespace frontend\models;
 use app\models\Profiles;
 use Yii;
 use yii\behaviors\TimestampBehavior;
+use yii\web\IdentityInterface;
 
 /**
  * This is the model class for table "users".
@@ -35,11 +36,35 @@ use yii\behaviors\TimestampBehavior;
  * @property UserSpecializationCategory[] $userSpecializationCategories0
  * @property Cities $city
  */
-class Users extends \yii\db\ActiveRecord
+class Users extends \yii\db\ActiveRecord implements IdentityInterface
 {
 
     use TimeCreationToCurrentTrait;
 
+    public static function findIdentity($id)
+    {
+        return self::findOne($id);
+    }
+
+    public static function findIdentityByAccessToken($token, $type = null)
+    {
+        // TODO: Implement findIdentityByAccessToken() method.
+    }
+
+    public function getId()
+    {
+        return $this->getPrimaryKey();
+    }
+
+    public function getAuthKey()
+    {
+        // TODO: Implement getAuthKey() method.
+    }
+
+    public function validateAuthKey($authKey)
+    {
+        // TODO: Implement validateAuthKey() method.
+    }
     /**
      * {@inheritdoc}
      */
@@ -218,5 +243,10 @@ class Users extends \yii\db\ActiveRecord
     public function setPassword($password)
     {
         $this->password = Yii::$app->security->generatePasswordHash($password);
+    }
+
+    public function validatePassword($password)
+    {
+        return \Yii::$app->security->validatePassword($password, $this->password);
     }
 }

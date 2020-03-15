@@ -12,12 +12,14 @@ return [
     'bootstrap' => ['log'],
     'language' => 'ru-RU',
     'controllerNamespace' => 'frontend\controllers',
+    'defaultRoute' => 'landing',
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-frontend',
         ],
         'user' => [
-            'identityClass' => 'common\models\User',
+            'identityClass' => 'frontend\models\Users',
+            'loginUrl' => '/',
             'enableAutoLogin' => true,
             'identityCookie' => ['name' => '_identity-frontend', 'httpOnly' => true],
         ],
@@ -35,7 +37,7 @@ return [
             ],
         ],
         'errorHandler' => [
-            'errorAction' => 'site/error',
+            'errorAction' => 'landing/error',
         ],
         'urlManager' => [
             'enablePrettyUrl' => true,
