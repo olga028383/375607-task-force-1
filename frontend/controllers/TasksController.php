@@ -8,8 +8,10 @@
 
 namespace frontend\controllers;
 
+use app\models\UploadForm;
 use frontend\models\FilterForm;
 use frontend\models\Responses;
+use frontend\models\TaskForm;
 use frontend\models\Tasks;
 use HtmlAcademy\Models\TaskForce;
 use Yii;
@@ -17,14 +19,22 @@ use yii\data\Pagination;
 use yii\db\Query;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\UploadedFile;
 
+/**
+ * Class TasksController
+ * @package frontend\controllers
+ */
 class TasksController extends SecuredController
 {
 
+    /**
+     * @return string
+     */
     public function actionIndex()
     {
         $filterFormModel = new FilterForm();
-        $filterFormModel->load($_GET);
+        $filterFormModel->load(Yii::$app->request->get());
 
         $query = Tasks::find()
             ->with(['category', 'city'])
@@ -75,6 +85,11 @@ class TasksController extends SecuredController
 
     }
 
+    /**
+     * @param $id
+     * @return string
+     * @throws NotFoundHttpException
+     */
     public function actionView($id)
     {
 
@@ -89,4 +104,38 @@ class TasksController extends SecuredController
 
         return $this->render('view', ['task' => $task]);
     }
+
+    /**
+     * @return string
+     */
+    public function actionCreate()
+    {
+
+        $model = new TaskForm();
+        $errors = '';
+
+        if(Yii::$app->request->isAjax) {
+
+            //$modelUploadFile = new UploadForm();
+            //$modelUploadFile->file = UploadedFile::getInstanceByName('file');
+
+            $model->files[] = UploadedFile::getInstanceByName('file');
+
+        }
+
+        if ($model->load(Yii::$app->request->post())/* && $model->validate()*/) {
+
+        } else {
+
+            $errors = $model->errors;
+        }
+
+        return $this->render('create', [
+            'model' => $model,
+            'errors' => $errors
+        ]);
+
+    }
+
+
 }

@@ -46,7 +46,7 @@ class SignupForm extends Model
             ['email', 'email'],
             ['email', 'unique', 'targetClass' => '\frontend\models\Users', 'message' => 'Введите валидный адрес электронной почты'],
 
-            ['password', 'string', 'min' => 8, 'message' => 'ароль должен быть не менее 8 символов'],
+            ['password', 'string', 'min' => 8, 'message' => 'Пароль должен быть не менее 8 символов'],
         ];
     }
 

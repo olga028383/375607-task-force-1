@@ -304,7 +304,7 @@ AppAsset::register($this);
     </section>
 </div>
 <div class="overlay"></div>
-<script src="/js/main.js"></script>
+<?php $this->registerJsFile(Yii::$app->request->BaseUrl . '/js/main.js') ?>
 <?php $this->endBody() ?>
 </body>
 </html>
