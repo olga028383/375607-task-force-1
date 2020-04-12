@@ -5,8 +5,11 @@
 /* @var $errors */
 
 use frontend\models\Categories;
+use yii\helpers\Html;
 use yii\web\View;
+use yii\widgets\Pjax;
 use yii\widgets\ActiveForm;
+
 $user = Yii::$app->user->getIdentity();
 ?>
     <section class="create__task">
@@ -14,6 +17,8 @@ $user = Yii::$app->user->getIdentity();
             <div class="create__task-main">
 
                 <?php $form = ActiveForm::begin([
+                    'enableClientScript' => false,
+                    'enableAjaxValidation' => false,
                     'options' => ['class' => 'create__task-form form-create', 'action' =>'/create', 'enctype' => 'multipart/form-data', 'id'=>'task-form'],
                 ]); ?>
 
@@ -93,6 +98,7 @@ $user = Yii::$app->user->getIdentity();
                         <span>Укажите крайний срок исполнения</span>
                     </div>
                 </div>
+
             <?php ActiveForm::end() ?>
 
             <div class="create__warnings">
@@ -109,7 +115,9 @@ $user = Yii::$app->user->getIdentity();
                         ракурсов.</p>
                 </div>
 
-                <?php if(!empty($errors)):?>
+                <?php
+                dump($model);
+                if(!empty($errors)):?>
 
                     <div class="warning-item warning-item--error">
                         <h2>Ошибки заполнения формы</h2>
@@ -124,12 +132,16 @@ $user = Yii::$app->user->getIdentity();
                 <?php endif?>
             </div>
         </div>
-        <button form="task-form" class="button" type="submit" name="create-button">Опубликовать</button>
+        <?php echo Html::submitButton('Опубликовать', ['form' => 'task-form', 'class' => 'button']); ?>
     </section>
-
-
 <?php
 $this->registerJsFile(Yii::$app->request->BaseUrl . '/js/dropzone.js');
+//Вот тут как я уже данные формы не пыталась пердать, не могу понять как привязать файлы из Dropzone к форме выше
+$param = '';
+foreach($model->getAttributes() as $key=>$data){
+    $param .= "formData.append('".$key."', '".json_encode($data)."');";
+
+}
 $this->registerJs(
     "var dropzone = new Dropzone(\"div.create__file\", {
         url: \"/create\",
@@ -137,7 +149,10 @@ $this->registerJs(
     });
     dropzone.on(\"sending\", function(file, xhr, formData) {
         formData.append('".Yii::$app->request->csrfParam ."',  '".Yii::$app->request->getCsrfToken()."');
-    });",
+        $param  
+    });
+    
+    ",
     View::POS_READY,
     'my-button-handler'
 );

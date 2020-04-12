@@ -11,15 +11,15 @@ class UploadForm extends Model
 {
 
     /**
-     * @var $file
+     * @var $files
      */
-    public $file;
+    public $files = array();
 
 
     public function rules()
     {
         return [
-            [['file'], 'file'],
+            [['files'], 'files'],
         ];
     }
 
@@ -33,8 +33,8 @@ class UploadForm extends Model
                 FileHelper::createDirectory($dir);
             }
 
-            $path = $dir . '/' . $this->file->baseName . '.' . $this->file->extension;
-            $this->file->saveAs($path);
+            $path = $dir . '/' . $this->files->baseName . '.' . $this->files->extension;
+            //$this->file->saveAs($path);
 
             return $path;
         }

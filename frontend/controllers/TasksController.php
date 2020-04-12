@@ -19,7 +19,9 @@ use yii\data\Pagination;
 use yii\db\Query;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 use yii\web\UploadedFile;
+use yii\bootstrap\ActiveForm;
 
 /**
  * Class TasksController
@@ -112,27 +114,26 @@ class TasksController extends SecuredController
     {
 
         $model = new TaskForm();
-        $errors = '';
+        $model->load(Yii::$app->request->post());
+        //Возник вот здесь вопрос, как обработать данные файлов, которые загружаются отдельно от формы,
 
-        if(Yii::$app->request->isAjax) {
-
-            //$modelUploadFile = new UploadForm();
-            //$modelUploadFile->file = UploadedFile::getInstanceByName('file');
-
-            $model->files[] = UploadedFile::getInstanceByName('file');
-
+        if (Yii::$app->request->isAjax) {
+            $model->files[] = UploadedFile::getInstance($model, 'file');
         }
 
-        if ($model->load(Yii::$app->request->post())/* && $model->validate()*/) {
-
-        } else {
-
-            $errors = $model->errors;
+        if ($model->validate()) {
+            dump($model);
+                //if($task = $model->createTask()){
+                    //var_dump($model);
+                    //exit;
+                            //$model->addFiles($task);
+                       // }
+            // все данные корректны
         }
 
         return $this->render('create', [
             'model' => $model,
-            'errors' => $errors
+            'errors' => $model->errors
         ]);
 
     }
