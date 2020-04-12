@@ -276,7 +276,7 @@ AppAsset::register($this);
 
     <section class="modal enter-form form-modal" id="enter-form">
         <h2>Вход на сайт</h2>
-        <?php Pjax::begin(['id' => 'my-pjax', 'enablePushState' => false]); ?>
+        <?php Pjax::begin(['id' => 'login-form-pjax', 'enablePushState' => false]); ?>
         <?php $form = ActiveForm::begin(['id' => 'login-form', 'enableAjaxValidation' => true]); ?>
 
             <?= $form->field($model, 'email', array(
