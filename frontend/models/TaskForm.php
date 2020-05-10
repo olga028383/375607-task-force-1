@@ -5,45 +5,37 @@ namespace frontend\models;
 use HtmlAcademy\Models\TaskForce;
 use Yii;
 use yii\base\Model;
-use yii\helpers\FileHelper;
+use yii\web\UploadedFile;
 
 class TaskForm extends Model
 {
     public $name;
     public $description;
     public $category;
-    public $files = array();
+    public $files;
     public $city;
     public $sum;
     public $deadline;
-
-    private $filesPath = array();
 
     public function rules()
     {
         return [
 
-            [['name', 'description'], 'filter', 'filter' => function ($value) {
-                return preg_replace("/\s+/", "", $value);
-            }],
-
             [['name', 'description'], 'required', 'message' => 'Это поле должно быть заполнено'],
+            [['name', 'description'], 'trim'],
 
             ['name', 'string', 'length' => [10]],
             ['description', 'string', 'length' => [60]],
 
             ['category', 'required', 'message' => 'Это поле должно быть выбрано. Задание должно принадлежать одной из категорий'],
-            ['category', 'validateCategory'],
+            ['category', 'exist', 'skipOnError' => false, 'targetClass' => \frontend\models\Categories::class, 'targetAttribute' => ['category' => 'id']],
 
             ['sum', 'number', 'min' => 0, 'message' => 'Поле должно быть целым положительным числом'],
 
-            //Вот тут вопрос, в задании формат даты проверяется такой DD.MM.YY, а в базе у нас хранится такой 2019-11-15 00:00:, так какой формат проверять?
-//            ['deadline', 'filter', 'filter' => function ($value) {
-//                return preg_replace("/\s+/", "", $value);
-//            }],
-//            ['deadline', 'date', 'format' => 'php:yyyy-mm-dd']
+            //Вот здесь должна была быть проверка на ДД.ММ.ГГГГ, я сделала наоборот, т как встроенныей input type['date'], возвращает такую дату 2020-05-09
+            ['deadline', 'date', 'format' => 'yyyy-MM-dd', 'min' => time(),  'message' => 'Неверный формат даты', 'tooSmall' => 'Дедлайн должен быть больше текущей даты'],
 
-            ['files' ,'safe']
+            ['files', 'safe']
         ];
     }
 
@@ -60,71 +52,74 @@ class TaskForm extends Model
     }
 
     /**
-     * Функция, проверяет, что категория существует
+     * @param int $task_id
+     * @throws \Exception
      */
-    public function validateCategory()
+    public function upload(int $task_id): void
     {
-        $category = Categories::find()
-            ->where(['id' => $this->category])
-            ->one();
+        $this->files = UploadedFile::getInstances($this, 'files');
 
-        if (!$category) {
-            $this->addError('category', 'Категория не существует');
-        }
-    }
+        if (!empty($this->files)) {
 
-    public function upload()
-    {
-        if ($this->validate()) {
+            foreach ($this->files as $file) {
 
-            $dir = Yii::getAlias('@app/uploads');
+                $filename = sprintf('%s_%s.%s', $task_id, $file->baseName, $file->extension);
 
-            if (!file_exists($dir)) {
-                FileHelper::createDirectory($dir);
+                if (!$this->addFile($task_id, $filename) || !$file->saveAs(sprintf('%s/%s', Yii::getAlias('@app/uploads'), $filename))) {
+                    throw new \Exception("Не удалось сохранить $filename в базу");
+                }
             }
-
-            $path = $dir . '/' . $this->file->baseName . '.' . $this->file->extension;
-            $this->file->saveAs($path);
-
-            return $path;
         }
-
-        return false;
 
     }
 
-    public function createTask()
+    /**
+     * @throws \yii\web\ServerErrorHttpException
+     */
+    public function createTask(): void
     {
-        if (!$this->validate()) {
-            return null;
-        }
+
         $user = Yii::$app->user->getIdentity();
 
-        if (!$user->getId()) {
-            return null;
+        if (!$user_id = $user->getId()) {
+            throw new \Exception("Не получен идентификатор пользователя");
         }
 
-        $tasks = new Tasks();
-        $tasks->customer_id = $user->getId();
-        $tasks->name = $this->name;
-        $tasks->description = $this->description;
-        $tasks->category_id = $this->category;
-        $tasks->sum = $this->sum;
-        $tasks->created = gmdate("Y-m-d H:i:s");
-        $tasks->deadline = $this->deadline;
-        $tasks->status = TaskForce::STATUS_NEW;
-        return $tasks->save();
+        $transaction = Yii::$app->db->beginTransaction();
+
+        try {
+
+            $task = new Tasks();
+            $task->name = $this->name;
+            $task->description = $this->description;
+            $task->category_id = $this->category;
+            $task->sum = $this->sum;
+            $task->created = gmdate("Y-m-d H:i:s");
+            $task->deadline = $this->deadline;
+            $task->customer_id = $user_id;
+            $task->status = TaskForce::STATUS_NEW;
+            $task->save();
+
+            $this->upload($task->id);
+
+            $transaction->commit();
+        } catch (\Exception $e) {
+            $transaction->rollback();
+            throw new \yii\web\ServerErrorHttpException("Извините, при сохранении произошла ошибка");
+        }
     }
 
-    public function addFiles(int $idTask)
+    /**
+     * @param int $idTask
+     * @param string $link
+     * @return bool
+     */
+    public function addFile(int $idTask, string $link): bool
     {
-
-        foreach ($this->files as $file) {
-            $fileTask = new TaskFiles();
-            $fileTask->task_id = $idTask;
-            $fileTask->link = $file;
-            return $fileTask->save();
-        }
+        $fileTask = new TaskFiles();
+        $fileTask->task_id = $idTask;
+        $fileTask->link = $link;
+        return $fileTask->save();
     }
 
 }

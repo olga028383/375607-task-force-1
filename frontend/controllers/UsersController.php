@@ -115,8 +115,7 @@ class UsersController extends SecuredController
         ]);
 
     }
-    //Здесь вопрос по изображениям, нужно ли создавать миниатюры фото, выполненных работ, на данном этапе
-    // или мы это будем делать при загрузке изображений
+
     public function actionView($id)
     {
         $user = Users::find()

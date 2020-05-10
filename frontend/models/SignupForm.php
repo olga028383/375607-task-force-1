@@ -64,10 +64,9 @@ class SignupForm extends Model
     }
 
     /**
-     * Signs user up
-     * @return bool whether the creating new account was successful and email was sent
+     * @return bool|null
      */
-    public function signup()
+    public function signup(): bool
     {
         if (!$this->validate()) {
             return null;

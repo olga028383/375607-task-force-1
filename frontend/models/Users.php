@@ -65,6 +65,7 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
     {
         // TODO: Implement validateAuthKey() method.
     }
+
     /**
      * {@inheritdoc}
      */
@@ -233,6 +234,19 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
     public function getProfile()
     {
         return $this->hasOne(Profiles::class, ['user_id' => 'id']);
+    }
+
+    /**
+     * @param int $user_id
+     * @return bool
+     */
+    public static function isUserCustomer(int $user_id): bool
+    {
+        return self::find()
+            ->joinWith('userSpecializationCategories', true, 'RIGHT JOIN')
+            ->groupBy('users.id')
+            ->where(['users.id' => $user_id])
+            ->exists();
     }
 
     /**

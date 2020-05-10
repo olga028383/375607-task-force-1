@@ -8,20 +8,15 @@
 
 namespace frontend\controllers;
 
-use app\models\UploadForm;
 use frontend\models\FilterForm;
-use frontend\models\Responses;
 use frontend\models\TaskForm;
 use frontend\models\Tasks;
+use frontend\models\Users;
 use HtmlAcademy\Models\TaskForce;
 use Yii;
 use yii\data\Pagination;
-use yii\db\Query;
-use yii\web\Controller;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
-use yii\web\Response;
-use yii\web\UploadedFile;
-use yii\bootstrap\ActiveForm;
 
 /**
  * Class TasksController
@@ -29,6 +24,26 @@ use yii\bootstrap\ActiveForm;
  */
 class TasksController extends SecuredController
 {
+    /**
+     * @return array
+     */
+    public function behaviors()
+    {
+        $rules = parent::behaviors();
+        $rule = [
+            'allow' => false,
+            'actions' => ['create'],
+            'matchCallback' => function ($rule, $action) {
+                return !Users::isUserCustomer(Yii::$app->user->id);
+            },
+            'denyCallback' => function ($rule, $action) {
+                throw new ForbiddenHttpException('Извините, только заказчики могут создавать задачи');
+            }
+        ];
+        array_unshift($rules['access']['rules'], $rule);
+
+        return $rules;
+    }
 
     /**
      * @return string
@@ -114,29 +129,18 @@ class TasksController extends SecuredController
     {
 
         $model = new TaskForm();
-        $model->load(Yii::$app->request->post());
-        //Возник вот здесь вопрос, как обработать данные файлов, которые загружаются отдельно от формы,
 
-        if (Yii::$app->request->isAjax) {
-            $model->files[] = UploadedFile::getInstance($model, 'file');
-        }
-
-        if ($model->validate()) {
-            dump($model);
-                //if($task = $model->createTask()){
-                    //var_dump($model);
-                    //exit;
-                            //$model->addFiles($task);
-                       // }
-            // все данные корректны
+        if (Yii::$app->request->getIsPost() && $model->load(Yii::$app->request->post())) {
+            if ($model->validate()) {
+                $model->createTask();
+                return $this->goHome();
+            }
         }
 
         return $this->render('create', [
-            'model' => $model,
-            'errors' => $model->errors
+            'model' => $model
         ]);
 
     }
-
 
 }
