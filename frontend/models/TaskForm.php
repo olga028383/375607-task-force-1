@@ -5,6 +5,7 @@ namespace frontend\models;
 use HtmlAcademy\Models\TaskForce;
 use Yii;
 use yii\base\Model;
+use yii\helpers\FileHelper;
 use yii\web\UploadedFile;
 
 class TaskForm extends Model
@@ -63,9 +64,15 @@ class TaskForm extends Model
 
             foreach ($this->files as $file) {
 
+                $dir = Yii::getAlias('@frontend/uploads');
+
+                if (!file_exists($dir)) {
+                    FileHelper::createDirectory($dir);
+                }
+
                 $filename = sprintf('%s_%s.%s', $task_id, $file->baseName, $file->extension);
 
-                if (!$this->addFile($task_id, $filename) || !$file->saveAs(sprintf('%s/%s', Yii::getAlias('@app/uploads'), $filename))) {
+                if (!$this->addFile($task_id, $filename) || !$file->saveAs(sprintf('%s/%s', $dir, $filename))) {
                     throw new \Exception("Не удалось сохранить $filename в базу");
                 }
             }
