@@ -2,12 +2,8 @@
 
 /* @var $model */
 
-/* @var $errors */
-
 use frontend\models\Categories;
 use yii\helpers\Html;
-use yii\web\View;
-use yii\widgets\Pjax;
 use yii\widgets\ActiveForm;
 
 $user = Yii::$app->user->getIdentity();
@@ -135,4 +131,3 @@ $user = Yii::$app->user->getIdentity();
         </div>
 
     </section>
-<?php

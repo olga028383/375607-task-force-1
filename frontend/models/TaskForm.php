@@ -56,7 +56,7 @@ class TaskForm extends Model
      * @param int $task_id
      * @throws \Exception
      */
-    public function upload(int $task_id): void
+    private function upload(int $task_id): void
     {
         $this->files = UploadedFile::getInstances($this, 'files');
 
@@ -100,6 +100,8 @@ class TaskForm extends Model
             $task->name = $this->name;
             $task->description = $this->description;
             $task->category_id = $this->category;
+            $task->city = $this->city;
+            //чтобы не забыть - в дальнейшем добавление координат
             $task->sum = $this->sum;
             $task->created = gmdate("Y-m-d H:i:s");
             $task->deadline = $this->deadline;
@@ -121,7 +123,7 @@ class TaskForm extends Model
      * @param string $link
      * @return bool
      */
-    public function addFile(int $idTask, string $link): bool
+    private function addFile(int $idTask, string $link): bool
     {
         $fileTask = new TaskFiles();
         $fileTask->task_id = $idTask;

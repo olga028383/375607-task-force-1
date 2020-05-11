@@ -128,17 +128,17 @@ class TasksController extends SecuredController
     public function actionCreate()
     {
 
-        $model = new TaskForm();
+        $form = new TaskForm();
 
-        if (Yii::$app->request->getIsPost() && $model->load(Yii::$app->request->post())) {
-            if ($model->validate()) {
-                $model->createTask();
+        if (Yii::$app->request->getIsPost() && $form->load(Yii::$app->request->post())) {
+            if ($form->validate()) {
+                $form->createTask();
                 return $this->goHome();
             }
         }
 
         return $this->render('create', [
-            'model' => $model
+            'model' => $form
         ]);
 
     }
