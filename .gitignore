@@ -34,6 +34,7 @@ phpunit.phar
 /backend/web/robots.txt
 /htmlacademy/sql/sql_data/*
 /frontend/runtime/debug/index.data
+/frontend/uploads/
 codeception-local.php
 main-local.php
 params-local.php

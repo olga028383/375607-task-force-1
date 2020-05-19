@@ -9,7 +9,6 @@
 /* @var $filterFormModel */
 
 use frontend\models\Categories;
-use morphos\Russian;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\widgets\LinkPager;

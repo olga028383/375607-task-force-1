@@ -1,12 +1,7 @@
 .field-group label{
-    display: block
+    display: block;
 }
-.field-group{
-    margin-top: 29px;
-}
-.field-group:first-child{
-    margin-top:0;
-}
+
 .field-group.has-error input{
     border-color: #FF116E;
 }

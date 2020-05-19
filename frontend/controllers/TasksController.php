@@ -9,22 +9,49 @@
 namespace frontend\controllers;
 
 use frontend\models\FilterForm;
-use frontend\models\Responses;
+use frontend\models\TaskForm;
 use frontend\models\Tasks;
+use frontend\models\Users;
 use HtmlAcademy\Models\TaskForce;
 use Yii;
 use yii\data\Pagination;
-use yii\db\Query;
-use yii\web\Controller;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 
+/**
+ * Class TasksController
+ * @package frontend\controllers
+ */
 class TasksController extends SecuredController
 {
+    /**
+     * @return array
+     */
+    public function behaviors()
+    {
+        $rules = parent::behaviors();
+        $rule = [
+            'allow' => false,
+            'actions' => ['create'],
+            'matchCallback' => function ($rule, $action) {
+                return !Users::isUserCustomer(Yii::$app->user->id);
+            },
+            'denyCallback' => function ($rule, $action) {
+                throw new ForbiddenHttpException('Извините, только заказчики могут создавать задачи');
+            }
+        ];
+        array_unshift($rules['access']['rules'], $rule);
 
+        return $rules;
+    }
+
+    /**
+     * @return string
+     */
     public function actionIndex()
     {
         $filterFormModel = new FilterForm();
-        $filterFormModel->load($_GET);
+        $filterFormModel->load(Yii::$app->request->get());
 
         $query = Tasks::find()
             ->with(['category', 'city'])
@@ -75,6 +102,11 @@ class TasksController extends SecuredController
 
     }
 
+    /**
+     * @param $id
+     * @return string
+     * @throws NotFoundHttpException
+     */
     public function actionView($id)
     {
 
@@ -89,4 +121,26 @@ class TasksController extends SecuredController
 
         return $this->render('view', ['task' => $task]);
     }
+
+    /**
+     * @return string
+     */
+    public function actionCreate()
+    {
+
+        $form = new TaskForm();
+
+        if (Yii::$app->request->getIsPost() && $form->load(Yii::$app->request->post())) {
+            if ($form->validate()) {
+                $form->createTask();
+                return $this->goHome();
+            }
+        }
+
+        return $this->render('create', [
+            'model' => $form
+        ]);
+
+    }
+
 }

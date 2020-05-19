@@ -46,7 +46,7 @@ class SignupForm extends Model
             ['email', 'email'],
             ['email', 'unique', 'targetClass' => '\frontend\models\Users', 'message' => 'Введите валидный адрес электронной почты'],
 
-            ['password', 'string', 'min' => 8, 'message' => 'ароль должен быть не менее 8 символов'],
+            ['password', 'string', 'min' => 8, 'message' => 'Пароль должен быть не менее 8 символов'],
         ];
     }
 
@@ -64,10 +64,9 @@ class SignupForm extends Model
     }
 
     /**
-     * Signs user up
-     * @return bool whether the creating new account was successful and email was sent
+     * @return bool|null
      */
-    public function signup()
+    public function signup(): bool
     {
         if (!$this->validate()) {
             return null;

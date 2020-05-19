@@ -83,7 +83,7 @@ $user = Yii::$app->user->getIdentity();
                         <a href="/users">Исполнители</a>
                     </li>
                     <li class="site-list__item site-list__item--active">
-                        <a href="#">Создать задание</a>
+                        <a href="/create">Создать задание</a>
                     </li>
                     <li class="site-list__item">
                         <a href="#">Мой профиль</a>
